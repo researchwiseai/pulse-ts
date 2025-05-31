@@ -2,8 +2,13 @@
   "name": "@rwai/pulse",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "vitest": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
