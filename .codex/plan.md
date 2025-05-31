@@ -55,9 +55,14 @@ This is a living scratch pad. Update as work progresses.
     - Update README.md with TypeScript usage examples  
     - Generate API reference (e.g., Typedoc)
 
- 6. **CI & Release**  
-    - Configure GitHub Actions (test, lint, build)  
-    - Prepare package for npm publication
+6. **Code Quality & Coverage**  
+   - Integrate Qlty CLI for code quality checks, formatting, and coverage reporting  
+   - Hook Qlty into pre-commit workflow to enforce standards before committing  
+   - (Optional) Evaluate ESLint/Prettier plugins via Qlty
+
+7. **CI & Release**  
+   - Configure GitHub Actions to run tests, Qlty checks, and build on push/main  
+   - Prepare package for npm publication
 
  ---
 
@@ -70,6 +75,10 @@ This is a living scratch pad. Update as work progresses.
   - [ ] Port generate_themes endpoint  
   - [ ] Port analyze_sentiment endpoint  
   - [ ] Port remaining API endpoints (pagination, DSL, etc.)  
+  <!-- Quality & CI Tasks -->  
+  - [ ] Integrate Qlty CLI configuration and rules  
+  - [ ] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)  
+  - [ ] Create GitHub Actions workflow for tests, Qlty checks, and build on main
 
 ### In Progress
 
