@@ -65,7 +65,10 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
-
+ - [ ] Port authentication (login/token management)
+ - [ ] Port HTTP request layer (fetch wrapper, retries, timeouts)
+ - [ ] Port models & types (interfaces or classes)
+ - [ ] Port error handling
  ### In Progress
 
  - _None yet_
