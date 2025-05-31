@@ -65,10 +65,9 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
- - [ ] Port authentication (login/token management)
- - [ ] Port HTTP request layer (fetch wrapper, retries, timeouts)
- - [ ] Port models & types (interfaces or classes)
- - [ ] Port error handling
+  - [ ] Port HTTP request layer (fetch wrapper, retries, timeouts)
+  - [ ] Port models & types (interfaces or classes)
+  - [ ] Port error handling
  ### In Progress
 
  - _None yet_
@@ -80,6 +79,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Install vitest and add basic config
   - [x] Review Python client structure under `python/`
   - [x] Sketch TypeScript project layout (`src/`, `test/`)
+  - [x] Port authentication (login/token management)
 
  ### Deferred
 
