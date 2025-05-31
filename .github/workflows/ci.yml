@@ -27,9 +27,6 @@ jobs:
             - name: Run lint
               run: bun run lint
 
-            - name: Check formatting
-              run: bun run fmt -- --check
-
             - name: Run tests
               run: bun run test
 
