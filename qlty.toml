@@ -1,0 +1,12 @@
+ # Qlty configuration for the Pulse TypeScript client
+ # See https://github.com/piksel/qlty for configuration details and options.
+
+ # Include patterns for formatting, linting, and test coverage
+ include = ["src/**/*.ts", "test/**/*.ts"]
+
+ [coverage]
+ # Minimum acceptable coverage thresholds
+ lines = 80
+ branches = 75
+ functions = 80
+ statements = 80
