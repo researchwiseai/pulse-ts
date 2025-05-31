@@ -8,6 +8,66 @@ export interface AuthorizationCodePKCEOptions {
   audience?: string;
 }
 
+export interface ClientCredentialsOptions {
+  tokenUrl: string;
+  clientId: string;
+  clientSecret: string;
+  audience?: string;
+}
+
+export class ClientCredentialsAuth {
+  private tokenUrl: string;
+  private clientId: string;
+  private clientSecret: string;
+  private audience?: string;
+
+  _accessToken?: string;
+  _expiresAt?: number;
+
+  constructor(options: ClientCredentialsOptions) {
+    this.tokenUrl = options.tokenUrl;
+    this.clientId = options.clientId;
+    this.clientSecret = options.clientSecret;
+    this.audience = options.audience;
+  }
+
+  private async _refreshToken(): Promise<void> {
+    const nowSec = Date.now() / 1000;
+    const data: Record<string, string> = {
+      grant_type: 'client_credentials',
+      client_id: this.clientId,
+      client_secret: this.clientSecret,
+    };
+    if (this.audience) data.audience = this.audience;
+
+    const response = await fetch(this.tokenUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data),
+    });
+    if (!response.ok) {
+      throw new Error(`Token refresh failed with status ${response.status}`);
+    }
+    const json = await response.json();
+    this._accessToken = json.access_token;
+    this._expiresAt = nowSec + json.expires_in - 60;
+  }
+
+  async *authFlow(req: Request): AsyncGenerator<Request> {
+    const url = new URL(req.url);
+    if (this.audience && url.host !== new URL(this.audience).host) {
+      yield req;
+      return;
+    }
+    if (!this._accessToken || !this._expiresAt || Date.now() / 1000 >= this._expiresAt) {
+      await this._refreshToken();
+    }
+    const headers = new Headers(req.headers);
+    headers.set('Authorization', `Bearer ${this._accessToken}`);
+    yield new Request(req, { headers });
+  }
+}
+
 export class AuthorizationCodePKCEAuth {
   private tokenUrl: string;
   private clientId: string;
