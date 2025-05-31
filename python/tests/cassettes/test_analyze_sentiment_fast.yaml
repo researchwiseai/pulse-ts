@@ -1,40 +1,41 @@
 interactions:
-- request:
-    body: '{"inputs":["happy","sad"],"fast":true}'
-    headers:
-      accept:
-      - '*/*'
-      accept-encoding:
-      - gzip, deflate
-      authorization:
-      - Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImwxRThteER3TnJoQ2l4TzZfYUhQRCJ9.eyJpc3MiOiJodHRwczovL3dpc2UtZGV2LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhaUl1ODFDVWRrVlRlRDBhUzRHUHpUWDhuMlE1RURIU0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZXYuY29yZS5yZXNlYXJjaHdpc2VhaS5jb20vcHVsc2UvdjEiLCJpYXQiOjE3NDY5OTI2ODcsImV4cCI6MTc0NzA3OTA4NywiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiYWlJdTgxQ1Vka1ZUZUQwYVM0R1B6VFg4bjJRNUVESFMifQ.HLF5jNr2wUBpAvCRYcpmOdlJvAOqQ--IQCySBljCYPX8nYZjykmgFThDqYAsuV_BzPi-LLVi8AN9XnNGfrJo_lDEkWfPgmQxVVyO-BYMu5bsurAOAU_Xk8JkhBjEn1SaBNkTRmLxiZRjptlAvjsnp5u-Vl3og-sRB1p9kOmyT_V8pu3RFR18kDoQdsY7mSug_z7j9dXlq1SquUBS9aCXQPWKoYbQTxbu2PZLr-i-7KEMf0yg7qa-vl8cKkbnZI_41PGZkGUCSMYbOg7bEkNKTsZHxw6wZL3GoM-pwPOk2DPRVLYFRnnAnPWDNap-KUzS7-HriTQq5T5KF45kJMyMjg
-      connection:
-      - keep-alive
-      content-length:
-      - '38'
-      content-type:
-      - application/json
-      host:
-      - dev.core.researchwiseai.com
-      user-agent:
-      - python-httpx/0.28.1
-    method: POST
-    uri: https://dev.core.researchwiseai.com/pulse/v1/sentiment
-  response:
-    body:
-      string: '{"results":[{"sentiment":"positive","confidence":0.9892745614051819},{"sentiment":"negative","confidence":0.9963441491127014}],"requestId":"99496039-481f-4231-98a1-4cd8627cfe7d"}'
-    headers:
-      Apigw-Requestid:
-      - Kayn7jWSjoEEJfQ=
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '178'
-      Content-Type:
-      - application/json
-      Date:
-      - Sun, 11 May 2025 19:44:50 GMT
-    status:
-      code: 200
-      message: OK
+    - request:
+          body: '{"inputs":["happy","sad"],"fast":true}'
+          headers:
+              accept:
+                  - '*/*'
+              accept-encoding:
+                  - gzip, deflate
+              authorization:
+                  - Bearer
+                    eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImwxRThteER3TnJoQ2l4TzZfYUhQRCJ9.eyJpc3MiOiJodHRwczovL3dpc2UtZGV2LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhaUl1ODFDVWRrVlRlRDBhUzRHUHpUWDhuMlE1RURIU0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZXYuY29yZS5yZXNlYXJjaHdpc2VhaS5jb20vcHVsc2UvdjEiLCJpYXQiOjE3NDY5OTI2ODcsImV4cCI6MTc0NzA3OTA4NywiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiYWlJdTgxQ1Vka1ZUZUQwYVM0R1B6VFg4bjJRNUVESFMifQ.HLF5jNr2wUBpAvCRYcpmOdlJvAOqQ--IQCySBljCYPX8nYZjykmgFThDqYAsuV_BzPi-LLVi8AN9XnNGfrJo_lDEkWfPgmQxVVyO-BYMu5bsurAOAU_Xk8JkhBjEn1SaBNkTRmLxiZRjptlAvjsnp5u-Vl3og-sRB1p9kOmyT_V8pu3RFR18kDoQdsY7mSug_z7j9dXlq1SquUBS9aCXQPWKoYbQTxbu2PZLr-i-7KEMf0yg7qa-vl8cKkbnZI_41PGZkGUCSMYbOg7bEkNKTsZHxw6wZL3GoM-pwPOk2DPRVLYFRnnAnPWDNap-KUzS7-HriTQq5T5KF45kJMyMjg
+              connection:
+                  - keep-alive
+              content-length:
+                  - '38'
+              content-type:
+                  - application/json
+              host:
+                  - dev.core.researchwiseai.com
+              user-agent:
+                  - python-httpx/0.28.1
+          method: POST
+          uri: https://dev.core.researchwiseai.com/pulse/v1/sentiment
+      response:
+          body:
+              string: '{"results":[{"sentiment":"positive","confidence":0.9892745614051819},{"sentiment":"negative","confidence":0.9963441491127014}],"requestId":"99496039-481f-4231-98a1-4cd8627cfe7d"}'
+          headers:
+              Apigw-Requestid:
+                  - Kayn7jWSjoEEJfQ=
+              Connection:
+                  - keep-alive
+              Content-Length:
+                  - '178'
+              Content-Type:
+                  - application/json
+              Date:
+                  - Sun, 11 May 2025 19:44:50 GMT
+          status:
+              code: 200
+              message: OK
 version: 1
