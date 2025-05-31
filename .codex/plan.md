@@ -65,7 +65,6 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
-  - [ ] Sketch TypeScript project layout (`src/`, `test/`)
 
  ### In Progress
 
@@ -77,6 +76,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Add tsconfig.json with strict settings
   - [x] Install vitest and add basic config
   - [x] Review Python client structure under `python/`
+  - [x] Sketch TypeScript project layout (`src/`, `test/`)
 
  ### Deferred
 

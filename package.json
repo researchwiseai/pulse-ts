@@ -1,6 +1,6 @@
 {
   "name": "@rwai/pulse",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "scripts": {
     "test": "vitest",
