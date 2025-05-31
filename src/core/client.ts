@@ -1,7 +1,7 @@
 import { fetchWithRetry, FetchOptions } from '../http';
 import { AuthorizationCodePKCEAuth, ClientCredentialsAuth } from '../auth';
 import { PulseAPIError } from '../errors';
-import type { EmbeddingResponse, SimilarityResponse, ThemesResponse, SentimentResponse } from '../models';
+import type { EmbeddingResponse, SimilarityResponse, ThemesResponse, SentimentResponse, ExtractionsResponse } from '../models';
 import { Job } from './job';
 
 /** Core client for interacting with Pulse API endpoints. */
@@ -163,5 +163,47 @@ export class CoreClient {
       return job;
     }
     return json as SentimentResponse;
+  }
+
+  /**
+   * Extract specified elements from an array of input texts.
+   *
+   * @param inputs Array of text inputs to extract from.
+   * @param elements Array of element names to extract.
+   * @param fast If true, request a fast synchronous response; otherwise may enqueue a job.
+   * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting the result.
+   */
+  async extract_elements(
+    inputs: string[],
+    elements: string[],
+    fast = false,
+    awaitJobResult = true
+  ): Promise<ExtractionsResponse | Job<ExtractionsResponse>> {
+    const path = `${this.baseUrl}/extract/elements`;
+    const payload: Record<string, any> = { inputs, elements };
+    if (fast) {
+      payload.fast = true;
+    }
+    const init: FetchOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    };
+    const req0 = new Request(path, init);
+    const { value: authedReq } = await this.auth.authFlow(req0).next();
+    const response = await fetchWithRetry(authedReq, init);
+    const json = await response.json();
+    if (!response.ok) {
+      throw new PulseAPIError(response, json);
+    }
+    if (response.status === 202) {
+      const { jobId } = json as { jobId: string };
+      const job = new Job<ExtractionsResponse>(jobId, this.baseUrl, this.auth);
+      if (awaitJobResult) {
+        return await job.result();
+      }
+      return job;
+    }
+    return json as ExtractionsResponse;
   }
 }
