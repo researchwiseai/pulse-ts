@@ -28,3 +28,27 @@ export interface SimilarityResponse {
   /** Number of items compared (size of set). */
   n: number;
 }
+
+/**
+ * Single theme item returned by the generate_themes endpoint.
+ */
+export interface Theme {
+  /** Abbreviated label for the theme. */
+  shortLabel: string;
+  /** Full human-readable label for the theme. */
+  label: string;
+  /** Description of the theme. */
+  description: string;
+  /** Representative input texts exemplifying the theme. */
+  representatives: string[];
+}
+
+/**
+ * Response for the theme generation endpoint.
+ */
+export interface ThemesResponse {
+  /** Unique request identifier or job request id. */
+  requestId: string;
+  /** List of generated themes. */
+  themes: Theme[];
+}
