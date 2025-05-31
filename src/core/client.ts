@@ -1,5 +1,5 @@
-import { fetchWithRetry, FetchOptions } from '../http'
-import { AuthorizationCodePKCEAuth, ClientCredentialsAuth } from '../auth'
+import { fetchWithRetry, type FetchOptions } from '../http'
+import type { Auth } from '../auth'
 import { PulseAPIError } from '../errors'
 import type {
     EmbeddingResponse,
@@ -13,12 +13,12 @@ import { Job } from './job'
 /** Core client for interacting with Pulse API endpoints. */
 export interface CoreClientOptions {
     baseUrl: string
-    auth: AuthorizationCodePKCEAuth | ClientCredentialsAuth
+    auth: Auth
 }
 
 export class CoreClient {
     private baseUrl: string
-    private auth: AuthorizationCodePKCEAuth | ClientCredentialsAuth
+    private auth: Auth
 
     constructor(options: CoreClientOptions) {
         this.baseUrl = options.baseUrl.replace(/\/+$/g, '')

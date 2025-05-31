@@ -11,7 +11,10 @@
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "vitest": "latest"
+        "vitest": "latest",
+        "@pollyjs/core": "latest",
+        "@pollyjs/adapter-node-http": "latest",
+        "@pollyjs/persister-fs": "latest"
     },
     "peerDependencies": {
         "typescript": "^5"
