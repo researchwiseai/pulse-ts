@@ -1,0 +1,3 @@
+# Ignore patterns for Prettier
+# Do not format TypeScript declaration files
+**/*.d.ts

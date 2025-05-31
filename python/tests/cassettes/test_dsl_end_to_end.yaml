@@ -1,133 +1,135 @@
 interactions:
-- request:
-    body: grant_type=client_credentials&client_id=aiIu81CUdkVTeD0aS4GPzTX8n2Q5EDHS&client_secret=FAebFSuWVnHUtV21WKseoKrGrqAaGic8TtoHgEWTHYqOG9aRrEqnnfUL2Z4IbCjD&audience=https%3A%2F%2Fdev.core.researchwiseai.com%2Fpulse%2Fv1
-    headers:
-      accept:
-      - '*/*'
-      accept-encoding:
-      - gzip, deflate
-      connection:
-      - keep-alive
-      content-length:
-      - '215'
-      content-type:
-      - application/x-www-form-urlencoded
-      host:
-      - wise-dev.eu.auth0.com
-      user-agent:
-      - python-httpx/0.28.1
-    method: POST
-    uri: https://wise-dev.eu.auth0.com/oauth/token
-  response:
-    body:
-      string: !!binary |
-        H4sIAAAAAAAAAwAAAP//LJNJj5tAFIT/C+dxxOZtbpi1McvQ0GwXCxrGNDSGAWyWKP89cpRjSfWq
-        Pj2pfjMZxuU43qauKR/MJ1OuZpXrmLjE9NEGOIeAETzgHsvgAJo+DmUwgnbq07du5wUG1VSqUAge
-        ZufxVAy29DtBlQdl8/yrXM0eC/Y7rCsMOOOte1lC0WMeTake8lYbclarcYV+n63WeeX+iViyuRUR
-        eN9UGaKcq2hKGMEhpJBC5VKhDRrI6FGkVE+bqhxEECD2Uuc6pfkDboDMJInDBtQdyQzIYsM+WOu5
-        SePkmfDnNfX3axo7NInNOjPeLGGV+fs659kXNsIR8+hV1Oqbo09ij7i1KjhKsncDwLuBOoI2FN/P
-        sAPMOpskuIG0t/2ZpALcvzsTfunTaM9akbOmEXwz9Um0/Ofq53+eiJpFcF88LmwyLkUp8uYktFnI
-        XQ6hdhfz2oQOClVfs8m390tJ4tZWX/HBex2AGJ5ok016eDx63nCFX1RegHFSnuuiHY+4guUEPXSS
-        hF0BNdsRawTV9qG7iAvoQiTdO/002HCGsXr6x9GoTE85X9ylsp5bEM99rTf6prOl2erqEF0hbLI2
-        QndTu+I1+vma/IOx64zs65JzLaV65945ua3H3NF12q3JHFNl6OzQLu7X2dBbulB2RzZ7ve5V6/vn
-        eMGegQ1dAH2O12oQdse4VbtrLrhdWrG1LWOePGmhsNq3mxjKpLK1RaBwlzG4RwX3lHbO48athucj
-        KTFHObVRIuX5bgOPQ+/uvtxXr8g3XzyhHdQWqVH743oubfuikB8n4etcFLPzEDZCIDEfTLn0ZCjH
-        G3kwn6eDyLIfzL8d3Ka1L5lP5lJmQzkwf/4CAAD//wMADy6sNCYDAAA=
-    headers:
-      CF-Cache-Status:
-      - DYNAMIC
-      CF-Ray:
-      - 93e42c5edc5a5265-LHR
-      Cache-Control:
-      - no-store
-      Connection:
-      - keep-alive
-      Content-Encoding:
-      - gzip
-      Content-Type:
-      - application/json
-      Date:
-      - Sun, 11 May 2025 19:44:51 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - cloudflare
-      Set-Cookie:
-      - did=s%3Av0%3A2af1a01e-1148-4116-aaab-9fef90f7d7c7.A9aftmGH6o5KGozWXD%2FMKnCVv4utYYW7BRyt27HbmeU;
-        Path=/; Expires=Tue, 12 May 2026 01:44:51 GMT; HttpOnly; Secure; SameSite=None
-      - did_compat=s%3Av0%3A2af1a01e-1148-4116-aaab-9fef90f7d7c7.A9aftmGH6o5KGozWXD%2FMKnCVv4utYYW7BRyt27HbmeU;
-        Path=/; Expires=Tue, 12 May 2026 01:44:51 GMT; HttpOnly; Secure
-      - __cf_bm=TfP5nvWPOLWKzxhhfoxaSQEm7OjazlF59m6g6ZRcB0M-1746992691-1.0.1.1-KmbSsPalGffNqitG4UAp.mfUxYuGhnBbSUbvYYGSIz_4Z0a9qIW3erTS7ecVV1zX;
-        path=/; expires=Sun, 11-May-25 20:14:51 GMT; domain=.eu.auth0.com; HttpOnly;
-        Secure; SameSite=None
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      Transfer-Encoding:
-      - chunked
-      Vary:
-      - Accept-Encoding, Origin
-      X-Auth0-L:
-      - '0.030'
-      X-Auth0-RequestId:
-      - 03061a5c5b44a01e2c6d
-      X-Content-Type-Options:
-      - nosniff
-      X-RateLimit-Limit:
-      - '300'
-      X-RateLimit-Remaining:
-      - '293'
-      X-RateLimit-Reset:
-      - '1746992730'
-      alt-svc:
-      - h3=":443"; ma=86400
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"set_a":["everything was very tasty","it was a little too noisy"],"set_b":["Food
-      Quality","Service","Environment"],"fast":true,"flatten":false}'
-    headers:
-      accept:
-      - '*/*'
-      accept-encoding:
-      - gzip, deflate
-      authorization:
-      - Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImwxRThteER3TnJoQ2l4TzZfYUhQRCJ9.eyJpc3MiOiJodHRwczovL3dpc2UtZGV2LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhaUl1ODFDVWRrVlRlRDBhUzRHUHpUWDhuMlE1RURIU0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZXYuY29yZS5yZXNlYXJjaHdpc2VhaS5jb20vcHVsc2UvdjEiLCJpYXQiOjE3NDY5OTI2OTEsImV4cCI6MTc0NzA3OTA5MSwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiYWlJdTgxQ1Vka1ZUZUQwYVM0R1B6VFg4bjJRNUVESFMifQ.DYXmMEvX6Qv6I4V8lkatGV77QQrKRPlCxIH8DuyxF77chRetRQU8A3-dRFMN4jUREmnGOU1TlxiAGQ8qkcHNrshuS7sHhJQD9BOxhLuzTXwpjGkGzG0eJmGErWKRRkamWUgJFKcyWqPtS6H-oHaPBb1mllGoOg1CmjsbNGGloyYwXlDroMVMdgKwHGmlxl0-izMyK5ELfq7BcQHcHG3Ipbcyhr3-7XmEoKb3OoZh0jMCc2iuldD0FfOYHDtE0jLiR3gCcIgWd1uA-Nn_1yHQSUAYJsCZMUYAbb-zIn6pO-POvpDC_S48U-RFxAkEp7y9eMMBDiqNY2jb44a9rVk3TA
-      connection:
-      - keep-alive
-      content-length:
-      - '144'
-      content-type:
-      - application/json
-      host:
-      - dev.core.researchwiseai.com
-      user-agent:
-      - python-httpx/0.28.1
-    method: POST
-    uri: https://dev.core.researchwiseai.com/pulse/v1/similarity
-  response:
-    body:
-      string: !!binary |
-        H4sIAAAAAAAAA6XOTWrDMBCG4bvMWjbzpxmNbpAzGC+UWIFA41DbhULp3YsXPUG2Lx8fzw/st762
-        7fGCCrftte+Q4PlaOlR4tmN7fEOCFSonuH+04+hrX6BOOEphzMKR0TGYI+FIBR1LsGVlK6F6NlMT
-        JxKybOIoCUfMJCWc0YSyiKidQyxIqk4W4azOZ3NmcwkMJgvhOf2b6vQGYU7TO4g5wdY/v/p+XBao
-        cF52yzJQ0zYoMQ1N6T40tiuKWbvmBX7/AOQEPghoAQAA
-    headers:
-      Apigw-Requestid:
-      - KayoDhLBDoEEJGg=
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '204'
-      Content-Type:
-      - application/json
-      Date:
-      - Sun, 11 May 2025 19:44:51 GMT
-      content-encoding:
-      - gzip
-      vary:
-      - Accept-Encoding
-    status:
-      code: 200
-      message: OK
+    - request:
+          body: grant_type=client_credentials&client_id=aiIu81CUdkVTeD0aS4GPzTX8n2Q5EDHS&client_secret=FAebFSuWVnHUtV21WKseoKrGrqAaGic8TtoHgEWTHYqOG9aRrEqnnfUL2Z4IbCjD&audience=https%3A%2F%2Fdev.core.researchwiseai.com%2Fpulse%2Fv1
+          headers:
+              accept:
+                  - '*/*'
+              accept-encoding:
+                  - gzip, deflate
+              connection:
+                  - keep-alive
+              content-length:
+                  - '215'
+              content-type:
+                  - application/x-www-form-urlencoded
+              host:
+                  - wise-dev.eu.auth0.com
+              user-agent:
+                  - python-httpx/0.28.1
+          method: POST
+          uri: https://wise-dev.eu.auth0.com/oauth/token
+      response:
+          body:
+              string: !!binary |
+                  H4sIAAAAAAAAAwAAAP//LJNJj5tAFIT/C+dxxOZtbpi1McvQ0GwXCxrGNDSGAWyWKP89cpRjSfWq
+                  Pj2pfjMZxuU43qauKR/MJ1OuZpXrmLjE9NEGOIeAETzgHsvgAJo+DmUwgnbq07du5wUG1VSqUAge
+                  ZufxVAy29DtBlQdl8/yrXM0eC/Y7rCsMOOOte1lC0WMeTake8lYbclarcYV+n63WeeX+iViyuRUR
+                  eN9UGaKcq2hKGMEhpJBC5VKhDRrI6FGkVE+bqhxEECD2Uuc6pfkDboDMJInDBtQdyQzIYsM+WOu5
+                  SePkmfDnNfX3axo7NInNOjPeLGGV+fs659kXNsIR8+hV1Oqbo09ij7i1KjhKsncDwLuBOoI2FN/P
+                  sAPMOpskuIG0t/2ZpALcvzsTfunTaM9akbOmEXwz9Um0/Ofq53+eiJpFcF88LmwyLkUp8uYktFnI
+                  XQ6hdhfz2oQOClVfs8m390tJ4tZWX/HBex2AGJ5ok016eDx63nCFX1RegHFSnuuiHY+4guUEPXSS
+                  hF0BNdsRawTV9qG7iAvoQiTdO/002HCGsXr6x9GoTE85X9ylsp5bEM99rTf6prOl2erqEF0hbLI2
+                  QndTu+I1+vma/IOx64zs65JzLaV65945ua3H3NF12q3JHFNl6OzQLu7X2dBbulB2RzZ7ve5V6/vn
+                  eMGegQ1dAH2O12oQdse4VbtrLrhdWrG1LWOePGmhsNq3mxjKpLK1RaBwlzG4RwX3lHbO48athucj
+                  KTFHObVRIuX5bgOPQ+/uvtxXr8g3XzyhHdQWqVH743oubfuikB8n4etcFLPzEDZCIDEfTLn0ZCjH
+                  G3kwn6eDyLIfzL8d3Ka1L5lP5lJmQzkwf/4CAAD//wMADy6sNCYDAAA=
+          headers:
+              CF-Cache-Status:
+                  - DYNAMIC
+              CF-Ray:
+                  - 93e42c5edc5a5265-LHR
+              Cache-Control:
+                  - no-store
+              Connection:
+                  - keep-alive
+              Content-Encoding:
+                  - gzip
+              Content-Type:
+                  - application/json
+              Date:
+                  - Sun, 11 May 2025 19:44:51 GMT
+              Pragma:
+                  - no-cache
+              Server:
+                  - cloudflare
+              Set-Cookie:
+                  - did=s%3Av0%3A2af1a01e-1148-4116-aaab-9fef90f7d7c7.A9aftmGH6o5KGozWXD%2FMKnCVv4utYYW7BRyt27HbmeU;
+                    Path=/; Expires=Tue, 12 May 2026 01:44:51 GMT; HttpOnly; Secure; SameSite=None
+                  - did_compat=s%3Av0%3A2af1a01e-1148-4116-aaab-9fef90f7d7c7.A9aftmGH6o5KGozWXD%2FMKnCVv4utYYW7BRyt27HbmeU;
+                    Path=/; Expires=Tue, 12 May 2026 01:44:51 GMT; HttpOnly; Secure
+                  - __cf_bm=TfP5nvWPOLWKzxhhfoxaSQEm7OjazlF59m6g6ZRcB0M-1746992691-1.0.1.1-KmbSsPalGffNqitG4UAp.mfUxYuGhnBbSUbvYYGSIz_4Z0a9qIW3erTS7ecVV1zX;
+                    path=/; expires=Sun, 11-May-25 20:14:51 GMT; domain=.eu.auth0.com; HttpOnly;
+                    Secure; SameSite=None
+              Strict-Transport-Security:
+                  - max-age=31536000; includeSubDomains
+              Transfer-Encoding:
+                  - chunked
+              Vary:
+                  - Accept-Encoding, Origin
+              X-Auth0-L:
+                  - '0.030'
+              X-Auth0-RequestId:
+                  - 03061a5c5b44a01e2c6d
+              X-Content-Type-Options:
+                  - nosniff
+              X-RateLimit-Limit:
+                  - '300'
+              X-RateLimit-Remaining:
+                  - '293'
+              X-RateLimit-Reset:
+                  - '1746992730'
+              alt-svc:
+                  - h3=":443"; ma=86400
+          status:
+              code: 200
+              message: OK
+    - request:
+          body:
+              '{"set_a":["everything was very tasty","it was a little too noisy"],"set_b":["Food
+              Quality","Service","Environment"],"fast":true,"flatten":false}'
+          headers:
+              accept:
+                  - '*/*'
+              accept-encoding:
+                  - gzip, deflate
+              authorization:
+                  - Bearer
+                    eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImwxRThteER3TnJoQ2l4TzZfYUhQRCJ9.eyJpc3MiOiJodHRwczovL3dpc2UtZGV2LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhaUl1ODFDVWRrVlRlRDBhUzRHUHpUWDhuMlE1RURIU0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZXYuY29yZS5yZXNlYXJjaHdpc2VhaS5jb20vcHVsc2UvdjEiLCJpYXQiOjE3NDY5OTI2OTEsImV4cCI6MTc0NzA3OTA5MSwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiYWlJdTgxQ1Vka1ZUZUQwYVM0R1B6VFg4bjJRNUVESFMifQ.DYXmMEvX6Qv6I4V8lkatGV77QQrKRPlCxIH8DuyxF77chRetRQU8A3-dRFMN4jUREmnGOU1TlxiAGQ8qkcHNrshuS7sHhJQD9BOxhLuzTXwpjGkGzG0eJmGErWKRRkamWUgJFKcyWqPtS6H-oHaPBb1mllGoOg1CmjsbNGGloyYwXlDroMVMdgKwHGmlxl0-izMyK5ELfq7BcQHcHG3Ipbcyhr3-7XmEoKb3OoZh0jMCc2iuldD0FfOYHDtE0jLiR3gCcIgWd1uA-Nn_1yHQSUAYJsCZMUYAbb-zIn6pO-POvpDC_S48U-RFxAkEp7y9eMMBDiqNY2jb44a9rVk3TA
+              connection:
+                  - keep-alive
+              content-length:
+                  - '144'
+              content-type:
+                  - application/json
+              host:
+                  - dev.core.researchwiseai.com
+              user-agent:
+                  - python-httpx/0.28.1
+          method: POST
+          uri: https://dev.core.researchwiseai.com/pulse/v1/similarity
+      response:
+          body:
+              string: !!binary |
+                  H4sIAAAAAAAAA6XOTWrDMBCG4bvMWjbzpxmNbpAzGC+UWIFA41DbhULp3YsXPUG2Lx8fzw/st762
+                  7fGCCrftte+Q4PlaOlR4tmN7fEOCFSonuH+04+hrX6BOOEphzMKR0TGYI+FIBR1LsGVlK6F6NlMT
+                  JxKybOIoCUfMJCWc0YSyiKidQyxIqk4W4azOZ3NmcwkMJgvhOf2b6vQGYU7TO4g5wdY/v/p+XBao
+                  cF52yzJQ0zYoMQ1N6T40tiuKWbvmBX7/AOQEPghoAQAA
+          headers:
+              Apigw-Requestid:
+                  - KayoDhLBDoEEJGg=
+              Connection:
+                  - keep-alive
+              Content-Length:
+                  - '204'
+              Content-Type:
+                  - application/json
+              Date:
+                  - Sun, 11 May 2025 19:44:51 GMT
+              content-encoding:
+                  - gzip
+              vary:
+                  - Accept-Encoding
+          status:
+              code: 200
+              message: OK
 version: 1
