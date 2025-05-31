@@ -7,8 +7,7 @@
         "test": "vitest",
         "test:watch": "vitest --watch",
         "fmt": "qlty fmt",
-        "lint": "qlty check",
-        "prepare": "qlty install"
+        "lint": "qlty check"
     },
     "devDependencies": {
         "@types/bun": "latest",
