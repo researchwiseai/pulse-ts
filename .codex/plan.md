@@ -65,9 +65,8 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
- - [ ] Install vitest and add basic config  
- - [ ] Review Python client structure under `python/`  
- - [ ] Sketch TypeScript project layout (`src/`, `test/`)
+  - [ ] Review Python client structure under `python/`  
+  - [ ] Sketch TypeScript project layout (`src/`, `test/`)
 
  ### In Progress
 
@@ -75,8 +74,9 @@ This is a living scratch pad. Update as work progresses.
 
 ### Done
 
- - [x] Initialize bun project (`bun init`)
- - [x] Add tsconfig.json with strict settings
+  - [x] Initialize bun project (`bun init`)
+  - [x] Add tsconfig.json with strict settings
+  - [x] Install vitest and add basic config
 
  ### Deferred
 
