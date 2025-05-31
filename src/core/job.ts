@@ -1,6 +1,6 @@
-import { fetchWithRetry, FetchOptions } from '../http'
+import { fetchWithRetry, type FetchOptions } from '../http'
 import { PulseAPIError } from '../errors'
-import type { AuthorizationCodePKCEAuth, ClientCredentialsAuth } from '../auth'
+import type { Auth} from '../auth'
 
 /**
  * Represents a background job returned by the Pulse API.
@@ -15,7 +15,7 @@ export class Job<T> {
         /** Base URL of the Pulse API (no trailing slash). */
         private readonly baseUrl: string,
         /** Authenticator to sign requests. */
-        private readonly auth: AuthorizationCodePKCEAuth | ClientCredentialsAuth,
+        private readonly auth: Auth,
         /** Poll interval in milliseconds (default: 1000ms). */
         pollIntervalMs = 1000,
     ) {
