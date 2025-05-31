@@ -71,7 +71,6 @@ This is a living scratch pad. Update as work progresses.
 ### Backlog
 
   <!-- API Endpoints Implementation -->  
-  - [ ] Port compare_similarity endpoint  
   - [ ] Port generate_themes endpoint  
   - [ ] Port analyze_sentiment endpoint  
   - [ ] Port remaining API endpoints (pagination, DSL, etc.)  
@@ -93,6 +92,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Port error handling
   - [x] Port models & types (interfaces or classes)
   - [x] Port create_embeddings endpoint
+  - [x] Port compare_similarity endpoint
   - [x] Integrate Qlty CLI configuration and rules
   - [x] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)
   - [x] Create GitHub Actions workflow for tests, Qlty checks, and build on main

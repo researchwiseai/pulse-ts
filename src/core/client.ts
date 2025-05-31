@@ -1,7 +1,8 @@
 import { fetchWithRetry, FetchOptions } from '../http';
 import { AuthorizationCodePKCEAuth, ClientCredentialsAuth } from '../auth';
 import { PulseAPIError } from '../errors';
-import type { EmbeddingResponse } from '../models';
+import type { EmbeddingResponse, SimilarityResponse } from '../models';
+import { Job } from './job';
 
 /** Core client for interacting with Pulse API endpoints. */
 export interface CoreClientOptions {
@@ -34,5 +35,49 @@ export class CoreClient {
       throw new PulseAPIError(response, json);
     }
     return json as EmbeddingResponse;
+  }
+
+  /**
+   * Compute similarity scores between texts.
+   *
+   * @param set Array of text items to compare.
+   * @param fast If true, return instant response; otherwise may enqueue a job.
+   * @param flatten If true, flatten the similarity matrix into a 1D array.
+   * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting result.
+   */
+  async compare_similarity(
+    set: string[],
+    fast = false,
+    flatten = false,
+    awaitJobResult = true
+  ): Promise<SimilarityResponse | Job<SimilarityResponse>> {
+    const path = `${this.baseUrl}/similarity`;
+    const payload: Record<string, any> = { set, flatten };
+    if (fast) {
+      payload.fast = true;
+    }
+    const init: FetchOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    };
+    const req0 = new Request(path, init);
+    const { value: authedReq } = await this.auth.authFlow(req0).next();
+    const response = await fetchWithRetry(authedReq, init);
+    const json = await response.json();
+    if (!response.ok) {
+      throw new PulseAPIError(response, json);
+    }
+    if (response.status === 202) {
+      // Job accepted for background processing
+      const { jobId } = json as { jobId: string };
+      const job = new Job<SimilarityResponse>(jobId, this.baseUrl, this.auth);
+      if (awaitJobResult) {
+        return await job.result();
+      }
+      return job;
+    }
+    // synchronous result
+    return json as SimilarityResponse;
   }
 }
