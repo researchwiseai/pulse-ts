@@ -74,7 +74,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Port generate_themes endpoint  
   - [x] Port analyze_sentiment endpoint  
   - [ ] Port extract_elements endpoint  
-  - [ ] Port pagination / batching utilities  
+  - [x] Port pagination / batching utilities  
   - [ ] Port DSL / Workflow builder & Analysis layer  
   <!-- Quality & CI Tasks -->
 
@@ -97,6 +97,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Port compare_similarity endpoint
   - [x] Port generate_themes endpoint
   - [x] Port analyze_sentiment endpoint
+  - [x] Port pagination / batching utilities
   - [x] Integrate Qlty CLI configuration and rules
   - [x] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)
   - [x] Create GitHub Actions workflow for tests, Qlty checks, and build on main
