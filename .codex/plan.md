@@ -75,10 +75,7 @@ This is a living scratch pad. Update as work progresses.
   - [ ] Port generate_themes endpoint  
   - [ ] Port analyze_sentiment endpoint  
   - [ ] Port remaining API endpoints (pagination, DSL, etc.)  
-  <!-- Quality & CI Tasks -->  
-  - [ ] Integrate Qlty CLI configuration and rules  
-  - [ ] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)  
-  - [ ] Create GitHub Actions workflow for tests, Qlty checks, and build on main
+  <!-- Quality & CI Tasks -->
 
 ### In Progress
 
@@ -96,6 +93,9 @@ This is a living scratch pad. Update as work progresses.
   - [x] Port error handling
   - [x] Port models & types (interfaces or classes)
   - [x] Port create_embeddings endpoint
+  - [x] Integrate Qlty CLI configuration and rules
+  - [x] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)
+  - [x] Create GitHub Actions workflow for tests, Qlty checks, and build on main
 
  ### Deferred
 
