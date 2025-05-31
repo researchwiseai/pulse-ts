@@ -15,14 +15,35 @@ export interface ClientCredentialsOptions {
     audience?: string
 }
 
-export class ClientCredentialsAuth {
-    private tokenUrl: string
-    private clientId: string
-    private clientSecret: string
-    private audience?: string
+export interface Auth {
+    authFlow(req: Request): AsyncGenerator<Request>
+    _refreshToken(): Promise<void>
 
-    _accessToken?: string
-    _expiresAt?: number
+    accessToken: string | undefined
+    refreshToken: string | undefined
+    expiresAt: number | undefined
+}
+
+export class ClientCredentialsAuth implements Auth {
+    private readonly tokenUrl: string
+    private readonly clientId: string
+    private readonly clientSecret: string
+    private readonly audience?: string
+
+    private _accessToken?: string
+    private _expiresAt?: number
+
+    get accessToken(): string | undefined {
+        return this._accessToken
+    }
+
+    get refreshToken(): string | undefined {
+        return undefined // Client Credentials flow does not use refresh tokens
+    }
+
+    get expiresAt(): number | undefined {
+        return this._expiresAt
+    }
 
     constructor(options: ClientCredentialsOptions) {
         this.tokenUrl = options.tokenUrl
@@ -31,7 +52,7 @@ export class ClientCredentialsAuth {
         this.audience = options.audience
     }
 
-    private async _refreshToken(): Promise<void> {
+    async _refreshToken(): Promise<void> {
         const nowSec = Date.now() / 1000
         const data: Record<string, string> = {
             grant_type: 'client_credentials',
@@ -69,41 +90,53 @@ export class ClientCredentialsAuth {
 }
 
 export class AuthorizationCodePKCEAuth {
-    private tokenUrl: string
-    private clientId: string
-    private code: string
-    private redirectUri: string
-    private codeVerifier: string
-    private scope?: string
-    private audience?: string
+    private readonly _tokenUrl: string
+    private readonly _clientId: string
+    private readonly _code: string
+    private readonly _redirectUri: string
+    private readonly _codeVerifier: string
+    private readonly _scope?: string
+    private readonly _audience?: string
 
-    _accessToken?: string
-    _refreshTokenValue?: string
-    _expiresAt?: number
+    private _accessToken?: string
+    private _refreshTokenValue?: string
+    private _expiresAt?: number
+
+    get accessToken(): string | undefined {
+        return this._accessToken
+    }
+
+    get refreshToken(): string | undefined {
+        return this._refreshTokenValue
+    }
+    
+    get expiresAt(): number | undefined {
+        return this._expiresAt
+    }
 
     constructor(options: AuthorizationCodePKCEOptions) {
-        this.tokenUrl = options.tokenUrl
-        this.clientId = options.clientId
-        this.code = options.code
-        this.redirectUri = options.redirectUri
-        this.codeVerifier = options.codeVerifier
-        this.scope = options.scope
-        this.audience = options.audience
+        this._tokenUrl = options.tokenUrl
+        this._clientId = options.clientId
+        this._code = options.code
+        this._redirectUri = options.redirectUri
+        this._codeVerifier = options.codeVerifier
+        this._scope = options.scope
+        this._audience = options.audience
     }
 
     async _refreshToken(): Promise<void> {
         const nowSec = Date.now() / 1000
         const data: Record<string, string> = {
             grant_type: 'authorization_code',
-            client_id: this.clientId,
-            code: this.code,
-            redirect_uri: this.redirectUri,
-            code_verifier: this.codeVerifier,
+            client_id: this._clientId,
+            code: this._code,
+            redirect_uri: this._redirectUri,
+            code_verifier: this._codeVerifier,
         }
-        if (this.scope) data.scope = this.scope
-        if (this.audience) data.audience = this.audience
+        if (this._scope) data.scope = this._scope
+        if (this._audience) data.audience = this._audience
 
-        const response = await fetch(this.tokenUrl, {
+        const response = await fetch(this._tokenUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(data),
@@ -119,7 +152,7 @@ export class AuthorizationCodePKCEAuth {
 
     async *authFlow(req: Request): AsyncGenerator<Request> {
         const url = new URL(req.url)
-        if (this.audience && url.host !== new URL(this.audience).host) {
+        if (this._audience && url.host !== new URL(this._audience).host) {
             yield req
             return
         }
