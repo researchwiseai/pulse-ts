@@ -72,3 +72,18 @@ export interface SentimentResponse {
   /** Array of sentiment results corresponding to each input. */
   results: SentimentResult[];
 }
+
+/**
+ * Generic extraction result for an element from input texts.
+ */
+export type ExtractionResult = Record<string, any>;
+
+/**
+ * Response for the element extraction endpoint.
+ */
+export interface ExtractionsResponse {
+  /** Unique request identifier or job request id. */
+  requestId: string;
+  /** List of extraction results for each input. */
+  extractions: ExtractionResult[];
+}
