@@ -66,7 +66,6 @@ This is a living scratch pad. Update as work progresses.
 ### Backlog
 
   <!-- API Endpoints Implementation -->  
-  - [ ] Port create_embeddings endpoint  
   - [ ] Port compare_similarity endpoint  
   - [ ] Port generate_themes endpoint  
   - [ ] Port analyze_sentiment endpoint  
@@ -87,6 +86,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Port HTTP request layer (fetch wrapper, retries, timeouts)
   - [x] Port error handling
   - [x] Port models & types (interfaces or classes)
+  - [x] Port create_embeddings endpoint
 
  ### Deferred
 
