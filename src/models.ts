@@ -52,3 +52,23 @@ export interface ThemesResponse {
   /** List of generated themes. */
   themes: Theme[];
 }
+
+/**
+ * Single sentiment result from the analyze_sentiment endpoint.
+ */
+export interface SentimentResult {
+  /** Predicted sentiment label. */
+  sentiment: 'positive' | 'negative' | 'neutral' | 'mixed';
+  /** Confidence score for the sentiment prediction (0 to 1). */
+  confidence: number;
+}
+
+/**
+ * Response for the sentiment analysis endpoint.
+ */
+export interface SentimentResponse {
+  /** Unique request identifier or job request id. */
+  requestId: string;
+  /** Array of sentiment results corresponding to each input. */
+  results: SentimentResult[];
+}
