@@ -65,7 +65,6 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
-  - [ ] Port HTTP request layer (fetch wrapper, retries, timeouts)
   - [ ] Port models & types (interfaces or classes)
   - [ ] Port error handling
  ### In Progress
@@ -80,6 +79,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Review Python client structure under `python/`
   - [x] Sketch TypeScript project layout (`src/`, `test/`)
   - [x] Port authentication (login/token management)
+  - [x] Port HTTP request layer (fetch wrapper, retries, timeouts)
 
  ### Deferred
 
