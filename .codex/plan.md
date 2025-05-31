@@ -48,7 +48,7 @@ This is a living scratch pad. Update as work progresses.
     - Map parameters, request/response shapes, pagination, etc.
 
  4. **Testing**  
-    - For each Python test in `python/test`, write an equivalent vitest test  
+    - For each Python test in `python/tests`, write an equivalent vitest test  
     - Validate edge cases, error handling, pagination, etc.
 
  5. **Documentation**  
@@ -65,7 +65,6 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
-  - [ ] Review Python client structure under `python/`  
   - [ ] Sketch TypeScript project layout (`src/`, `test/`)
 
  ### In Progress
@@ -77,6 +76,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Initialize bun project (`bun init`)
   - [x] Add tsconfig.json with strict settings
   - [x] Install vitest and add basic config
+  - [x] Review Python client structure under `python/`
 
  ### Deferred
 
@@ -86,7 +86,11 @@ This is a living scratch pad. Update as work progresses.
 
  ## Lessons Learned
 
- - _TBD_
+- **Python test suite structure**:
+-  - Tests live under `python/tests/`, organized by module (e.g., `test_analysis.py`, `test_results.py`, `test_core_client.py`).
+-  - VCR cassettes are stored in `python/tests/cassettes/` for replaying HTTP interactions.
+-  - Fixture files (e.g., `fixtures/disney-*.txt`) provide sample data for batch and DSL tests.
+-  - Tests cover authentication flows, DSL evaluation, analysis endpoints, batching, caching, and end-to-end scenarios.
 
  ---
 
@@ -98,5 +102,5 @@ This is a living scratch pad. Update as work progresses.
 
  ## Python Test Suite Reference
 
- Path: `python/test`
+Path: `python/tests`
  List of tests here can be updated as we port them.
