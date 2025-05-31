@@ -11,12 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: 'latest'
+
+      - name: Install Qlty.io
+        uses: qltysh/qlty-action/install@v1
 
       - name: Install dependencies
         run: bun install
@@ -38,3 +41,9 @@ jobs:
 
       - name: Generate coverage report
         run: bun run cov --report=lcov
+
+      - name: Upload coverage to Qlty.sh
+        uses: qltysh/qlty-action/coverage@v1
+        with:
+            token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+            files: coverage/lcov.info
