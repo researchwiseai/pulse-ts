@@ -1,22 +1,22 @@
 {
-  "name": "@rwai/pulse",
-  "version": "0.1.0",
-  "module": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "fmt": "qlty fmt",
-    "lint": "qlty lint",
-    "cov": "qlty cov",
-    "quality": "qlty ci",
-    "prepare": "qlty install"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "vitest": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+    "name": "@rwai/pulse",
+    "version": "0.1.0",
+    "module": "src/index.ts",
+    "type": "module",
+    "scripts": {
+        "test": "vitest",
+        "test:watch": "vitest --watch",
+        "fmt": "qlty fmt",
+        "lint": "qlty lint",
+        "cov": "qlty cov",
+        "quality": "qlty ci",
+        "prepare": "qlty install"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "vitest": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    }
 }
