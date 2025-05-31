@@ -73,7 +73,7 @@ This is a living scratch pad. Update as work progresses.
   <!-- API Endpoints Implementation -->  
   - [x] Port generate_themes endpoint  
   - [x] Port analyze_sentiment endpoint  
-  - [ ] Port extract_elements endpoint  
+  - [x] Port extract_elements endpoint  
   - [x] Port pagination / batching utilities  
   - [ ] Port DSL / Workflow builder & Analysis layer  
   <!-- Quality & CI Tasks -->
@@ -97,6 +97,7 @@ This is a living scratch pad. Update as work progresses.
   - [x] Port compare_similarity endpoint
   - [x] Port generate_themes endpoint
   - [x] Port analyze_sentiment endpoint
+  - [x] Port extract_elements endpoint
   - [x] Port pagination / batching utilities
   - [x] Integrate Qlty CLI configuration and rules
   - [x] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)
