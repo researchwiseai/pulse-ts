@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 'latest'
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install Qlty pre-commit hook
+        run: bun run prepare
+
+      - name: Run code quality checks
+        run: bun run quality
+
+      - name: Run lint
+        run: bun run lint
+
+      - name: Check formatting
+        run: bun run fmt -- --check
+
+      - name: Run tests
+        run: bun run test
+
+      - name: Generate coverage report
+        run: bun run cov --report=lcov
