@@ -14,8 +14,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "vitest": "latest",
-    "qlty": "latest"
+    "vitest": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
