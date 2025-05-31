@@ -4,20 +4,18 @@
 
 /** Maximum total items allowed in a single request. */
 export const MAX_ITEMS = 1000
-/** Chunk size threshold: half of MAX_ITEMS. */
-export const HALF_CHUNK = Math.floor(MAX_ITEMS / 2)
 
 /**
  * Split a single set of items into self-comparison chunks when too large.
  * Returns an array of subsets, each of size <= HALF_CHUNK if original length > MAX_ITEMS.
  */
 export function makeSelfChunks<T>(items: T[]): T[][] {
-    if (items.length <= MAX_ITEMS) {
+    if (items.length < MAX_ITEMS) {
         return [items]
     }
     const chunks: T[][] = []
-    for (let i = 0; i < items.length; i += HALF_CHUNK) {
-        chunks.push(items.slice(i, i + HALF_CHUNK))
+    for (let i = 0; i < items.length; i += MAX_ITEMS) {
+        chunks.push(items.slice(i, i + MAX_ITEMS))
     }
     return chunks
 }
@@ -37,11 +35,11 @@ export interface CrossBody<A, B> {
  */
 export function makeCrossBodies<A, B>(setA: A[], setB: B[], flatten: boolean): CrossBody<A, B>[] {
     const total = setA.length + setB.length
-    if (total <= MAX_ITEMS) {
+    if (total <= (MAX_ITEMS * 2)) {
         return [{ setA, setB, flatten }]
     }
-    const chunksA = setA.length > MAX_ITEMS - HALF_CHUNK ? makeSelfChunks(setA) : [setA]
-    const chunksB = setB.length > MAX_ITEMS - HALF_CHUNK ? makeSelfChunks(setB) : [setB]
+    const chunksA = setA.length > MAX_ITEMS ? makeSelfChunks(setA) : [setA]
+    const chunksB = setB.length > MAX_ITEMS ? makeSelfChunks(setB) : [setB]
     const bodies: CrossBody<A, B>[] = []
     for (const a of chunksA) {
         for (const b of chunksB) {
