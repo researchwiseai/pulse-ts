@@ -7,9 +7,7 @@
         "test": "vitest",
         "test:watch": "vitest --watch",
         "fmt": "qlty fmt",
-        "lint": "qlty lint",
-        "cov": "qlty cov",
-        "quality": "qlty ci",
+        "lint": "qlty check",
         "prepare": "qlty install"
     },
     "devDependencies": {
