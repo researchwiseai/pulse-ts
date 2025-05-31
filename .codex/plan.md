@@ -65,7 +65,14 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
- ### In Progress
+  <!-- API Endpoints Implementation -->  
+  - [ ] Port create_embeddings endpoint  
+  - [ ] Port compare_similarity endpoint  
+  - [ ] Port generate_themes endpoint  
+  - [ ] Port analyze_sentiment endpoint  
+  - [ ] Port remaining API endpoints (pagination, DSL, etc.)  
+
+### In Progress
 
  - _None yet_
 
