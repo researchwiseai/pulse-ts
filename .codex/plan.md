@@ -65,7 +65,6 @@ This is a living scratch pad. Update as work progresses.
 
 ### Backlog
 
-  - [ ] Port error handling
   - [ ] Port models & types (interfaces or classes)
  ### In Progress
 
