@@ -73,7 +73,9 @@ This is a living scratch pad. Update as work progresses.
   <!-- API Endpoints Implementation -->  
   - [x] Port generate_themes endpoint  
   - [x] Port analyze_sentiment endpoint  
-  - [ ] Port remaining API endpoints (pagination, DSL, etc.)  
+  - [ ] Port extract_elements endpoint  
+  - [ ] Port pagination / batching utilities  
+  - [ ] Port DSL / Workflow builder & Analysis layer  
   <!-- Quality & CI Tasks -->
 
 ### In Progress
