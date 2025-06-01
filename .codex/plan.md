@@ -78,16 +78,15 @@ stable release.
 
   <!-- API Endpoints Implementation -->
 
-- [x] Port generate_themes endpoint
-- [x] Port analyze_sentiment endpoint
-- [x] Port extract_elements endpoint
-- [x] Port pagination / batching utilities
-- [ ] Port DSL / Workflow builder & Analysis layer
+-- [x] Port generate_themes endpoint
+-- [x] Port analyze_sentiment endpoint
+-- [x] Port extract_elements endpoint
+-- [x] Port pagination / batching utilities
   <!-- Quality & CI Tasks -->
 
 ### In Progress
 
-- _None yet_
+- [ ] Generate Typedoc API reference
 
 ### Done
 
@@ -109,6 +108,8 @@ stable release.
 - [x] Integrate Qlty CLI configuration and rules
 - [x] Add pre-commit hook for Qlty checks (formatting, linting, coverage gates)
 - [x] Create GitHub Actions workflow for tests, Qlty checks, and build on main
+- [x] Port DSL / Workflow builder & Analysis layer
+- [x] Update README.md with TypeScript usage examples
 
 ### Deferred
 
@@ -136,4 +137,14 @@ stable release.
 
 ## Python Test Suite Reference
 
-Path: `python/tests` List of tests here can be updated as we port them.
+Path: `python/tests` List of tests here can be updated as we port them:
+- `test_batching.py` → `test/batching.test.ts`
+- `test_http.py` → `test/http.test.ts`
+- `test_errors.py` → `test/errors.test.ts`
+- `test_job.py` → `test/job.test.ts`
+- `test_auth_*.py` → `test/auth.test.ts`
+- `test_core_client.py` → `test/core-client.test.ts`
+- `test_results.py` → `test/results.test.ts`
+- `test_analysis.py` → `test/analysis.test.ts`
+- `test_dsl_e2e.py` → `test/dsl.test.ts`
+- `test_starters.py` → `test/starters.test.ts`
