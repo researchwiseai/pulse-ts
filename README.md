@@ -30,22 +30,22 @@ yarn add @rwai/pulse
 Import and configure authentication:
 
 ```ts
-import { ClientCredentialsAuth, CoreClient } from '@rwai/pulse';
+import { ClientCredentialsAuth, CoreClient } from '@rwai/pulse'
 
 const auth = new ClientCredentialsAuth(
-  process.env.PULSE_CLIENT_ID!,
-  process.env.PULSE_CLIENT_SECRET!,
-);
+    process.env.PULSE_CLIENT_ID!,
+    process.env.PULSE_CLIENT_SECRET!,
+)
 
 const client = new CoreClient({
-  baseUrl: 'https://api.rwai.com/pulse',
-  auth,
-});
+    baseUrl: 'https://api.rwai.com/pulse',
+    auth,
+})
 
-(async () => {
-  const embeddings = await client.create_embeddings(['hello', 'world']);
-  console.log(embeddings);
-})();
+;(async () => {
+    const embeddings = await client.create_embeddings(['hello', 'world'])
+    console.log(embeddings)
+})()
 ```
 
 ## Starter Helpers
@@ -53,19 +53,19 @@ const client = new CoreClient({
 Use convenience functions for common analysis tasks:
 
 ```ts
-import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse';
+import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse'
 
 // Sentiment analysis
-const sentiments = await sentimentAnalysis(['text1', 'text2'], client);
-console.log(sentiments);
+const sentiments = await sentimentAnalysis(['text1', 'text2'], client)
+console.log(sentiments)
 
 // Theme allocation (optionally provide seed themes)
-const allocation = await themeAllocation(['text1', 'text2'], client, ['theme1', 'theme2']);
-console.log(allocation);
+const allocation = await themeAllocation(['text1', 'text2'], client, ['theme1', 'theme2'])
+console.log(allocation)
 
 // Cluster analysis
-const clusters = await clusterAnalysis(['text1', 'text2'], client);
-console.log(clusters);
+const clusters = await clusterAnalysis(['text1', 'text2'], client)
+console.log(clusters)
 ```
 
 ## Generating API docs
