@@ -4,19 +4,20 @@
     "module": "src/index.ts",
     "type": "module",
     "scripts": {
-        "test": "vitest --run --reporter default --reporter verbose",
+        "test": "vitest --run",
         "test:watch": "vitest --watch",
         "fmt": "qlty fmt",
         "lint": "qlty check",
         "docs": "typedoc --options typedoc.json"
     },
     "devDependencies": {
-        "@types/bun": "latest",
-        "vitest": "latest",
-        "@pollyjs/core": "latest",
         "@pollyjs/adapter-node-http": "latest",
+        "@pollyjs/core": "latest",
         "@pollyjs/persister-fs": "latest",
-        "typedoc": "latest"
+        "@types/bun": "latest",
+        "@vitest/coverage-v8": "^3.1.4",
+        "typedoc": "latest",
+        "vitest": "latest"
     },
     "peerDependencies": {
         "typescript": "^5"
