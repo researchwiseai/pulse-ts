@@ -109,7 +109,7 @@ export class AuthorizationCodePKCEAuth {
     get refreshToken(): string | undefined {
         return this._refreshTokenValue
     }
-    
+
     get expiresAt(): number | undefined {
         return this._expiresAt
     }
