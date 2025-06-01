@@ -35,7 +35,7 @@ export interface CrossBody<A, B> {
  */
 export function makeCrossBodies<A, B>(setA: A[], setB: B[], flatten: boolean): CrossBody<A, B>[] {
     const total = setA.length + setB.length
-    if (total <= (MAX_ITEMS * 2)) {
+    if (total <= MAX_ITEMS * 2) {
         return [{ setA, setB, flatten }]
     }
     const chunksA = setA.length > MAX_ITEMS ? makeSelfChunks(setA) : [setA]

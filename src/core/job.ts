@@ -1,6 +1,6 @@
 import { fetchWithRetry, type FetchOptions } from '../http'
 import { PulseAPIError } from '../errors'
-import type { Auth} from '../auth'
+import type { Auth } from '../auth'
 
 /**
  * Represents a background job returned by the Pulse API.
