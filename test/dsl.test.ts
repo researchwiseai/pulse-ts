@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
 import { Workflow } from '../src/dsl'
-import { CoreClient } from '../src/core/client'
+import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClientCredentialsAuth } from '../src/auth'
 import { Job } from '../src/core/job'
 

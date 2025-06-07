@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Format (qlty fmt)",
+      "type": "shell",
+      "command": "bun run fmt",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint (qlty check)",
+      "type": "shell",
+      "command": "bun run lint",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "bun run test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Watch Tests",
+      "type": "shell",
+      "command": "bun run test:watch",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Docs",
+      "type": "shell",
+      "command": "bun run docs",
+      "problemMatcher": []
+    }
+  ]
+}
