@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { fetchWithRetry } from '../src/http'
 import { setupPolly } from './setupPolly'
 
@@ -6,6 +6,9 @@ setupPolly()
 
 describe('fetchWithRetry happy path', () => {
     it('returns response on first attempt when ok', async () => {
+        const resp = { ok: true, status: 200 }
+        const fetchMock = vi.fn().mockResolvedValue(resp)
+        vi.stubGlobal('fetch', fetchMock)
         const url = 'http://example.com'
         const response = await fetchWithRetry(url, { retries: 2 })
         expect(response.ok).toBe(true)
@@ -58,7 +61,7 @@ describe('fetchWithRetry error scenarios', () => {
                 new Promise((resolve, reject) => {
                     setTimeout(() => resolve({ ok: true, status: 200 }), 3000)
                     signal.addEventListener('abort', () => reject(new Error('Request aborted')))
-                }),
+                })
         )
         vi.stubGlobal('fetch', fetchMock)
         const promise = fetchWithRetry(url, { timeout: 10, retries: 0 })

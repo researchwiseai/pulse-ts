@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
 import { getStrings, themeAllocation, clusterAnalysis } from '../src/starters'
 import { ClientCredentialsAuth } from '../src/auth'
-import { CoreClient } from '../src/core/client'
+import { CoreClient } from '../src/core/clients/CoreClient'
 import { ThemeAllocationResult, ClusterResult } from '../src/results'
 
 const clientId = process.env.PULSE_CLIENT_ID

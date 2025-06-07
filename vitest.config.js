@@ -5,7 +5,7 @@ export default defineConfig({
         globals: true,
         environment: 'node',
         include: ['test/**/*.test.ts'],
-        reporters: ['default', 'verbose'],
+        reporters: ['default'],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html', 'lcov'],
