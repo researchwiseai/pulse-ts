@@ -3,9 +3,11 @@
  */
 import fs from 'fs'
 import path from 'path'
-import type { CoreClient } from './core/client'
+import type { CoreClient } from './core/clients/CoreClient'
 import { Analyzer } from './analyzer'
-import { SentimentProcess, ThemeAllocation, Cluster } from './processes'
+import { Cluster } from './processes/Cluster'
+import { ThemeAllocation } from './processes/ThemeAllocation'
+import { SentimentProcess } from './processes/SentimentProcess'
 import { SentimentResult, ThemeAllocationResult, ClusterResult } from './results'
 
 /**
