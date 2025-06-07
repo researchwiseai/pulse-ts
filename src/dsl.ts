@@ -3,15 +3,13 @@
  */
 import fs from 'fs'
 import path from 'path'
-import { CoreClient } from './core/client'
-import {
-    ThemeGeneration,
-    ThemeAllocation,
-    ThemeExtraction,
-    SentimentProcess,
-    Cluster,
-    Process,
-} from './processes'
+import { CoreClient } from './core/clients/CoreClient'
+import { Cluster } from './processes/Cluster'
+import { ThemeExtraction } from './processes/ThemeExtraction'
+import { ThemeAllocation } from './processes/ThemeAllocation'
+import { SentimentProcess } from './processes/SentimentProcess'
+import { ThemeGeneration } from './processes/ThemeGeneration'
+import { Process } from './processes/types'
 import {
     ThemeGenerationResult,
     SentimentResult,

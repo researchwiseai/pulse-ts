@@ -1,15 +1,8 @@
 /**
  * High-level orchestrator for Pulse API processes.
  */
-import type { CoreClient } from './core/client'
-import type { Process } from './processes'
-import {
-    ThemeGeneration,
-    SentimentProcess,
-    ThemeAllocation,
-    Cluster,
-    ThemeExtraction,
-} from './processes'
+import type { CoreClient } from './core/clients/CoreClient'
+import * as Processes from './processes'
 import {
     ThemeGenerationResult,
     SentimentResult,
@@ -23,7 +16,7 @@ export interface AnalyzerOptions {
     /** Array of input texts. */
     dataset: string[]
     /** Processing steps to execute. */
-    processes?: Process[]
+    processes?: Processes.Process[]
     /** Core client to call API endpoints. */
     client: CoreClient
     /** Fast mode flag; if true, use fast synchronous endpoints where supported. */
@@ -32,11 +25,11 @@ export interface AnalyzerOptions {
 
 export class Analyzer {
     dataset: string[]
-    processes: Process[]
+    processes: Processes.Process[]
     fast: boolean
     client: CoreClient
     /** In-memory results mapping process id to wrapped result. */
-    results: Record<string, any>
+    results: Record<string, unknown>
 
     constructor(opts: AnalyzerOptions) {
         this.dataset = opts.dataset
@@ -49,12 +42,12 @@ export class Analyzer {
 
     private resolveDependencies(): void {
         const existing = new Set(this.processes.map(p => p.id))
-        const resolved: Process[] = []
+        const resolved: Processes.Process[] = []
         for (const proc of this.processes) {
             for (const dep of proc.dependsOn ?? []) {
                 if (!existing.has(dep)) {
-                    if (dep === ThemeGeneration.id) {
-                        resolved.push(new ThemeGeneration())
+                    if (dep === Processes.ThemeGeneration.id) {
+                        resolved.push(new Processes.ThemeGeneration())
                         existing.add(dep)
                     } else {
                         throw new Error(`Missing dependency process '${dep}'`)
@@ -76,30 +69,30 @@ export class Analyzer {
             const id = proc.id
             let wrapped: any
             switch (id) {
-                case ThemeGeneration.id:
+                case Processes.ThemeGeneration.id:
                     wrapped = new ThemeGenerationResult(raw, this.dataset)
                     break
-                case SentimentProcess.id:
+                case Processes.Sentiment.id:
                     wrapped = new SentimentResult(raw, this.dataset)
                     break
-                case ThemeAllocation.id:
+                case Processes.ThemeAllocation.id:
                     wrapped = new ThemeAllocationResult(
                         this.dataset,
                         raw.themes,
                         raw.assignments,
-                        proc instanceof ThemeAllocation ? proc.singleLabel : true,
-                        proc instanceof ThemeAllocation ? proc.threshold : 0.5,
+                        proc instanceof Processes.ThemeAllocation ? proc.singleLabel : true,
+                        proc instanceof Processes.ThemeAllocation ? proc.threshold : 0.5,
                         raw.similarity,
                     )
                     break
-                case Cluster.id:
+                case Processes.Cluster.id:
                     wrapped = new ClusterResult(raw, this.dataset)
                     break
-                case ThemeExtraction.id:
+                case Processes.ThemeExtraction.id:
                     wrapped = new ThemeExtractionResult(
                         raw,
                         this.dataset,
-                        proc instanceof ThemeExtraction && proc.themes ? proc.themes : [],
+                        proc instanceof Processes.ThemeExtraction && proc.themes ? proc.themes : [],
                     )
                     break
                 default:

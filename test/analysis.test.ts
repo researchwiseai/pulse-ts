@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
 import { Analyzer } from '../src/analyzer'
-import { ThemeGeneration, SentimentProcess, ThemeAllocation } from '../src/processes'
 import { ThemeGenerationResult, SentimentResult, ThemeAllocationResult } from '../src/results'
-import { CoreClient } from '../src/core/client'
+import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClientCredentialsAuth } from '../src/auth'
 
 const clientId = process.env.PULSE_CLIENT_ID
