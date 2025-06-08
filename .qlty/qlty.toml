@@ -60,12 +60,8 @@ mode = "comment"
 name = "default"
 default = true
 
-
 [[plugin]]
 name = "actionlint"
-
-[[plugin]]
-name = "bandit"
 
 [[plugin]]
 name = "checkov"
