@@ -64,9 +64,6 @@ default = true
 name = "actionlint"
 
 [[plugin]]
-name = "checkov"
-
-[[plugin]]
 name = "markdownlint"
 mode = "comment"
 
