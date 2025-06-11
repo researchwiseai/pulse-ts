@@ -23,7 +23,7 @@ describe('ThemeGenerationResult', () => {
                 },
             ],
         }
-        const r = new ThemeGenerationResult(response, ['t'])
+        const r = new ThemeGenerationResult(response)
         expect(r.themes[0]?.shortLabel).toBe('A')
         const arr = r.toArray()
         expect(arr).toEqual([

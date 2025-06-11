@@ -6,6 +6,9 @@ import { SentimentResult } from '../src/results/SentimentResult'
 import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClientCredentialsAuth } from '../src/auth'
+import { ThemeGeneration } from '../src/processes/ThemeGeneration'
+import { Sentiment } from '../src/processes/Sentiment'
+import { ThemeAllocation } from '../src/processes/ThemeAllocation'
 
 const clientId = process.env.PULSE_CLIENT_ID
 const clientSecret = process.env.PULSE_CLIENT_SECRET
