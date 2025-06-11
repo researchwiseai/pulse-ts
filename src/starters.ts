@@ -75,7 +75,7 @@ export async function themeAllocation(
         fast,
     })
     const res = await analyzer.run()
-    return res.theme_allocation
+    return res.themeAllocation
 }
 
 /**

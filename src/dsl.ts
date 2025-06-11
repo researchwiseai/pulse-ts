@@ -98,7 +98,7 @@ export class Workflow {
         this.processes.push(proc)
     }
 
-    theme_generation(
+    themeGeneration(
         options: {
             minThemes?: number
             maxThemes?: number
@@ -117,13 +117,13 @@ export class Workflow {
             !this.sources[alias] &&
             !this.processes.some(p => p.id === alias)
         ) {
-            throw new Error(`Unknown source for theme_generation: '${alias}'`)
+            throw new Error(`Unknown source for themeGeneration: '${alias}'`)
         }
         ;(proc as any)._inputs = [alias]
         return this
     }
 
-    theme_allocation(
+    themeAllocation(
         options: {
             themes?: string[]
             fast?: boolean
@@ -142,17 +142,17 @@ export class Workflow {
                 !this.sources[textAlias] &&
                 !this.processes.some(p => p.id === textAlias)
             ) {
-                throw new Error(`Unknown inputs source for theme_allocation: '${textAlias}'`)
+                throw new Error(`Unknown inputs source for themeAllocation: '${textAlias}'`)
             }
             if (!this.processes.some(p => (p as any)._origId === ThemeGeneration.id)) {
-                this.theme_generation({ source: textAlias })
+                this.themeGeneration({ source: textAlias })
             }
         }
         const proc = new ThemeAllocation({ themes, singleLabel, fast, threshold })
         this.addProcess(proc, name)
         const inp = inputs || 'dataset'
         if (inp !== 'dataset' && !this.sources[inp] && !this.processes.some(p => p.id === inp)) {
-            throw new Error(`Unknown inputs source for theme_allocation: '${inp}'`)
+            throw new Error(`Unknown inputs source for themeAllocation: '${inp}'`)
         }
         ;(proc as any)._inputs = [inp]
         if (themes == null) {
@@ -163,14 +163,14 @@ export class Workflow {
                     .pop()?.id
             }
             if (!alias) {
-                throw new Error('No theme_generation found for theme_allocation')
+                throw new Error('No themeGeneration found for themeAllocation')
             }
             ;(proc as any)._themesFromAlias = alias
         }
         return this
     }
 
-    theme_extraction(
+    themeExtraction(
         options: {
             themes?: string[]
             version?: string
@@ -185,7 +185,7 @@ export class Workflow {
         this.addProcess(proc, name)
         const inp = inputs || 'dataset'
         if (inp !== 'dataset' && !this.sources[inp] && !this.processes.some(p => p.id === inp)) {
-            throw new Error(`Unknown inputs source for theme_extraction: '${inp}'`)
+            throw new Error(`Unknown inputs source for themeExtraction: '${inp}'`)
         }
         ;(proc as any)._inputs = [inp]
         if (themes == null) {
@@ -196,7 +196,7 @@ export class Workflow {
                     .pop()?.id
             }
             if (!alias) {
-                throw new Error('No theme_generation found for theme_extraction')
+                throw new Error('No themeGeneration found for themeExtraction')
             }
             ;(proc as any)._themesFromAlias = alias
         }
