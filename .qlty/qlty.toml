@@ -64,8 +64,9 @@ default = true
 name = "actionlint"
 
 [[plugin]]
-name = "markdownlint"
-mode = "comment"
+name    = "markdownlint"
+mode    = "comment"
+enabled = false
 
 [[plugin]]
 name = "prettier"
