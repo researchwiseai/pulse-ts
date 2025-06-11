@@ -1,11 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import {
-    ThemeGenerationResult,
-    SentimentResult,
-    ThemeAllocationResult,
-    ClusterResult,
-    ThemeExtractionResult,
-} from '../src/results'
+import { ClusterResult, ThemeExtractionResult } from '../src/results'
+import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
+import { SentimentResult } from '../src/results/SentimentResult'
+import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
 import type {
     ThemesResponse,
     SentimentResponse,

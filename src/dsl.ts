@@ -7,17 +7,15 @@ import { CoreClient } from './core/clients/CoreClient'
 import { Cluster } from './processes/Cluster'
 import { ThemeExtraction } from './processes/ThemeExtraction'
 import { ThemeAllocation } from './processes/ThemeAllocation'
-import { SentimentProcess } from './processes/SentimentProcess'
+import { Sentiment } from './processes/Sentiment'
 import { ThemeGeneration } from './processes/ThemeGeneration'
-import { Process } from './processes/types'
-import {
-    ThemeGenerationResult,
-    SentimentResult,
-    ThemeAllocationResult,
-    ClusterResult,
-    ThemeExtractionResult,
-} from './results'
+import { ClusterResult, ThemeExtractionResult } from './results'
+import { ThemeAllocationResult } from './results/ThemeAllocationResult'
+import { SentimentResult } from './results/SentimentResult'
+import { ThemeGenerationResult } from './results/ThemeGenerationResult'
 import { Analyzer } from './analyzer'
+import type { Processes } from '.'
+import type { ContextBase } from './processes'
 
 type MonitorCallbacks = {
     onRunStart?: () => void
@@ -54,7 +52,7 @@ function reconstruct(flat: any[], shape: number[]): any {
             const { value } = it.next()
             return value
         }
-        const len = shape[level]
+        const len = shape[level] as number
         const res: any[] = []
         for (let i = 0; i < len; i++) {
             res.push(build(level + 1))
@@ -69,7 +67,7 @@ function reconstruct(flat: any[], shape: number[]): any {
  */
 export class Workflow {
     private sources: Record<string, any> = {}
-    private processes: Process[] = []
+    private processes: Processes.Process<string>[] = []
     private idCounts: Record<string, number> = {}
     private monitors: MonitorCallbacks = {}
 
@@ -84,7 +82,7 @@ export class Workflow {
         return this
     }
 
-    private addProcess(proc: Process, name?: string): void {
+    private addProcess(proc: Processes.Process<string>, name?: string): void {
         const orig = (proc as any).id
         const count = (this.idCounts[orig] || 0) + 1
         this.idCounts[orig] = count
@@ -108,7 +106,7 @@ export class Workflow {
             fast?: boolean
             source?: string
             name?: string
-        } = {},
+        } = {}
     ): this {
         const { minThemes, maxThemes, context, fast, source, name } = options
         const proc = new ThemeGeneration({ minThemes, maxThemes, context, fast })
@@ -134,7 +132,7 @@ export class Workflow {
             inputs?: string
             themesFrom?: string
             name?: string
-        } = {},
+        } = {}
     ): this {
         const { themes, fast, singleLabel, threshold, inputs, themesFrom, name } = options
         const textAlias = inputs || 'dataset'
@@ -180,7 +178,7 @@ export class Workflow {
             inputs?: string
             themesFrom?: string
             name?: string
-        } = {},
+        } = {}
     ): this {
         const { themes, version, fast, inputs, themesFrom, name } = options
         const proc = new ThemeExtraction({ themes, version, fast })
@@ -207,7 +205,7 @@ export class Workflow {
 
     sentiment(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, source, name } = options
-        const proc = new SentimentProcess({ fast })
+        const proc = new Sentiment({ fast })
         this.addProcess(proc, name)
         const alias = source || 'dataset'
         if (
@@ -315,9 +313,11 @@ export class Workflow {
                 throw new Error(`Source '${alias}' not found for process '${proc.id}'`)
             }
             const data = ctxSources[alias]
-            const ctx: any = {
+            const ctx: ContextBase & {
+                sources: Record<string, unknown>
+            } = {
                 client: c,
-                fast: proc['fast'] ?? fast ?? false,
+                fast: fast ?? false,
                 sources: ctxSources,
                 results,
             }
@@ -330,14 +330,14 @@ export class Workflow {
                     wrapped = new ThemeGenerationResult(raw, ctx.dataset)
                     ctxSources[proc.id] = wrapped.themes
                     break
-                case SentimentProcess.id:
+                case Sentiment.id:
                     const [shape, flatTexts] = flattenAndShape(ctxSources[alias])
                     ctx.dataset = flatTexts
                     const flatRaw = await proc.run(ctx)
                     const nested = reconstruct(flatRaw.sentiments, shape)
                     wrapped = new SentimentResult(
                         { results: nested, requestId: flatRaw.requestId },
-                        flatTexts,
+                        flatTexts
                     )
                     ctxSources[proc.id] = nested
                     break
@@ -348,7 +348,7 @@ export class Workflow {
                         raw.assignments,
                         (proc as ThemeAllocation).singleLabel,
                         (proc as ThemeAllocation).threshold,
-                        raw.similarity,
+                        raw.similarity
                     )
                     break
                 case Cluster.id:
@@ -358,7 +358,7 @@ export class Workflow {
                     wrapped = new ThemeExtractionResult(
                         raw,
                         ctx.dataset,
-                        (proc as ThemeExtraction).themes ?? [],
+                        (proc as ThemeExtraction).themes ?? []
                     )
                     ctxSources[proc.id] = wrapped.extractions
                     break

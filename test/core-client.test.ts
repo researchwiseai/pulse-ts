@@ -40,30 +40,6 @@ describe('CoreClient', () => {
                 } else {
                     const outbound = request as Request
                     const requestBody = await outbound.json()
-                    expect(requestBody).toStrictEqual({ inputs: ['t'] })
-
-                    const requestHeaders = outbound.headers
-                    expect(requestHeaders.get('Content-type')).toBe('application/json')
-                }
-
-                expect(resp).toEqual(body)
-            })
-
-            it('passes fast=true', async () => {
-                const body = { requestId: 'r', embeddings: [{ vector: [0.1], text: 't' }] }
-                const spy = vi.spyOn(http, 'fetchWithRetry').mockResolvedValue({
-                    ok: true,
-                    status: 200,
-                    json: async () => body,
-                } as any)
-                const resp = await client.createEmbeddings(['t'], { fast: true })
-                expect(spy).toHaveBeenCalled()
-                const [request] = spy.mock.calls[0] ?? [undefined]
-                if (request === undefined) {
-                    expect(request).toBeDefined()
-                } else {
-                    const outbound = request as Request
-                    const requestBody = await outbound.json()
                     expect(requestBody).toStrictEqual({ inputs: ['t'], fast: true })
 
                     const requestHeaders = outbound.headers
@@ -82,7 +58,7 @@ describe('CoreClient', () => {
                     status: 202,
                     json: async () => body,
                 } as any)
-                await client.createEmbeddings(['t'], { fast: false })
+                await client.createEmbeddings(['t'], { fast: false, awaitJobResult: false })
                 expect(spy).toHaveBeenCalled()
                 const [request] = spy.mock.calls[0] ?? [undefined]
                 if (request === undefined) {
@@ -137,11 +113,28 @@ describe('CoreClient', () => {
 
             it('passes fast=false and does not pass awaitJobResult when true', async () => {
                 const body = { requestId: 'r', embeddings: [{ vector: [0.1], text: 't' }] }
-                const spy = vi.spyOn(http, 'fetchWithRetry').mockResolvedValue({
-                    ok: true,
-                    status: 202,
-                    json: async () => body,
-                } as any)
+                const spy = vi
+                    .spyOn(http, 'fetchWithRetry')
+                    .mockResolvedValueOnce({
+                        ok: true,
+                        status: 202,
+                        json: async () => ({ status: 'pending', jobId: 'abc' }),
+                    } as any)
+                    .mockResolvedValueOnce({
+                        ok: true,
+                        status: 200,
+                        json: async () => ({ status: 'pending' }),
+                    } as any)
+                    .mockResolvedValueOnce({
+                        ok: true,
+                        status: 200,
+                        json: async () => ({ status: 'completed', resultUrl: 'http://result' }),
+                    } as any)
+                    .mockResolvedValue({
+                        ok: true,
+                        status: 200,
+                        json: async () => body,
+                    } as any)
                 await client.createEmbeddings(['t'], { fast: false, awaitJobResult: true })
                 expect(spy).toHaveBeenCalled()
                 const [request] = spy.mock.calls[0] ?? [undefined]
@@ -262,7 +255,7 @@ describe('CoreClient', () => {
                     } else {
                         const outbound = request as Request
                         const requestBody = await outbound.json()
-                        expect(requestBody).toStrictEqual({ set: ['x'], fast: true })
+                        expect(requestBody).toStrictEqual({ set: ['x'], fast: true, flatten: true })
 
                         const requestHeaders = outbound.headers
                         expect(requestHeaders.get('Content-type')).toBe('application/json')
@@ -281,7 +274,11 @@ describe('CoreClient', () => {
             status: 200,
             json: async () => body,
         } as any)
-        const resp = await client.generateThemes(['a'], 1, 2, true)
+        const resp = await client.generateThemes(['a'], {
+            fast: true,
+            minThemes: 1,
+            maxThemes: 2,
+        })
         expect(resp).toEqual(body)
     })
 
