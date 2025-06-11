@@ -8,7 +8,7 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
  * Process: allocate themes to texts based on generation results.
  */
 
-@staticImplements<ProcessStatic<'theme_allocation', ThemeAllocationResult>>()
+@staticImplements<ProcessStatic<'themeAllocation', ThemeAllocationResult>>()
 /**
  * Represents a process for allocating themes to items in a dataset based on similarity.
  *
@@ -38,11 +38,11 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
  * @see ThemeGeneration
  * @see ThemeAllocationResult
  */
-export class ThemeAllocation<Name extends string = 'theme_allocation'>
+export class ThemeAllocation<Name extends string = 'themeAllocation'>
     extends ThemeGenerationDependent
     implements Process<Name, ThemeAllocationResult>
 {
-    static readonly id = 'theme_allocation'
+    static readonly id = 'themeAllocation'
     /**
      * The name associated with the theme allocation.
      */
