@@ -5,7 +5,6 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
 /**
  * Process: extract elements matching themes from input strings.
  */
-
 @staticImplements<ProcessStatic<'themeExtraction', ThemeExtractionResult>>()
 export class ThemeExtraction<Name extends string = 'themeExtraction'>
     extends ThemeGenerationDependent
