@@ -57,8 +57,8 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
  * @see {@link ProcessStatic} for the static interface of a process.
  * @see {@link shuffle} for the utility function used to randomize input texts.
  */
-@staticImplements<ProcessStatic<'theme_generation', ThemeGenerationResult>>()
-export class ThemeGeneration<Name extends string = 'theme_generation'>
+@staticImplements<ProcessStatic<'themeGeneration', ThemeGenerationResult>>()
+export class ThemeGeneration<Name extends string = 'themeGeneration'>
     implements Process<Name, ThemeGenerationResult>
 {
     /**
@@ -67,7 +67,7 @@ export class ThemeGeneration<Name extends string = 'theme_generation'>
      * This ID is used to register and reference the ThemeGeneration process
      * within the system.
      */
-    static readonly id = 'theme_generation'
+    static readonly id = 'themeGeneration'
     /**
      * The name of the process.
      *

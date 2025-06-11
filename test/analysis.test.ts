@@ -29,7 +29,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const az = new Analyzer({ dataset: [], processes: [], client })
             const res = await az.run()
             expect(res).toBeInstanceOf(Object)
-            expect((res as any).theme_generation).toBeUndefined()
+            expect((res as any).themeGeneration).toBeUndefined()
         })
     })
 
@@ -44,20 +44,20 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
                 fast: true,
             })
             const res = await az.run()
-            expect(res.theme_generation).toBeInstanceOf(ThemeGenerationResult)
-            const tg = res.theme_generation as ThemeGenerationResult
+            expect(res.themeGeneration).toBeInstanceOf(ThemeGenerationResult)
+            const tg = res.themeGeneration as ThemeGenerationResult
             expect(tg.themes.length).toBeGreaterThanOrEqual(2)
             expect(tg.themes.length).toBeLessThanOrEqual(3)
         })
     })
 
-    describe('SentimentProcess', () => {
+    describe('Sentiment', () => {
         setupPolly()
         it('analyzes sentiment for each text', async () => {
             const reviews = ['good', 'bad', 'meh']
             const az = new Analyzer({
                 dataset: reviews,
-                processes: [new SentimentProcess({})],
+                processes: [new Sentiment({})],
                 client,
             })
             const res = await az.run()
@@ -83,8 +83,8 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
                 fast: true,
             })
             const res = await az.run()
-            expect(res.theme_allocation).toBeInstanceOf(ThemeAllocationResult)
-            const ta = res.theme_allocation as ThemeAllocationResult
+            expect(res.themeAllocation).toBeInstanceOf(ThemeAllocationResult)
+            const ta = res.themeAllocation as ThemeAllocationResult
             const single = ta.assignSingle()
             expect(Object.keys(single)).toHaveLength(reviews.length)
             const multi = ta.assignMulti(2)
