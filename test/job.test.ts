@@ -1,12 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { Job } from '../src/core/job'
 import * as http from '../src/http'
+import type { Auth } from '../src/auth'
 
 describe('Job.result', () => {
-    const dummyAuth = {
+    const dummyAuth: Auth = {
         authFlow: async function* (req: Request) {
             yield req
         },
+        _refreshToken: async () => {},
+        accessToken: 'dummyAccessToken',
+        refreshToken: undefined,
+        expiresAt: undefined,
     }
 
     it('resolves with result when job completes immediately', async () => {
