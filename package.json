@@ -1,28 +1,32 @@
 {
-    "name": "@rwai/pulse",
-    "version": "0.1.0",
-    "module": "src/index.ts",
-    "type": "module",
-    "scripts": {
-        "test": "vitest --run",
-        "test:watch": "vitest --watch",
-        "fmt": "qlty fmt",
-        "lint": "qlty check",
-        "docs": "typedoc --options typedoc.json"
-    },
-    "devDependencies": {
-        "@pollyjs/adapter-node-http": "latest",
-        "@pollyjs/core": "latest",
-        "@pollyjs/persister-fs": "latest",
-        "@types/bun": "latest",
-        "@vitest/coverage-v8": "^3.1.4",
-        "markdown-it": "^14.1.0",
-        "markdownlint": "^0.38.0",
-        "markdownlint-cli": "^0.45.0",
-        "typedoc": "latest",
-        "vitest": "latest"
-    },
-    "peerDependencies": {
-        "typescript": "^5"
-    }
+  "name": "@rwai/pulse",
+  "version": "0.1.0",
+  "module": "dist/index.mjs",
+  "type": "module",
+  "scripts": {
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "fmt": "qlty fmt",
+    "lint": "qlty check",
+    "docs": "typedoc --options typedoc.json",
+    "build": "tsup src/index.ts --format cjs,esm --dts --out-dir dist --clean --target node18 --tsconfig tsconfig.build.json"
+  },
+  "devDependencies": {
+    "@pollyjs/adapter-node-http": "latest",
+    "@pollyjs/core": "latest",
+    "@pollyjs/persister-fs": "latest",
+    "@types/bun": "latest",
+    "@vitest/coverage-v8": "^3.1.4",
+    "markdown-it": "^14.1.0",
+    "markdownlint": "^0.38.0",
+    "markdownlint-cli": "^0.45.0",
+    "typedoc": "latest",
+    "vitest": "latest",
+    "tsup": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts"
 }
