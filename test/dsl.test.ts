@@ -18,16 +18,16 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
 
     describe('DSL end-to-end', () => {
         setupPolly()
-        it('runs theme_allocation step', async () => {
+        it('runs themeAllocation step', async () => {
             const comments = ['good', 'bad', 'meh']
             const existing = ['Pos', 'Neg']
             const wf = new Workflow()
                 .source('comments', comments)
                 .source('themes', existing)
-                .theme_allocation({ inputs: 'comments', themesFrom: 'themes' })
+                .themeAllocation({ inputs: 'comments', themesFrom: 'themes' })
             const results = await wf.run(undefined, { client })
-            expect(results).toHaveProperty('theme_allocation')
-            const ta = results.theme_allocation
+            expect(results).toHaveProperty('themeAllocation')
+            const ta = results.themeAllocation
             expect(ta).not.toBeInstanceOf(Job)
             if ((ta as any).themes) {
                 expect(Array.isArray((ta as any).themes)).toBe(true)

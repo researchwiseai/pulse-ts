@@ -3,7 +3,8 @@ import { setupPolly } from './setupPolly'
 import { getStrings, themeAllocation, clusterAnalysis } from '../src/starters'
 import { ClientCredentialsAuth } from '../src/auth'
 import { CoreClient } from '../src/core/clients/CoreClient'
-import { ThemeAllocationResult, ClusterResult } from '../src/results'
+import { ClusterResult } from '../src/results'
+import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
 
 const clientId = process.env.PULSE_CLIENT_ID
 const clientSecret = process.env.PULSE_CLIENT_SECRET
