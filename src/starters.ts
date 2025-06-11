@@ -7,8 +7,10 @@ import type { CoreClient } from './core/clients/CoreClient'
 import { Analyzer } from './analyzer'
 import { Cluster } from './processes/Cluster'
 import { ThemeAllocation } from './processes/ThemeAllocation'
-import { SentimentProcess } from './processes/SentimentProcess'
-import { SentimentResult, ThemeAllocationResult, ClusterResult } from './results'
+import { Sentiment } from './processes/Sentiment'
+import { ClusterResult } from './results'
+import { ThemeAllocationResult } from './results/ThemeAllocationResult'
+import { SentimentResult } from './results/SentimentResult'
 
 /**
  * Load input strings from an array or a file path (.txt, .csv, .tsv).
@@ -42,13 +44,13 @@ export function getStrings(source: string[] | string): string[] {
  */
 export async function sentimentAnalysis(
     inputData: string[] | string,
-    client: CoreClient,
+    client: CoreClient
 ): Promise<SentimentResult[]> {
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
     const analyzer = new Analyzer({
         dataset: texts,
-        processes: [new SentimentProcess({})],
+        processes: [new Sentiment()],
         client,
         fast,
     })
@@ -62,7 +64,7 @@ export async function sentimentAnalysis(
 export async function themeAllocation(
     inputData: string[] | string,
     client: CoreClient,
-    themes?: string[],
+    themes?: string[]
 ): Promise<ThemeAllocationResult> {
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
@@ -73,7 +75,7 @@ export async function themeAllocation(
         fast,
     })
     const res = await analyzer.run()
-    return res.theme_allocation
+    return res.themeAllocation
 }
 
 /**
@@ -81,7 +83,7 @@ export async function themeAllocation(
  */
 export async function clusterAnalysis(
     inputData: string[] | string,
-    client: CoreClient,
+    client: CoreClient
 ): Promise<ClusterResult> {
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
