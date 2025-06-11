@@ -47,8 +47,8 @@ export class CoreClient {
      * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting result.
      */
     async compareSimilarity<
-        Fast extends boolean | undefined,
-        AwaitJobResult extends boolean | undefined
+        Fast extends boolean | undefined = undefined,
+        AwaitJobResult extends boolean | undefined = undefined
     >(inputs: CompareSimilarityInputs, opts?: CompareSimilarityOptions<Fast, AwaitJobResult>) {
         return await compareSimilarity(this, inputs, opts)
     }
@@ -93,8 +93,8 @@ export class CoreClient {
      * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting the result.
      */
     async extractElements<
-        Fast extends boolean | undefined,
-        AwaitJobResult extends boolean | undefined
+        Fast extends boolean | undefined = undefined,
+        AwaitJobResult extends boolean | undefined = undefined
     >(inputs: ExtractElementsInputs, opts: ExtractElementsOptions<Fast, AwaitJobResult>) {
         return await extractElements(this, inputs, opts)
     }
