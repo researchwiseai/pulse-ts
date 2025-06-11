@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
 import { Analyzer } from '../src/analyzer'
-import { ThemeGenerationResult, SentimentResult, ThemeAllocationResult } from '../src/results'
+import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
+import { SentimentResult } from '../src/results/SentimentResult'
+import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClientCredentialsAuth } from '../src/auth'
 
