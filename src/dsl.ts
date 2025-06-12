@@ -9,10 +9,6 @@ import { ThemeExtraction } from './processes/ThemeExtraction'
 import { ThemeAllocation } from './processes/ThemeAllocation'
 import { Sentiment } from './processes/Sentiment'
 import { ThemeGeneration } from './processes/ThemeGeneration'
-import { ClusterResult, ThemeExtractionResult } from './results'
-import { ThemeAllocationResult } from './results/ThemeAllocationResult'
-import { SentimentResult } from './results/SentimentResult'
-import { ThemeGenerationResult } from './results/ThemeGenerationResult'
 import { Analyzer } from './analyzer'
 import type { Processes } from '.'
 import type { ContextBase } from './processes'
@@ -22,44 +18,6 @@ type MonitorCallbacks = {
     onProcessStart?: (id: string) => void
     onProcessEnd?: (id: string, res: any) => void
     onRunEnd?: () => void
-}
-
-/** Flatten nested arrays and record original shape. */
-function flattenAndShape(x: any): [number[], any[]] {
-    const shape: number[] = []
-    function getShape(a: any, lvl = 0): void {
-        if (Array.isArray(a)) {
-            shape[lvl] = Math.max(shape[lvl] || 0, a.length)
-            if (a.length) getShape(a[0], lvl + 1)
-        }
-    }
-    function flatten(a: any): any[] {
-        if (Array.isArray(a)) {
-            return a.reduce((acc, v) => acc.concat(flatten(v)), [] as any[])
-        }
-        return [a]
-    }
-    getShape(x)
-    const flat = flatten(x)
-    return [shape, flat]
-}
-
-/** Reconstruct nested arrays from flat list using provided shape. */
-function reconstruct(flat: any[], shape: number[]): any {
-    const it = flat[Symbol.iterator]()
-    function build(level: number): any {
-        if (level >= shape.length) {
-            const { value } = it.next()
-            return value
-        }
-        const len = shape[level] as number
-        const res: any[] = []
-        for (let i = 0; i < len; i++) {
-            res.push(build(level + 1))
-        }
-        return res
-    }
-    return build(0)
 }
 
 /**
@@ -106,7 +64,7 @@ export class Workflow {
             fast?: boolean
             source?: string
             name?: string
-        } = {}
+        } = {},
     ): this {
         const { minThemes, maxThemes, context, fast, source, name } = options
         const proc = new ThemeGeneration({ minThemes, maxThemes, context, fast })
@@ -132,7 +90,7 @@ export class Workflow {
             inputs?: string
             themesFrom?: string
             name?: string
-        } = {}
+        } = {},
     ): this {
         const { themes, fast, singleLabel, threshold, inputs, themesFrom, name } = options
         const textAlias = inputs || 'dataset'
@@ -178,7 +136,7 @@ export class Workflow {
             inputs?: string
             themesFrom?: string
             name?: string
-        } = {}
+        } = {},
     ): this {
         const { themes, version, fast, inputs, themesFrom, name } = options
         const proc = new ThemeExtraction({ themes, version, fast })
@@ -313,60 +271,18 @@ export class Workflow {
                 throw new Error(`Source '${alias}' not found for process '${proc.id}'`)
             }
             const data = ctxSources[alias]
-            const ctx: ContextBase & {
-                sources: Record<string, unknown>
-            } = {
+            const ctx: ContextBase = {
                 client: c,
                 fast: fast ?? false,
-                sources: ctxSources,
                 results,
+                dataset: ctxSources[alias],
+                processes: this.processes,
             }
             ctx.dataset = Array.isArray(data) ? data : [].concat(data)
-            const raw = await proc.run(ctx)
-            let wrapped: any
-            const orig = (proc as any)._origId
-            switch (orig) {
-                case ThemeGeneration.id:
-                    wrapped = new ThemeGenerationResult(raw, ctx.dataset)
-                    ctxSources[proc.id] = wrapped.themes
-                    break
-                case Sentiment.id:
-                    const [shape, flatTexts] = flattenAndShape(ctxSources[alias])
-                    ctx.dataset = flatTexts
-                    const flatRaw = await proc.run(ctx)
-                    const nested = reconstruct(flatRaw.sentiments, shape)
-                    wrapped = new SentimentResult(
-                        { results: nested, requestId: flatRaw.requestId },
-                        flatTexts
-                    )
-                    ctxSources[proc.id] = nested
-                    break
-                case ThemeAllocation.id:
-                    wrapped = new ThemeAllocationResult(
-                        ctx.dataset,
-                        raw.themes,
-                        raw.assignments,
-                        (proc as ThemeAllocation).singleLabel,
-                        (proc as ThemeAllocation).threshold,
-                        raw.similarity
-                    )
-                    break
-                case Cluster.id:
-                    wrapped = new ClusterResult(raw as number[][], ctx.dataset)
-                    break
-                case ThemeExtraction.id:
-                    wrapped = new ThemeExtractionResult(
-                        raw,
-                        ctx.dataset,
-                        (proc as ThemeExtraction).themes ?? []
-                    )
-                    ctxSources[proc.id] = wrapped.extractions
-                    break
-                default:
-                    wrapped = raw
-            }
-            results[proc.id] = wrapped
-            this.monitors.onProcessEnd?.(proc.id, wrapped)
+            const result = await proc.run(ctx)
+
+            results[proc.id] = result
+            this.monitors.onProcessEnd?.(proc.id, result)
         }
         this.monitors.onRunEnd?.()
         return results

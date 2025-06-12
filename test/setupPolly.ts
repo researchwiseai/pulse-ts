@@ -2,11 +2,13 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { Polly } from '@pollyjs/core'
 import NodeHttpAdapter from '@pollyjs/adapter-node-http'
+import FetchAdapter from '@pollyjs/adapter-fetch'
 import FSPersister from '@pollyjs/persister-fs'
 import { beforeEach, afterEach } from 'vitest'
 
 // Register Polly adapters and persisters
 Polly.register(NodeHttpAdapter)
+Polly.register(FetchAdapter)
 Polly.register(FSPersister)
 
 // Determine recordings directory in package test folder
@@ -22,7 +24,7 @@ export function setupPolly(options?: Record<string, unknown>) {
 
     beforeEach(context => {
         polly = new Polly(context.task.name, {
-            adapters: ['node-http'],
+            adapters: ['node-http', 'fetch'],
             persister: 'fs',
             recordIfMissing: true,
             matchRequestsBy: {

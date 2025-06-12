@@ -13,6 +13,7 @@
         "build": "tsup src/index.ts --format cjs,esm --dts --out-dir dist --clean --target node18 --tsconfig tsconfig.build.json"
     },
     "devDependencies": {
+        "@pollyjs/adapter-fetch": "latest",
         "@pollyjs/adapter-node-http": "latest",
         "@pollyjs/core": "latest",
         "@pollyjs/persister-fs": "latest",
@@ -21,13 +22,18 @@
         "markdown-it": "^14.1.0",
         "markdownlint": "^0.38.0",
         "markdownlint-cli": "^0.45.0",
+        "tsup": "latest",
         "typedoc": "latest",
-        "vitest": "latest",
-        "tsup": "latest"
+        "undici": "^7.10.0",
+        "utility-types": "^3.11.0",
+        "vitest": "latest"
     },
     "peerDependencies": {
         "typescript": "^5"
     },
     "main": "dist/index.js",
-    "types": "dist/index.d.ts"
+    "types": "dist/index.d.ts",
+    "dependencies": {
+        "zod": "^3.25.63"
+    }
 }
