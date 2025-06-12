@@ -1,8 +1,10 @@
 import type { Theme as ThemeModel } from '../models'
 import { ThemeAllocationResult } from '../results/ThemeAllocationResult'
-import type { ThemeGenerationResult } from '../results/ThemeGenerationResult'
-import { ThemeGeneration, ThemeGenerationDependent } from './ThemeGeneration'
+import { ThemeGenerationDependent } from './ThemeGeneration'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
+
+// Internal helper for DSL-provided inputs metadata
+type ProcWithInputs = { _inputs?: string[] }
 
 /**
  * Process: allocate themes to texts based on generation results.
@@ -110,7 +112,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
      * @returns A promise that resolves to a `ThemeAllocationResult` with the allocation details.
      */
     async run(ctx: ContextBase): Promise<ThemeAllocationResult> {
-        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const inp = (this as unknown as ProcWithInputs)._inputs?.[0] ?? 'dataset'
         const arr = ctx.datasets[inp]
         const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const labels = this.themeLabels(ctx)

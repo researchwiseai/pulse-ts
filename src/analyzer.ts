@@ -5,6 +5,9 @@ import type { CoreClient } from './core/clients/CoreClient'
 import * as Processes from './processes'
 import type { MutableTuple, TupleToResult, ContextBase } from './processes/types'
 
+// Internal helper for DSL-provided inputs metadata
+type DSLProcess = Processes.Process<string, unknown> & { _inputs?: string[] }
+
 /** Options for Analyzer. */
 export interface AnalyzerOptions<
     ProcessCollection extends readonly Processes.Process<string, unknown>[],
@@ -60,7 +63,7 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
         const output: [string, unknown][] = []
         for (const proc of this.processes) {
             const id = proc.id
-            const inputs: string[] = (proc as any)._inputs ?? ['dataset']
+            const inputs: string[] = (proc as DSLProcess)._inputs ?? ['dataset']
             const alias = inputs[0]
             if (!(alias in this.datasets)) {
                 throw new Error(`Dataset '${alias}' not found for process '${id}'`)
@@ -91,7 +94,7 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
  * Container for analysis results, exposing process outcomes as properties.
  */
 export class AnalysisResult {
-    constructor(results: Record<string, any>) {
+    constructor(results: Record<string, unknown>) {
         Object.assign(this, results)
     }
 }

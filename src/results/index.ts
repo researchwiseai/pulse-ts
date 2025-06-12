@@ -34,8 +34,8 @@ export class ThemeExtractionResult {
     }
 
     /** Convert extraction results to plain array of objects. */
-    toArray(): Array<{ text: string; theme: string; extraction: any }> {
-        const rows: Array<{ text: string; theme: string; extraction: any }> = []
+    toArray(): Array<{ text: string; theme: string; extraction: unknown }> {
+        const rows: Array<{ text: string; theme: string; extraction: unknown }> = []
         this.texts.forEach((text, i) => {
             this.themes.forEach((theme, j) => {
                 const items = this.response.extractions[i]?.[j] ?? []

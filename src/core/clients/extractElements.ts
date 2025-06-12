@@ -10,10 +10,10 @@ export interface ExtractElementsInputs {
     themes: string[]
 }
 
-export interface ExtractElementsOptions<
+export type ExtractElementsOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-> extends UniversalFeatureOptions<Fast, AwaitJobResult> {}
+> = UniversalFeatureOptions<Fast, AwaitJobResult>
 
 export async function extractElements<
     Fast extends boolean | undefined,

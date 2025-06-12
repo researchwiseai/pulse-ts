@@ -3,6 +3,9 @@ import { ThemeGenerationResult } from '../results/ThemeGenerationResult'
 import { shuffle } from './shuffle'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 
+// Internal helper for DSL-provided inputs metadata
+type ProcWithInputs = { _inputs?: string[] }
+
 /**
  * Process: uses an LLM to generate themes from input strings.
  *
@@ -157,7 +160,7 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
      * @returns A promise that resolves to a `ThemeGenerationResult` with the generated themes.
      */
     async run(ctx: ContextBase): Promise<ThemeGenerationResult> {
-        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const inp = (this as unknown as ProcWithInputs)._inputs?.[0] ?? 'dataset'
         const arr = ctx.datasets[inp]
         let texts: string[] = Array.isArray(arr) ? [...arr] : []
         const fastFlag = this.fast ?? ctx.fast
@@ -267,7 +270,7 @@ export abstract class ThemeGenerationDependent {
                 )
             }
 
-        return (ctx.datasets[tgProcess.name] as ThemeGenerationResult).themes.slice()
+            return (ctx.datasets[tgProcess.name] as ThemeGenerationResult).themes.slice()
         }
     }
 }
