@@ -85,7 +85,6 @@ extract_elements endpoint -- [x] Port pagination / batching utilities
 
 ### In Progress
 
-- [ ] Generate Typedoc API reference
 
 ### Done
 
@@ -109,6 +108,8 @@ extract_elements endpoint -- [x] Port pagination / batching utilities
 - [x] Create GitHub Actions workflow for tests, Qlty checks, and build on main
 - [x] Port DSL / Workflow builder & Analysis layer
 - [x] Update README.md with TypeScript usage examples
+- [x] Generate Typedoc API reference
+- [x] Add documentation examples for authentication, DSL, and starters
 
 ### Deferred
 
