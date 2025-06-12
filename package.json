@@ -11,7 +11,7 @@
         "lint": "eslint --fix --config .qlty/configs/eslint.config.mjs .",
         "docs": "typedoc --options typedoc.json",
         "typecheck": "tsc --noEmit",
-        "build": "tsup src/index.ts --format cjs,esm --dts --out-dir dist --clean --target node18 --tsconfig tsconfig.build.json"
+        "build": "tsup"
     },
     "devDependencies": {
         "@eslint/markdown": "^6.5.0",
@@ -22,9 +22,6 @@
         "@types/bun": "latest",
         "@vitest/coverage-v8": "^3.1.4",
         "eslint": "^9.28.0",
-        "markdown-it": "^14.1.0",
-        "markdownlint": "^0.38.0",
-        "markdownlint-cli": "^0.45.0",
         "prettier": "^3.5.3",
         "tsup": "latest",
         "typedoc": "latest",
