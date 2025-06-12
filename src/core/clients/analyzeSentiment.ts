@@ -11,10 +11,10 @@ import type { UniversalFeatureOptions } from './types'
  * @property fast - If true, performs a quicker analysis with potentially reduced accuracy. Defaults to false.
  * @property awaitJobResult - If true, waits for the sentiment analysis job to complete before returning the result. Defaults to false.
  */
-export interface AnalyzeSentimentOptions<
+export type AnalyzeSentimentOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-> extends UniversalFeatureOptions<Fast, AwaitJobResult> {}
+> = UniversalFeatureOptions<Fast, AwaitJobResult>
 /**
  * Analyzes the sentiment of the provided inputs using the CoreClient.
  *

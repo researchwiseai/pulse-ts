@@ -1,6 +1,9 @@
 import { SentimentResult } from '../results/SentimentResult'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 
+// Internal helper for DSL-provided inputs metadata
+type ProcWithInputs = { _inputs?: string[] }
+
 /**
  * Process: classify sentiment for texts.
  */
@@ -77,7 +80,7 @@ export class Sentiment<Name extends string = 'sentiment'>
      * @returns
      */
     async run(ctx: ContextBase): Promise<SentimentResult> {
-        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const inp = (this as unknown as ProcWithInputs)._inputs?.[0] ?? 'dataset'
         const arr = ctx.datasets[inp]
         const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast

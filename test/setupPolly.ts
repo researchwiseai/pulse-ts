@@ -35,13 +35,10 @@ export function setupPolly(options?: Record<string, unknown>) {
             ...(options || {}),
         })
 
-        polly.server.any().on('beforePersist', (req, _res) => {
-            req = {
-                ...req,
-                headers: {
-                    ...req.headers,
-                    ...(req.headers && { authorization: 'Bearer <redacted>' }),
-                },
+        polly.server.any().on('beforePersist', req => {
+            req.headers = {
+                ...req.headers,
+                authorization: 'Bearer <redacted>',
             }
         })
     })

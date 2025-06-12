@@ -74,7 +74,7 @@ export interface SentimentResponse {
 /**
  * Generic extraction result for an element from input texts.
  */
-export type ExtractionResult = Record<string, any>
+export type ExtractionResult = Record<string, unknown>
 
 /**
  * Response for the element extraction endpoint.

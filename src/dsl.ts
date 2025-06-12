@@ -2,7 +2,7 @@
  * DSL builder for composing sequences of Processes.
  */
 import fs from 'fs'
-import path from 'path'
+import { z } from 'zod'
 import { CoreClient } from './core/clients/CoreClient'
 import { Cluster } from './processes/Cluster'
 import { ThemeExtraction } from './processes/ThemeExtraction'
@@ -16,23 +16,28 @@ import type { ContextBase } from './processes'
 type MonitorCallbacks = {
     onRunStart?: () => void
     onProcessStart?: (id: string) => void
-    onProcessEnd?: (id: string, res: any) => void
+    onProcessEnd?: (id: string, res: unknown) => void
     onRunEnd?: () => void
 }
 
 /**
  * Workflow builder for custom pipelines.
  */
+/**
+ * Internal process type with DSL metadata.
+ */
+type DSLProcess = Processes.Process<string> & { _origId?: string; _inputs?: string[] }
+
 export class Workflow {
-    private datasets: Record<string, any> = {}
-    private processes: Processes.Process<string>[] = []
+    private datasets: Record<string, unknown> = {}
+    private processes: DSLProcess[] = []
     private idCounts: Record<string, number> = {}
     private monitors: MonitorCallbacks = {}
 
     /**
      * Register named dataset for DSL steps.
      */
-    source(name: string, data: any): this {
+    source(name: string, data: unknown): this {
         if (this.datasets[name]) {
             throw new Error(`Source '${name}' already registered`)
         }
@@ -40,18 +45,22 @@ export class Workflow {
         return this
     }
 
-    private addProcess(proc: Processes.Process<string>, name?: string): void {
-        const orig = (proc as any).id
+    private addProcess(proc: DSLProcess, name?: string): void {
+        const orig = proc.id
         const count = (this.idCounts[orig] || 0) + 1
         this.idCounts[orig] = count
-        ;(proc as any)._origId = orig
+        proc._origId = orig
         if (name) {
             if (this.datasets[name] || this.processes.some(p => p.id === name)) {
                 throw new Error(`Process name '${name}' already registered`)
             }
             Object.defineProperty(proc, 'id', { value: name, writable: false, configurable: true })
         } else if (count > 1) {
-            Object.defineProperty(proc, 'id', { value: `${orig}_${count}`, writable: false, configurable: true })
+            Object.defineProperty(proc, 'id', {
+                value: `${orig}_${count}`,
+                writable: false,
+                configurable: true,
+            })
         }
         this.processes.push(proc)
     }
@@ -60,7 +69,7 @@ export class Workflow {
         options: {
             minThemes?: number
             maxThemes?: number
-            context?: any
+            context?: unknown
             fast?: boolean
             source?: string
             name?: string
@@ -77,7 +86,7 @@ export class Workflow {
         ) {
             throw new Error(`Unknown source for themeGeneration: '${alias}'`)
         }
-        ;(proc as any)._inputs = [alias]
+        proc._inputs = [alias]
         return this
     }
 
@@ -102,7 +111,7 @@ export class Workflow {
             ) {
                 throw new Error(`Unknown inputs source for themeAllocation: '${textAlias}'`)
             }
-            if (!this.processes.some(p => (p as any)._origId === ThemeGeneration.id)) {
+            if (!this.processes.some(p => p._origId === ThemeGeneration.id)) {
                 this.themeGeneration({ source: textAlias })
             }
         }
@@ -112,18 +121,18 @@ export class Workflow {
         if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
             throw new Error(`Unknown inputs source for themeAllocation: '${inp}'`)
         }
-        ;(proc as any)._inputs = [inp]
+        proc._inputs = [inp]
         if (themes == null) {
             let alias = themesFrom
             if (!alias) {
                 alias = Array.from(this.processes)
-                    .filter(p => (p as any)._origId === ThemeGeneration.id)
+                    .filter(p => p._origId === ThemeGeneration.id)
                     .pop()?.id
             }
             if (!alias) {
                 throw new Error('No themeGeneration found for themeAllocation')
             }
-            ;(proc as any)._themesFromAlias = alias
+            proc._themesFromAlias = alias
         }
         return this
     }
@@ -145,18 +154,16 @@ export class Workflow {
         if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
             throw new Error(`Unknown inputs source for themeExtraction: '${inp}'`)
         }
-        ;(proc as any)._inputs = [inp]
+        proc._inputs = [inp]
         if (themes == null) {
             let alias = themesFrom
             if (!alias) {
-                alias = Array.from(this.processes)
-                    .filter(p => (p as any)._origId === ThemeGeneration.id)
-                    .pop()?.id
+                alias = this.processes.filter(p => p._origId === ThemeGeneration.id).pop()?.id
             }
             if (!alias) {
                 throw new Error('No themeGeneration found for themeExtraction')
             }
-            ;(proc as any)._themesFromAlias = alias
+            proc._themesFromAlias = alias
         }
         return this
     }
@@ -173,7 +180,7 @@ export class Workflow {
         ) {
             throw new Error(`Unknown source for sentiment: '${alias}'`)
         }
-        ;(proc as any)._inputs = [alias]
+        proc._inputs = [alias]
         return this
     }
 
@@ -189,7 +196,7 @@ export class Workflow {
         ) {
             throw new Error(`Unknown source for cluster: '${alias}'`)
         }
-        ;(proc as any)._inputs = [alias]
+        proc._inputs = [alias]
         return this
     }
 
@@ -206,16 +213,10 @@ export class Workflow {
      */
     static fromFile(filePath: string): Workflow {
         const wf = new Workflow()
-        const ext = path.extname(filePath).toLowerCase()
         const raw = fs.readFileSync(filePath, 'utf-8')
-        let config: any
-        if (ext === '.json') {
-            config = JSON.parse(raw)
-        } else {
-            throw new Error(`Unsupported config type: ${filePath}`)
-        }
-        const pipeline = config.pipeline || []
-        for (const step of pipeline) {
+        const schema = z.object({ pipeline: z.array(z.record(z.unknown())).optional() })
+        const { pipeline } = schema.parse(JSON.parse(raw))
+        for (const step of pipeline ?? []) {
             if (
                 !step ||
                 typeof step !== 'object' ||
@@ -225,10 +226,11 @@ export class Workflow {
                 throw new Error(`Invalid pipeline step: ${JSON.stringify(step)}`)
             }
             const [name, params] = Object.entries(step)[0]
-            if (typeof (wf as any)[name] !== 'function') {
+            const fn = (wf as unknown as Record<string, (...args: unknown[]) => unknown>)[name]
+            if (typeof fn !== 'function') {
                 throw new Error(`Unknown pipeline step: ${name}`)
             }
-            ;(wf as any)[name](params || {})
+            fn(params || {})
         }
         return wf
     }
@@ -236,7 +238,10 @@ export class Workflow {
     /**
      * Execute workflow: DSL mode if datasets registered, else Analyzer mode.
      */
-    async run(dataset: string[], options: { client: CoreClient; fast?: boolean }): Promise<any> {
+    async run(
+        dataset: string[],
+        options: { client: CoreClient; fast?: boolean },
+    ): Promise<Record<string, unknown>> {
         const client = options.client
         const fast = options.fast
         if (Object.keys(this.datasets).length > 0) {
@@ -255,13 +260,13 @@ export class Workflow {
         return analyzer.run()
     }
 
-    private async runDsl(client: CoreClient, fast?: boolean): Promise<any> {
+    private async runDsl(client: CoreClient, fast?: boolean): Promise<Record<string, unknown>> {
         const ctxDatasets = { ...this.datasets }
-        const results: Record<string, any> = {}
+        const results: Record<string, unknown> = {}
         this.monitors.onRunStart?.()
         for (const proc of this.processes) {
             this.monitors.onProcessStart?.(proc.id)
-            const inputs: string[] = (proc as any)._inputs || ['dataset']
+            const inputs: string[] = proc._inputs ?? ['dataset']
             if (!inputs.length) {
                 throw new Error(`No input source for process '${proc.id}'`)
             }
@@ -294,9 +299,11 @@ export class Workflow {
         const edges: Record<string, string[]> = {}
         const origMap: Record<string, string[]> = {}
         for (const p of this.processes) {
-            const orig = (p as any)._origId
-            origMap[orig] = origMap[orig] || []
-            origMap[orig].push(p.id)
+            const orig = p._origId
+            if (orig) {
+                origMap[orig] = origMap[orig] || []
+                origMap[orig].push(p.id)
+            }
         }
         const ids = this.processes.map(p => p.id)
         for (const p of this.processes) {
@@ -305,10 +312,10 @@ export class Workflow {
             for (const dep of p.dependsOn || []) {
                 deps = deps.concat(origMap[dep] || [])
             }
-            for (const inp of (p as any)._inputs || []) {
+            for (const inp of p._inputs ?? []) {
                 if (inp !== 'dataset' && ids.includes(inp)) deps.push(inp)
             }
-            const themeSrc = (p as any)._themesFromAlias
+            const themeSrc = p._themesFromAlias
             if (themeSrc && ids.includes(themeSrc)) deps.push(themeSrc)
             // unique
             edges[alias] = Array.from(new Set(deps))

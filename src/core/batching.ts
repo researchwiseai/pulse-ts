@@ -53,11 +53,11 @@ export function makeCrossBodies<A, B>(setA: A[], setB: B[], flatten: boolean): C
  * Stitch together an array of partial similarity result matrices into one full matrix.
  * Supports both self-comparison (square symmetric) and cross-comparison.
  */
-export function stitchResults(
+export function stitchResults<A, B>(
     results: { matrix: number[][] }[],
-    bodies: any[],
-    fullA: any[],
-    fullB: any[],
+    bodies: CrossBody<A, B>[],
+    fullA: A[],
+    fullB: B[],
 ): number[][] {
     const isSelf = fullA === fullB
     if (isSelf) {

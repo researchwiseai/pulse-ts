@@ -7,9 +7,9 @@ export class PulseAPIError extends Error {
     /** HTTP status text returned by the API */
     statusText: string
     /** Parsed response body, if available */
-    body: any
+    body: unknown
 
-    constructor(response: Response, body: any) {
+    constructor(response: Response, body: unknown) {
         super(`Pulse API Error: ${response.status} ${response.statusText}`)
         this.name = 'PulseAPIError'
         this.status = response.status

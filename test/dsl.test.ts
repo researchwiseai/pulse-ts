@@ -4,23 +4,29 @@ import { Workflow } from '../src/dsl'
 import { CoreClient } from '../src/core/clients/CoreClient'
 // Unit tests for DSL id uniqueness and naming behavior
 describe('DSL id uniqueness and naming', () => {
-  it('assigns unique ids for duplicate processes', () => {
-    const wf = new Workflow().themeGeneration().themeGeneration()
-    const ids = (wf as any).processes.map((p: any) => p.id)
-    expect(ids).toEqual(['themeGeneration', 'themeGeneration_2'])
-  })
-  it('throws when using duplicate custom name', () => {
-    const wf = new Workflow().themeGeneration({ name: 'x' })
-    expect(() => wf.themeGeneration({ name: 'x' })).toThrowError("Process name 'x' already registered")
-  })
-  it('throws when custom name collides with source alias', () => {
-    const wf = new Workflow().source('foo', [])
-    expect(() => wf.themeGeneration({ name: 'foo' })).toThrowError("Process name 'foo' already registered")
-  })
-  it('throws when inputs source unknown for themeAllocation', () => {
-    const wf = new Workflow()
-    expect(() => wf.themeAllocation({ inputs: 'unknown', themes: ['A'] })).toThrowError("Unknown inputs source for themeAllocation: 'unknown'")
-  })
+    it('assigns unique ids for duplicate processes', () => {
+        const wf = new Workflow().themeGeneration().themeGeneration()
+        const ids = (wf as any).processes.map((p: any) => p.id)
+        expect(ids).toEqual(['themeGeneration', 'themeGeneration_2'])
+    })
+    it('throws when using duplicate custom name', () => {
+        const wf = new Workflow().themeGeneration({ name: 'x' })
+        expect(() => wf.themeGeneration({ name: 'x' })).toThrowError(
+            "Process name 'x' already registered",
+        )
+    })
+    it('throws when custom name collides with source alias', () => {
+        const wf = new Workflow().source('foo', [])
+        expect(() => wf.themeGeneration({ name: 'foo' })).toThrowError(
+            "Process name 'foo' already registered",
+        )
+    })
+    it('throws when inputs source unknown for themeAllocation', () => {
+        const wf = new Workflow()
+        expect(() => wf.themeAllocation({ inputs: 'unknown', themes: ['A'] })).toThrowError(
+            "Unknown inputs source for themeAllocation: 'unknown'",
+        )
+    })
 })
 import { ClientCredentialsAuth } from '../src/auth'
 import { Job } from '../src/core/job'
