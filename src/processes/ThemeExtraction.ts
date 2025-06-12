@@ -17,7 +17,7 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
     fast?: boolean
 
     constructor(
-        options: { themes?: string[]; version?: string; fast?: boolean; name?: Name } = {}
+        options: { themes?: string[]; version?: string; fast?: boolean; name?: Name } = {},
     ) {
         super(options)
         this.version = options.version
@@ -33,7 +33,7 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         const fastFlag = this.fast ?? ctx.fast
         const response = await ctx.client.extractElements(
             { inputs: ctx.dataset, themes: this.themeRepresentatives(ctx) },
-            { fast: fastFlag }
+            { fast: fastFlag },
         )
         return new ThemeExtractionResult(response, ctx.dataset, this.themeLabels(ctx))
     }

@@ -34,7 +34,7 @@ export class CoreClient {
     /** Create embeddings for an array of text inputs. */
     async createEmbeddings<
         Fast extends boolean | undefined = undefined,
-        AwaitJobResult extends boolean | undefined = undefined
+        AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: string[], opts: CreateEmbeddingsOptions<Fast, AwaitJobResult> = {}) {
         return createEmbeddings(this, inputs, opts)
     }
@@ -48,7 +48,7 @@ export class CoreClient {
      */
     async compareSimilarity<
         Fast extends boolean | undefined = undefined,
-        AwaitJobResult extends boolean | undefined = undefined
+        AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: CompareSimilarityInputs, opts?: CompareSimilarityOptions<Fast, AwaitJobResult>) {
         return await compareSimilarity(this, inputs, opts)
     }
@@ -64,7 +64,7 @@ export class CoreClient {
      */
     async generateThemes<
         Fast extends boolean | undefined = undefined,
-        AwaitJobResult extends boolean | undefined = undefined
+        AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: string[], opts: GenerateThemeOptions<Fast, AwaitJobResult> = {}) {
         return generateThemes(this, inputs, opts)
     }
@@ -79,7 +79,7 @@ export class CoreClient {
      */
     async analyzeSentiment<
         Fast extends boolean | undefined = undefined,
-        AwaitJobResult extends boolean | undefined = undefined
+        AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: string[], opts: AnalyzeSentimentOptions<Fast, AwaitJobResult> = {}) {
         return analyzeSentiment(this, inputs, opts)
     }
@@ -94,7 +94,7 @@ export class CoreClient {
      */
     async extractElements<
         Fast extends boolean | undefined = undefined,
-        AwaitJobResult extends boolean | undefined = undefined
+        AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: ExtractElementsInputs, opts: ExtractElementsOptions<Fast, AwaitJobResult>) {
         return await extractElements(this, inputs, opts)
     }

@@ -10,7 +10,7 @@ export class ThemeAllocationResult {
         private assignments: number[],
         private singleLabel: boolean = true,
         private threshold: number = 0.5,
-        private similarity: number[][]
+        private similarity: number[][],
     ) {
         if (!similarity) {
             throw new Error('Similarity matrix is required for ThemeAllocationResult')
@@ -30,11 +30,11 @@ export class ThemeAllocationResult {
         this.similarity.forEach((row, i) => {
             const bestIdx = row.reduce(
                 (best, _, j) => ((row[j] as number) > (row[best] as number) ? j : best),
-                0
+                0,
             )
             const bestVal = row[bestIdx] as number
             result[this.texts[i] as string] =
-                bestVal >= thr ? this.themesArr[bestIdx] ?? null : null
+                bestVal >= thr ? (this.themesArr[bestIdx] ?? null) : null
         })
         return result
     }

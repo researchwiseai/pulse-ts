@@ -86,6 +86,5 @@ To create the distributable files run:
 bun run build
 ```
 
-This generates `dist/index.js`, `dist/index.mjs` and the type declarations in
-`dist/index.d.ts`. IDEs will automatically pick up these types for improved
-editor support.
+This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
+IDEs will automatically pick up these types for improved editor support.
