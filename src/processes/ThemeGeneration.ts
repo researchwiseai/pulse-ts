@@ -126,7 +126,7 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
             maxThemes?: number
             context?: string
             fast?: boolean
-        } = {}
+        } = {},
     ) {
         this.name = options.name ?? (ThemeGeneration.id as Name)
         this.minThemes = options.minThemes ?? 2
@@ -154,7 +154,9 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
      * @param ctx - The context containing the dataset, client, and configuration options.
      * @returns A promise that resolves to a `ThemeGenerationResult` with the generated themes.
      */
-    async run(ctx: ContextBase) {
+    async run(
+        ctx: Pick<ContextBase, 'client' | 'fast' | 'dataset'>,
+    ): Promise<ThemeGenerationResult> {
         let texts: string[] = ctx.dataset.slice()
         const fastFlag = this.fast ?? ctx.fast
         const sampleSize = fastFlag ? 200 : 1000
@@ -253,9 +255,16 @@ export abstract class ThemeGenerationDependent {
         if (this.themes != null) {
             return this.themes.slice()
         } else {
-            const tgProcess = ctx.processes.find(
-                p => p.id === ThemeGeneration.id
-            ) as ThemeGeneration
+            const tgProcess = ctx.processes.find(p => p.id === ThemeGeneration.id) as
+                | ThemeGeneration
+                | undefined
+
+            if (tgProcess == null) {
+                throw new Error(
+                    `ThemeGenerationDependent: No themes provided and no previous ThemeGeneration process found.`,
+                )
+            }
+
             return (ctx.results[tgProcess.name] as ThemeGenerationResult).themes.slice()
         }
     }

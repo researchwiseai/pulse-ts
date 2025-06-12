@@ -9,9 +9,10 @@
  * @returns A new array containing all input elements in a randomized order.
  */
 export function shuffle<T>(arr: T[]): T[] {
-    const a = [...arr];
+    const a = [...arr]
     for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));[a[i] as unknown, a[j] as unknown] = [a[j], a[i]];
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i] as unknown, a[j] as unknown] = [a[j], a[i]]
     }
-    return a;
+    return a
 }
