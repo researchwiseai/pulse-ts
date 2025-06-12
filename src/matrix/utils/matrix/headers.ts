@@ -1,7 +1,7 @@
 export interface HeaderRecordBase {
     key: string
     type: 's' | 'n' | 'b' | 'd' | 'j'
-    value: string | number | boolean | Date | string
+    value: string | number | boolean | Date
 }
 
 export interface HeaderRecordString extends HeaderRecordBase {

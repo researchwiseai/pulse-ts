@@ -30,7 +30,7 @@ type DSLProcess = Processes.Process<string> & { _origId?: string; _inputs?: stri
 
 export class Workflow {
     private datasets: Record<string, unknown> = {}
-    private processes: DSLProcess[] = []
+    private readonly processes: DSLProcess[] = []
     private idCounts: Record<string, number> = {}
     private monitors: MonitorCallbacks = {}
 
@@ -78,7 +78,7 @@ export class Workflow {
         const { minThemes, maxThemes, context, fast, source, name } = options
         const proc = new ThemeGeneration({ minThemes, maxThemes, context, fast })
         this.addProcess(proc, name)
-        const alias = source || 'dataset'
+        const alias = source ?? 'dataset'
         if (
             alias !== 'dataset' &&
             !this.datasets[alias] &&
@@ -102,7 +102,7 @@ export class Workflow {
         } = {},
     ): this {
         const { themes, fast, singleLabel, threshold, inputs, themesFrom, name } = options
-        const textAlias = inputs || 'dataset'
+        const textAlias = inputs ?? 'dataset'
         if (themes == null && themesFrom == null) {
             if (
                 textAlias !== 'dataset' &&
@@ -117,7 +117,7 @@ export class Workflow {
         }
         const proc = new ThemeAllocation({ themes, singleLabel, fast, threshold })
         this.addProcess(proc, name)
-        const inp = inputs || 'dataset'
+        const inp = inputs ?? 'dataset'
         if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
             throw new Error(`Unknown inputs source for themeAllocation: '${inp}'`)
         }
@@ -150,7 +150,7 @@ export class Workflow {
         const { themes, version, fast, inputs, themesFrom, name } = options
         const proc = new ThemeExtraction({ themes, version, fast })
         this.addProcess(proc, name)
-        const inp = inputs || 'dataset'
+        const inp = inputs ?? 'dataset'
         if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
             throw new Error(`Unknown inputs source for themeExtraction: '${inp}'`)
         }
@@ -172,7 +172,7 @@ export class Workflow {
         const { fast, source, name } = options
         const proc = new Sentiment({ fast })
         this.addProcess(proc, name)
-        const alias = source || 'dataset'
+        const alias = source ?? 'dataset'
         if (
             alias !== 'dataset' &&
             !this.datasets[alias] &&
@@ -188,7 +188,7 @@ export class Workflow {
         const { fast, source, name } = options
         const proc = new Cluster({ fast })
         this.addProcess(proc, name)
-        const alias = source || 'dataset'
+        const alias = source ?? 'dataset'
         if (
             alias !== 'dataset' &&
             !this.datasets[alias] &&
@@ -254,7 +254,7 @@ export class Workflow {
         const analyzer = new Analyzer({
             dataset,
             processes: this.processes,
-            client: client as CoreClient,
+            client,
             fast,
         })
         return analyzer.run()
