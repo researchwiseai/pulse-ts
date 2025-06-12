@@ -1,6 +1,7 @@
 # Authentication
 
-The client supports OAuth2 authentication using either client credentials or the Authorization Code PKCE flow.
+The client supports OAuth2 authentication using either client credentials or the Authorization Code
+PKCE flow.
 
 ## Client Credentials
 
@@ -8,8 +9,8 @@ The client supports OAuth2 authentication using either client credentials or the
 import { ClientCredentialsAuth } from '@rwai/pulse'
 
 const auth = new ClientCredentialsAuth(
-  process.env.PULSE_CLIENT_ID!,
-  process.env.PULSE_CLIENT_SECRET!
+    process.env.PULSE_CLIENT_ID!,
+    process.env.PULSE_CLIENT_SECRET!,
 )
 ```
 
@@ -19,10 +20,10 @@ const auth = new ClientCredentialsAuth(
 import { AuthorizationCodePKCEAuth } from '@rwai/pulse'
 
 const auth = new AuthorizationCodePKCEAuth({
-  tokenUrl: 'https://login.example.com/oauth/token',
-  clientId: 'my-client',
-  code: '<auth-code-from-login>',
-  codeVerifier: '<generated-verifier>',
-  redirectUri: 'https://app.example.com/callback'
+    tokenUrl: 'https://login.example.com/oauth/token',
+    clientId: 'my-client',
+    code: '<auth-code-from-login>',
+    codeVerifier: '<generated-verifier>',
+    redirectUri: 'https://app.example.com/callback',
 })
 ```
