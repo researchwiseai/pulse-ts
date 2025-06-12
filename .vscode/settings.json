@@ -12,14 +12,9 @@
     "prettier.configPath": ".qlty/configs/.prettierrc.json",
     "prettier.ignorePath": ".qlty/configs/.prettierignore",
     "eslint.options": {
-        "configFile": ".qlty/configs/eslint.config.mjs"
+        "overrideConfigFile": ".qlty/configs/eslint.config.mjs"
     },
-    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-    "eslint.workingDirectories": [
-        {
-            "mode": "auto"
-        }
-    ],
+    "eslint.validate": ["typescript"],
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true
 }

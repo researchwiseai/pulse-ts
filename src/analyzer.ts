@@ -20,7 +20,7 @@ export interface AnalyzerOptions<
 }
 
 export class Analyzer<ProcessCollection extends readonly Processes.Process<string, unknown>[]> {
-    dataset: string[]
+    sources: Record<string, string[]> = {}
     processes: ProcessCollection
     fast: boolean
     client: CoreClient
@@ -28,7 +28,7 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
     results: Record<string, unknown>
 
     constructor(opts: AnalyzerOptions<ProcessCollection>) {
-        this.dataset = opts.dataset
+        this.sources['dataset'] = opts.dataset
         this.processes = opts.processes ?? []
         this.fast = opts.fast ?? false
         this.client = opts.client
@@ -81,7 +81,7 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
  * Container for analysis results, exposing process outcomes as properties.
  */
 export class AnalysisResult {
-    constructor(results: Record<string, any>) {
+    constructor(results: Record<string, unknown>) {
         Object.assign(this, results)
     }
 }

@@ -1,7 +1,7 @@
 import { PulseAPIError } from '../../errors'
 import { fetchWithRetry, type FetchOptions } from '../../http'
 import { unflatten } from '../../matrix'
-import type { SimilarityResponse } from '../../models'
+import type { SimilarityResponse, SimilarityResponseMatrix } from '../../models'
 import { Job } from '../job'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
@@ -26,7 +26,9 @@ export interface CompareSimilarityOptions<
 export async function compareSimilarity<
     Fast extends boolean | undefined = undefined,
     AwaitJobResult extends boolean | undefined = undefined,
-    Result = AwaitJobResult extends false ? Job<SimilarityResponse> : SimilarityResponse,
+    Result = AwaitJobResult extends false
+        ? Job<SimilarityResponseMatrix>
+        : SimilarityResponseMatrix,
 >(
     client: CoreClient,
     inputs: CompareSimilarityInputs,
@@ -60,13 +62,13 @@ export async function compareSimilarity<
     if (response.status === 202) {
         // Job accepted for background processing
         const { jobId } = json as { jobId: string }
-        const job = new Job<Optional<SimilarityResponse, 'matrix'>, SimilarityResponse>({
+        const job = new Job<SimilarityResponse, SimilarityResponse>({
             jobId,
             baseUrl: client.baseUrl,
             auth: client.auth,
             after: resp => {
                 // If the matrix is not returned, unflatten the flattened result
-                if (!resp.matrix) {
+                if (!resp.matrix && resp.scenario === 'cross') {
                     return {
                         ...resp,
                         matrix: unflatten(resp.flattened, [resp.n]) as number[][],
@@ -86,6 +88,6 @@ export async function compareSimilarity<
         if (!partial.matrix && partial.scenario === 'cross') {
             partial.matrix = unflatten(partial.flattened, [partial.n]) as number[][]
         }
-        return partial as SimilarityResponse as Result
+        return partial as SimilarityResponseMatrix as Result
     }
 }

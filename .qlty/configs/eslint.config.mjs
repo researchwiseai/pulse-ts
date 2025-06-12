@@ -16,12 +16,13 @@ export default defineConfig([
     },
     tseslint.configs.recommended,
     {
-        files: ['src.**/*.ts'],
+        files: ['src/**/*.ts'],
         rules: {
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
             ],
+            '@typescript-eslint/no-empty-object-type': 'off',
         },
     },
     {

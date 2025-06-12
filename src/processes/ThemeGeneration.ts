@@ -110,6 +110,10 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
      * Useful for scenarios where speed is prioritized over completeness or accuracy.
      */
     fast?: boolean
+    /**
+     * The name of the source to use for theme generation.
+     */
+    sourceName: string
 
     /**
      * Constructs a new instance of the ThemeGeneration class.
@@ -128,6 +132,7 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
             maxThemes?: number
             context?: string
             fast?: boolean
+            sourceName?: string
         } = {},
     ) {
         this.name = options.name ?? (ThemeGeneration.id as Name)
@@ -135,6 +140,7 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
         this.maxThemes = options.maxThemes ?? 50
         this.context = options.context
         this.fast = options.fast
+        this.sourceName = options.sourceName ?? 'dataset'
     }
 
     /**
@@ -157,9 +163,9 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
      * @returns A promise that resolves to a `ThemeGenerationResult` with the generated themes.
      */
     async run(
-        ctx: Pick<ContextBase, 'client' | 'fast' | 'dataset'>,
+        ctx: Pick<ContextBase, 'client' | 'fast' | 'sources'>,
     ): Promise<ThemeGenerationResult> {
-        let texts: string[] = ctx.dataset.slice()
+        let texts: string[] = ctx.sources[this.sourceName].slice()
         const fastFlag = this.fast ?? ctx.fast
         const sampleSize = fastFlag ? 200 : 1000
         if (texts.length > sampleSize) {
@@ -227,6 +233,11 @@ export abstract class ThemeGenerationDependent {
      * ```
      */
     dependsOn: string[] = []
+    /** The names of the sources used by this process. */
+    sourceNames = {
+        inputs: 'dataset',
+        themes: 'themes',
+    }
 
     constructor(options: { themes?: Theme[] | string[] } = {}) {
         this.themes = options.themes
@@ -257,6 +268,7 @@ export abstract class ThemeGenerationDependent {
         if (this.themes != null) {
             return this.themes.slice()
         } else {
+            // TODO: Improve theme finding by using source names
             const tgProcess = ctx.processes.find(p => p.id === ThemeGeneration.id) as
                 | ThemeGeneration
                 | undefined

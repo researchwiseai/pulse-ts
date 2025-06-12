@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-export type paths = {
+export interface paths {
     '/embeddings': {
         parameters: {
             query?: never
@@ -162,7 +162,7 @@ export type paths = {
     }
 }
 export type webhooks = Record<string, never>
-export type components = {
+export interface components {
     schemas: {
         ErrorResponse: {
             message: string

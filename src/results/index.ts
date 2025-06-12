@@ -1,7 +1,7 @@
 /**
  * Result helper classes for analysis processes.
  */
-import type { ExtractionResult, ExtractionsResponse } from '../models'
+import type { ExtractionsResponse } from '../models'
 
 /**
  * Results of clustering with helper methods.
@@ -16,6 +16,15 @@ export class ClusterResult {
     get similarityMatrix(): number[][] {
         return this.matrix
     }
+
+    score(a: string, b: string): number {
+        const idxA = this.texts.indexOf(a)
+        const idxB = this.texts.indexOf(b)
+        if (idxA === -1 || idxB === -1) {
+            throw new Error('Text not found in the provided texts list')
+        }
+        return this.matrix[idxA][idxB]
+    }
 }
 
 /**
@@ -29,7 +38,7 @@ export class ThemeExtractionResult {
     ) {}
 
     /** Nested list of extracted elements per text per theme. */
-    get extractions(): ExtractionResult[] {
+    get extractions(): ExtractionsResponse['extractions'] {
         return this.response.extractions
     }
 
