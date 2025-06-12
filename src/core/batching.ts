@@ -53,44 +53,32 @@ export function makeCrossBodies<A, B>(setA: A[], setB: B[], flatten: boolean): C
  * Stitch together an array of partial similarity result matrices into one full matrix.
  * Supports both self-comparison (square symmetric) and cross-comparison.
  */
-export function stitchResults<A, B>(
-    results: { matrix: number[][] }[],
-    bodies: CrossBody<A, B>[],
-    fullA: A[],
-    fullB: B[],
-): number[][] {
-    const isSelf = fullA === fullB
-    if (isSelf) {
-        const chunks = makeSelfChunks(fullA)
-        const n = fullA.length
-        const matrix: number[][] = Array.from({ length: n }, () => Array(n).fill(0))
-        const offsets: number[] = [0]
-        for (const c of chunks) offsets.push(offsets[offsets.length - 1] + c.length)
-        let idx = 0
-        for (let i = 0; i < chunks.length; i++) {
-            for (let j = i; j < chunks.length; j++) {
-                const block = (
-                    results[idx++] as {
-                        matrix: number[][]
-                    }
-                ).matrix
-                const r0 = offsets[i]
-                const r1 = offsets[i + 1]
-                const c0 = offsets[j]
-                const c1 = offsets[j + 1]
-                for (let r = r0; r < r1; r++) {
-                    for (let c = c0; c < c1; c++) {
-                        matrix[r][c] = block[r - r0]?.[c - c0]
-                        if (i !== j) {
-                            matrix[c][r] = block[r - r0][c - c0]
-                        }
-                    }
+function stitchSelf<A>(results: { matrix: number[][] }[], full: A[]): number[][] {
+    const chunks = makeSelfChunks(full)
+    const n = full.length
+    const matrix: number[][] = Array.from({ length: n }, () => Array(n).fill(0))
+    const offsets: number[] = [0]
+    for (const c of chunks) offsets.push(offsets[offsets.length - 1] + c.length)
+    let idx = 0
+    for (let i = 0; i < chunks.length; i++) {
+        for (let j = i; j < chunks.length; j++) {
+            const block = (results[idx++] as { matrix: number[][] }).matrix
+            const r0 = offsets[i]
+            const r1 = offsets[i + 1]
+            const c0 = offsets[j]
+            const c1 = offsets[j + 1]
+            for (let r = r0; r < r1; r++) {
+                for (let c = c0; c < c1; c++) {
+                    matrix[r][c] = block[r - r0]?.[c - c0]
+                    if (i !== j) matrix[c][r] = block[r - r0][c - c0]
                 }
             }
         }
-        return matrix
     }
-    // Cross-comparison
+    return matrix
+}
+
+function stitchCross<A, B>(results: { matrix: number[][] }[], fullA: A[], fullB: B[]): number[][] {
     const chunksA = makeSelfChunks(fullA)
     const chunksB = makeSelfChunks(fullB)
     const matrix: number[][] = Array.from({ length: fullA.length }, () =>
@@ -116,4 +104,13 @@ export function stitchResults<A, B>(
         }
     }
     return matrix
+}
+
+export function stitchResults<A, B>(
+    results: { matrix: number[][] }[],
+    bodies: CrossBody<A, B>[],
+    fullA: A[],
+    fullB: B[],
+): number[][] {
+    return fullA === fullB ? stitchSelf(results, fullA) : stitchCross(results, fullA, fullB)
 }

@@ -15,50 +15,67 @@ export interface FetchOptions extends RequestInit {
 
 import { NetworkError, TimeoutError } from './errors'
 
+/**
+ * Attempt a fetch with a timeout, returning the Response or throwing on error.
+ */
+async function attemptFetch(input: Request, init: RequestInit, timeout: number): Promise<Response> {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeout)
+    const req = new Request(input)
+    try {
+        const headerObj: Record<string, string> = {}
+        req.headers.forEach((v, k) => {
+            headerObj[k] = v
+        })
+        const initHeaders: Record<string, string> = {}
+        if (init.headers) {
+            new Headers(init.headers).forEach((v, k) => {
+                initHeaders[k] = v
+            })
+        }
+        const authorization = req.headers.get('authorization')
+        const headers = {
+            ...headerObj,
+            ...initHeaders,
+            ...(authorization ? { authorization } : {}),
+        }
+        return await fetch(req, { ...init, headers, signal: controller.signal })
+    } finally {
+        clearTimeout(timer)
+    }
+}
+
+/**
+ * Normalize fetch errors into TimeoutError or NetworkError, or rethrow.
+ */
+function handleFetchError(err: unknown, url: string, timeout: number): never {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+        throw new TimeoutError(url, timeout)
+    }
+    if (err instanceof TypeError) {
+        throw new NetworkError(url, err)
+    }
+    throw err as Error
+}
+
+/**
+ * Fetch with retry and timeout handling.
+ */
 export async function fetchWithRetry(
     input: Request,
     options: FetchOptions = {},
 ): Promise<Response> {
     const { timeout = 30000, retries = 1, ...init } = options
-    const baseRequest = input
     let attempt = 0
     while (true) {
         attempt++
-        const controller = new AbortController()
-        const timer = setTimeout(() => controller.abort(), timeout)
-        const request = new Request(baseRequest)
         try {
-            const authorization = request.headers.get('authorization')
-            const headerObj: Record<string, string> = {}
-            request.headers.forEach((v, k) => {
-                headerObj[k] = v
-            })
-            const response = await fetch(request, {
-                ...init,
-                headers: {
-                    ...headerObj,
-                    ...init.headers,
-                    ...(authorization ? { authorization } : {}),
-                },
-                signal: controller.signal,
-            })
-            clearTimeout(timer)
-            if (!response.ok && attempt <= retries) {
-                continue
-            }
+            const response = await attemptFetch(input, init, timeout)
+            if (!response.ok && attempt <= retries) continue
             return response
         } catch (err) {
-            clearTimeout(timer)
-            if (attempt <= retries) {
-                continue
-            }
-            if (err instanceof DOMException && err.name === 'AbortError') {
-                throw new TimeoutError(request.url, timeout)
-            }
-            if (err instanceof TypeError) {
-                throw new NetworkError(request.url, err)
-            }
-            throw err
+            if (attempt <= retries) continue
+            handleFetchError(err, input.url, timeout)
         }
     }
 }

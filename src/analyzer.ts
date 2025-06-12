@@ -97,4 +97,8 @@ export class AnalysisResult {
     constructor(results: Record<string, unknown>) {
         Object.assign(this, results)
     }
+
+    toJSON(): Record<string, unknown> {
+        return { ...this }
+    }
 }
