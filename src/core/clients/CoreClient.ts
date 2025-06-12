@@ -14,24 +14,44 @@ import {
 } from './extractElements'
 import { generateThemes, type GenerateThemeOptions } from './generateThemes'
 
+/**
+ * Core client for interacting with the Pulse API operations.
+ *
+ * Provides methods for embeddings, similarity, themes, sentiment, and element extraction.
+ */
 export class CoreClient {
     private readonly _baseUrl: string
     private readonly _auth: Auth
 
+    /**
+     * Construct a new CoreClient.
+     *
+     * @param options - Configuration options including the API baseUrl and authentication.
+     */
     constructor(options: CoreClientOptions) {
         this._baseUrl = options.baseUrl.replace(/\/+$/g, '')
         this._auth = options.auth
     }
 
+    /** The normalized base URL used for API requests. */
     get baseUrl(): string {
         return this._baseUrl
     }
 
+    /** The authenticator instance used to sign requests. */
     get auth(): Auth {
         return this._auth
     }
 
-    /** Create embeddings for an array of text inputs. */
+    /**
+     * Create embeddings for an array of text inputs.
+     *
+     * @typeParam Fast - Flag to enable synchronous processing.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param inputs - Array of text strings to embed.
+     * @param opts - Embedding options controlling processing mode.
+     * @returns EmbeddingResponse or Job handle, based on options.
+     */
     async createEmbeddings<
         Fast extends boolean | undefined = undefined,
         AwaitJobResult extends boolean | undefined = undefined,
@@ -42,9 +62,11 @@ export class CoreClient {
     /**
      * Compute similarity scores between texts.
      *
-     * @param set Array of text items to compare.
-     * @param fast If true, return instant response; otherwise may enqueue a job.
-     * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting result.
+     * @typeParam Fast - Flag to enable synchronous processing.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param inputs - Inputs for similarity computation (self or cross comparison).
+     * @param opts - Options controlling processing mode and result shape.
+     * @returns SimilarityResponse or Job handle, based on options.
      */
     async compareSimilarity<
         Fast extends boolean | undefined = undefined,
@@ -56,11 +78,11 @@ export class CoreClient {
     /**
      * Generate themes for a set of input texts.
      *
-     * @param inputs Array of input texts to analyze.
-     * @param minThemes Minimum number of themes to return.
-     * @param maxThemes Maximum number of themes to return.
-     * @param fast If true, request a fast synchronous response; otherwise may enqueue a job.
-     * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting the result.
+     * @typeParam Fast - Flag to enable synchronous processing.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param inputs - Array of input texts to analyze.
+     * @param opts - Options for theme generation (minThemes, maxThemes, fast, awaitJobResult).
+     * @returns ThemesResponse or Job handle, based on options.
      */
     async generateThemes<
         Fast extends boolean | undefined = undefined,
@@ -72,10 +94,11 @@ export class CoreClient {
     /**
      * Analyze sentiment for an array of input texts.
      *
-     * @param inputs Array of text inputs to analyze.
-     * @param opts Analyze sentiment options
-     * @param opts.fast If true, request a fast synchronous response; otherwise may enqueue a job.
-     * @param opts.awaitJobResult If false and fast=false, return a Job handle instead of awaiting the result.
+     * @typeParam Fast - Flag to enable synchronous processing.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param inputs - Array of text inputs to analyze.
+     * @param opts - Sentiment analysis options (fast, awaitJobResult).
+     * @returns SentimentResponse or Job handle, based on options.
      */
     async analyzeSentiment<
         Fast extends boolean | undefined = undefined,
@@ -87,10 +110,11 @@ export class CoreClient {
     /**
      * Extract specified elements from an array of input texts.
      *
-     * @param inputs Array of text inputs to extract from.
-     * @param elements Array of element names to extract.
-     * @param fast If true, request a fast synchronous response; otherwise may enqueue a job.
-     * @param awaitJobResult If false and fast=false, return a Job handle instead of awaiting the result.
+     * @typeParam Fast - Flag to enable synchronous processing.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param inputs - Elements extraction inputs (texts and theme list).
+     * @param opts - Extraction options (fast, awaitJobResult).
+     * @returns ExtractionsResponse or Job handle, based on options.
      */
     async extractElements<
         Fast extends boolean | undefined = undefined,

@@ -7,22 +7,50 @@ import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 import type { Optional } from 'utility-types'
 
+/**
+ * Input shape for self-comparison similarity where a single set is compared to itself.
+ */
 export interface CompareSimilaritySelf {
+    /** Array of text strings to compare among themselves. */
     set: string[]
 }
 
+/**
+ * Input shape for cross-comparison similarity between two distinct sets.
+ */
 export interface CompareSimilarityCross {
+    /** First array of text strings. */
     setA: string[]
+    /** Second array of text strings. */
     setB: string[]
 }
 
+/**
+ * Inputs for similarity computation, supporting both self and cross comparison.
+ */
 export type CompareSimilarityInputs = CompareSimilaritySelf | CompareSimilarityCross
 
+/**
+ * Options controlling similarity comparison requests.
+ *
+ * @typeParam Fast - If true, request synchronous processing.
+ * @typeParam AwaitJobResult - If false when fast=false, return Job handle.
+ */
 export type CompareSimilarityOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
 > = UniversalFeatureOptions<Fast, AwaitJobResult>
 
+/**
+ * Compute similarity scores between texts using the Pulse API.
+ *
+ * @typeParam Fast - If true, request synchronous processing.
+ * @typeParam AwaitJobResult - If false and fast=false, return a Job handle.
+ * @param client - CoreClient instance for API calls.
+ * @param inputs - Dataset inputs shape for similarity computation.
+ * @param options - Similarity request options (fast, awaitJobResult).
+ * @returns SimilarityResponse or Job<SimilarityResponse> based on options.
+ */
 export async function compareSimilarity<
     Fast extends boolean | undefined = undefined,
     AwaitJobResult extends boolean | undefined = undefined,

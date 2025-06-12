@@ -5,7 +5,10 @@ import type { CoreClient } from './core/clients/CoreClient'
 import * as Processes from './processes'
 import type { MutableTuple, TupleToResult, ContextBase } from './processes/types'
 
-// Internal helper for DSL-provided inputs metadata
+/**
+ * Internal helper type for processes with DSL-provided input metadata.
+ * @internal
+ */
 type DSLProcess = Processes.Process<string, unknown> & { _inputs?: string[] }
 
 /** Options for Analyzer. */
@@ -22,6 +25,11 @@ export interface AnalyzerOptions<
     fast?: boolean
 }
 
+/**
+ * Analyzer orchestrates a sequence of Pulse API processes on input datasets.
+ *
+ * @typeParam ProcessCollection - Tuple of process definitions to execute in order.
+ */
 export class Analyzer<ProcessCollection extends readonly Processes.Process<string, unknown>[]> {
     private datasets: Record<string, unknown>
     processes: ProcessCollection
@@ -57,7 +65,10 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
     }
 
     /**
-     * Execute the configured processes and wrap results.
+     * Execute the configured processes in sequence and return their results.
+     *
+     * @returns A mapping from process names to their execution results.
+     * @throws Error if any process input alias is not found in the dataset map.
      */
     async run(): Promise<TupleToResult<ProcessCollection>> {
         const output: [string, unknown][] = []
@@ -84,7 +95,9 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
         return Object.fromEntries(output) as TupleToResult<ProcessCollection>
     }
 
-    /** Close underlying resources (noop) . */
+    /**
+     * Close underlying resources (no-op for Analyzer).
+     */
     close(): void {
         // no resources to close in this implementation
     }
@@ -92,6 +105,9 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
 
 /**
  * Container for analysis results, exposing process outcomes as properties.
+ */
+/**
+ * Wrapper for analysis results, exposing process outcomes as properties.
  */
 export class AnalysisResult {
     constructor(results: Record<string, unknown>) {

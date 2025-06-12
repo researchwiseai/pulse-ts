@@ -5,16 +5,37 @@ import { Job } from '../job'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 
+/**
+ * Input parameters for element extraction requests.
+ */
 export interface ExtractElementsInputs {
+    /** Array of text strings to extract elements from. */
     inputs: string[]
+    /** Array of theme labels to guide the extraction. */
     themes: string[]
 }
 
+/**
+ * Options controlling element extraction requests.
+ *
+ * @typeParam Fast - If true, request synchronous processing.
+ * @typeParam AwaitJobResult - If false when fast=false, return Job handle.
+ */
 export type ExtractElementsOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
 > = UniversalFeatureOptions<Fast, AwaitJobResult>
 
+/**
+ * Extract specified elements from texts based on given themes via the Pulse API.
+ *
+ * @typeParam Fast - If true, request synchronous processing.
+ * @typeParam AwaitJobResult - If false and fast=false, return a Job handle.
+ * @param client - CoreClient instance for API calls.
+ * @param inputs - Inputs including texts and theme labels.
+ * @param options - Extraction options (fast, awaitJobResult).
+ * @returns ExtractionsResponse or Job<ExtractionsResponse> based on options.
+ */
 export async function extractElements<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,

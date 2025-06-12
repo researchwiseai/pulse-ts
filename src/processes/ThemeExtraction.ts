@@ -6,7 +6,12 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
 type ProcWithInputs = { _inputs?: string[] }
 
 /**
- * Process: extract elements matching themes from input strings.
+ * Process that extracts elements matching themes from input texts.
+ *
+ * Uses the Pulse API to perform element extraction for each theme.
+ *
+ * @template Name - Custom name for this process instance.
+ * @implements Process<Name, ThemeExtractionResult>
  */
 @staticImplements<ProcessStatic<'themeExtraction', ThemeExtractionResult>>()
 export class ThemeExtraction<Name extends string = 'themeExtraction'>
@@ -19,6 +24,14 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
     version?: string
     fast?: boolean
 
+    /**
+     * Create a new ThemeExtraction process instance.
+     *
+     * @param options.themes - Optional array of theme labels to use.
+     * @param options.version - Optional version string for extraction model.
+     * @param options.fast - If true, enables fast (synchronous) processing.
+     * @param options.name - Optional custom name for this process instance.
+     */
     constructor(
         options: { themes?: string[]; version?: string; fast?: boolean; name?: Name } = {},
     ) {
@@ -32,6 +45,12 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         return ThemeExtraction.id
     }
 
+    /**
+     * Execute the theme extraction process on the input dataset.
+     *
+     * @param ctx - Execution context with datasets, client, and fast flag.
+     * @returns A promise resolving to a ThemeExtractionResult object.
+     */
     async run(ctx: ContextBase): Promise<ThemeExtractionResult> {
         const inp = (this as unknown as ProcWithInputs)._inputs?.[0] ?? 'dataset'
         const arr = ctx.datasets[inp]
