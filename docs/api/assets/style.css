@@ -3,8 +3,7 @@
         --dim-toolbar-contents-height: 2.5rem;
         --dim-toolbar-border-bottom-width: 1px;
         --dim-header-height: calc(
-            var(--dim-toolbar-border-bottom-width) +
-                var(--dim-toolbar-contents-height)
+            var(--dim-toolbar-border-bottom-width) + var(--dim-toolbar-contents-height)
         );
 
         /* 0rem For mobile; unit is required for calculation in `calc` */
@@ -54,9 +53,7 @@
         --light-color-ts-reference: #ff4d82;
         --light-color-ts-call-signature: var(--light-color-ts-method);
         --light-color-ts-index-signature: var(--light-color-ts-property);
-        --light-color-ts-constructor-signature: var(
-            --light-color-ts-constructor
-        );
+        --light-color-ts-constructor-signature: var(--light-color-ts-constructor);
         --light-color-ts-parameter: var(--light-color-ts-variable);
         /* type literal not included as links will never be generated to it */
         --light-color-ts-type-parameter: #a55c0e;
@@ -140,9 +137,7 @@
     @media (prefers-color-scheme: light) {
         :root {
             --color-background: var(--light-color-background);
-            --color-background-secondary: var(
-                --light-color-background-secondary
-            );
+            --color-background-secondary: var(--light-color-background-secondary);
             --color-background-active: var(--light-color-background-active);
             --color-background-warning: var(--light-color-background-warning);
             --color-warning-text: var(--light-color-warning-text);
@@ -177,9 +172,7 @@
             --color-ts-reference: var(--light-color-ts-reference);
             --color-ts-call-signature: var(--light-color-ts-call-signature);
             --color-ts-index-signature: var(--light-color-ts-index-signature);
-            --color-ts-constructor-signature: var(
-                --light-color-ts-constructor-signature
-            );
+            --color-ts-constructor-signature: var(--light-color-ts-constructor-signature);
             --color-ts-parameter: var(--light-color-ts-parameter);
             --color-ts-type-parameter: var(--light-color-ts-type-parameter);
             --color-ts-accessor: var(--light-color-ts-accessor);
@@ -202,9 +195,7 @@
     @media (prefers-color-scheme: dark) {
         :root {
             --color-background: var(--dark-color-background);
-            --color-background-secondary: var(
-                --dark-color-background-secondary
-            );
+            --color-background-secondary: var(--dark-color-background-secondary);
             --color-background-active: var(--dark-color-background-active);
             --color-background-warning: var(--dark-color-background-warning);
             --color-warning-text: var(--dark-color-warning-text);
@@ -239,9 +230,7 @@
             --color-ts-reference: var(--dark-color-ts-reference);
             --color-ts-call-signature: var(--dark-color-ts-call-signature);
             --color-ts-index-signature: var(--dark-color-ts-index-signature);
-            --color-ts-constructor-signature: var(
-                --dark-color-ts-constructor-signature
-            );
+            --color-ts-constructor-signature: var(--dark-color-ts-constructor-signature);
             --color-ts-parameter: var(--dark-color-ts-parameter);
             --color-ts-type-parameter: var(--dark-color-ts-type-parameter);
             --color-ts-accessor: var(--dark-color-ts-accessor);
@@ -261,7 +250,7 @@
         }
     }
 
-    :root[data-theme="light"] {
+    :root[data-theme='light'] {
         --color-background: var(--light-color-background);
         --color-background-secondary: var(--light-color-background-secondary);
         --color-background-active: var(--light-color-background-active);
@@ -297,9 +286,7 @@
         --color-ts-reference: var(--light-color-ts-reference);
         --color-ts-call-signature: var(--light-color-ts-call-signature);
         --color-ts-index-signature: var(--light-color-ts-index-signature);
-        --color-ts-constructor-signature: var(
-            --light-color-ts-constructor-signature
-        );
+        --color-ts-constructor-signature: var(--light-color-ts-constructor-signature);
         --color-ts-parameter: var(--light-color-ts-parameter);
         --color-ts-type-parameter: var(--light-color-ts-type-parameter);
         --color-ts-accessor: var(--light-color-ts-accessor);
@@ -318,7 +305,7 @@
         --color-scheme: var(--light-color-scheme);
     }
 
-    :root[data-theme="dark"] {
+    :root[data-theme='dark'] {
         --color-background: var(--dark-color-background);
         --color-background-secondary: var(--dark-color-background-secondary);
         --color-background-active: var(--dark-color-background-active);
@@ -354,9 +341,7 @@
         --color-ts-reference: var(--dark-color-ts-reference);
         --color-ts-call-signature: var(--dark-color-ts-call-signature);
         --color-ts-index-signature: var(--dark-color-ts-index-signature);
-        --color-ts-constructor-signature: var(
-            --dark-color-ts-constructor-signature
-        );
+        --color-ts-constructor-signature: var(--dark-color-ts-constructor-signature);
         --color-ts-parameter: var(--dark-color-ts-parameter);
         --color-ts-type-parameter: var(--dark-color-ts-type-parameter);
         --color-ts-accessor: var(--dark-color-ts-accessor);
@@ -462,8 +447,8 @@
         margin: var(--dim-container-main-margin-y) auto;
         /* toolbar, footer, margin */
         min-height: calc(
-            100svh - var(--dim-header-height) - var(--dim-footer-height) -
-                2 * var(--dim-container-main-margin-y)
+            100svh - var(--dim-header-height) - var(--dim-footer-height) - 2 *
+                var(--dim-container-main-margin-y)
         );
     }
 
@@ -504,15 +489,8 @@
     body {
         background: var(--color-background);
         font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            "Noto Sans",
-            Helvetica,
-            Arial,
-            sans-serif,
-            "Apple Color Emoji",
-            "Segoe UI Emoji";
+            -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial,
+            sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
         font-size: 16px;
         color: var(--color-text);
         margin: 0;
@@ -525,7 +503,7 @@
     a:hover {
         text-decoration: underline;
     }
-    a.external[target="_blank"] {
+    a.external[target='_blank'] {
         background-image: var(--external-icon);
         background-position: top 3px right;
         background-repeat: no-repeat;
@@ -540,7 +518,7 @@
 
     code,
     pre {
-        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+        font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
         padding: 0.2em;
         margin: 0;
         font-size: 0.875rem;
@@ -714,7 +692,7 @@
         display: inline;
     }
     .tsd-breadcrumb li:after {
-        content: " / ";
+        content: ' / ';
     }
 
     .tsd-comment-tags {
@@ -748,7 +726,7 @@
 
     dl.tsd-comment-tag-group dd:before,
     dl.tsd-comment-tag-group dd:after {
-        content: " ";
+        content: ' ';
     }
     dl.tsd-comment-tag-group dd pre,
     dl.tsd-comment-tag-group dd:after {
@@ -787,14 +765,14 @@
         user-select: none;
         cursor: pointer;
     }
-    .tsd-filter-input input[type="checkbox"] {
+    .tsd-filter-input input[type='checkbox'] {
         cursor: pointer;
         position: absolute;
         width: 1.5em;
         height: 1.5em;
         opacity: 0;
     }
-    .tsd-filter-input input[type="checkbox"]:disabled {
+    .tsd-filter-input input[type='checkbox']:disabled {
         pointer-events: none;
     }
     .tsd-filter-input svg {
@@ -807,13 +785,13 @@
         Don't remove unless you know what you're doing. */
         opacity: 0.99;
     }
-    .tsd-filter-input input[type="checkbox"]:focus-visible + svg {
+    .tsd-filter-input input[type='checkbox']:focus-visible + svg {
         outline: 2px solid var(--color-focus-outline);
     }
     .tsd-checkbox-background {
         fill: var(--color-accent);
     }
-    input[type="checkbox"]:checked ~ svg .tsd-checkbox-checkmark {
+    input[type='checkbox']:checked ~ svg .tsd-checkbox-checkmark {
         stroke: var(--color-text);
     }
     .tsd-filter-input input:disabled ~ svg > .tsd-checkbox-background {
@@ -879,10 +857,10 @@
     .tsd-full-hierarchy svg[data-dropdown] {
         cursor: pointer;
     }
-    .tsd-full-hierarchy svg[data-dropdown="false"] {
+    .tsd-full-hierarchy svg[data-dropdown='false'] {
         transform: rotate(-90deg);
     }
-    .tsd-full-hierarchy svg[data-dropdown="false"] ~ ul {
+    .tsd-full-hierarchy svg[data-dropdown='false'] ~ ul {
         display: none;
     }
 
@@ -1164,7 +1142,9 @@
         height: 2.5rem;
         flex: 0 0 auto;
         font-size: 0.875rem;
-        transition: border-color 0.2s, background-color 0.2s;
+        transition:
+            border-color 0.2s,
+            background-color 0.2s;
     }
     #tsd-search-input:focus-visible {
         background-color: var(--color-background-active);
@@ -1196,7 +1176,7 @@
     #tsd-search-results > li:nth-child(even) {
         background-color: var(--color-background-secondary);
     }
-    #tsd-search-results > li:is(:hover, [aria-selected="true"]) {
+    #tsd-search-results > li:is(:hover, [aria-selected='true']) {
         background-color: var(--color-background-active);
         color: var(--color-contrast-text);
     }
@@ -1236,7 +1216,7 @@
         margin: 0 0 1rem 0;
         padding: 1rem 0.5rem;
         border: 1px solid var(--color-accent);
-        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+        font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
         font-size: 14px;
         overflow-x: auto;
     }
@@ -1314,8 +1294,7 @@
         width: 100%;
         color: var(--color-text);
         background: var(--color-background-secondary);
-        border-bottom: var(--dim-toolbar-border-bottom-width)
-            var(--color-accent) solid;
+        border-bottom: var(--dim-toolbar-border-bottom-width) var(--color-accent) solid;
         transition: transform 0.3s ease-in-out;
     }
     .tsd-page-toolbar a {
@@ -1344,7 +1323,9 @@
         opacity: 0.8;
         height: 2.5rem;
         width: 2.5rem;
-        transition: opacity 0.1s, background-color 0.1s;
+        transition:
+            opacity 0.1s,
+            background-color 0.1s;
         text-align: center;
         cursor: pointer;
         border: none;
@@ -1508,7 +1489,7 @@
             padding-bottom: 20px;
         }
         .overlay {
-            content: "";
+            content: '';
             display: block;
             position: fixed;
             z-index: 1023;
@@ -1564,7 +1545,7 @@
         .container-main {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-            grid-template-areas: "sidebar content";
+            grid-template-areas: 'sidebar content';
             --dim-container-main-margin-y: 2rem;
         }
 
@@ -1583,14 +1564,12 @@
     @media (min-width: 770px) and (max-width: 1399px) {
         .col-sidebar {
             max-height: calc(
-                100vh - var(--dim-header-height) - var(--dim-footer-height) -
-                    2 * var(--dim-container-main-margin-y)
+                100vh - var(--dim-header-height) - var(--dim-footer-height) - 2 *
+                    var(--dim-container-main-margin-y)
             );
             overflow: auto;
             position: sticky;
-            top: calc(
-                var(--dim-header-height) + var(--dim-container-main-margin-y)
-            );
+            top: calc(var(--dim-header-height) + var(--dim-container-main-margin-y));
         }
         .site-menu {
             margin-top: 1rem;
@@ -1600,12 +1579,8 @@
     /* two sidebars */
     @media (min-width: 1200px) {
         .container-main {
-            grid-template-columns:
-                minmax(0, 1fr) minmax(0, 2.5fr) minmax(
-                0,
-                20rem
-            );
-            grid-template-areas: "sidebar content toc";
+            grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr) minmax(0, 20rem);
+            grid-template-areas: 'sidebar content toc';
         }
 
         .col-sidebar {
@@ -1627,14 +1602,12 @@
         .page-menu,
         .site-menu {
             max-height: calc(
-                100vh - var(--dim-header-height) - var(--dim-footer-height) -
-                    2 * var(--dim-container-main-margin-y)
+                100vh - var(--dim-header-height) - var(--dim-footer-height) - 2 *
+                    var(--dim-container-main-margin-y)
             );
             overflow: auto;
             position: sticky;
-            top: calc(
-                var(--dim-header-height) + var(--dim-container-main-margin-y)
-            );
+            top: calc(var(--dim-header-height) + var(--dim-container-main-margin-y));
         }
     }
 }
