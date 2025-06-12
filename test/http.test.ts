@@ -40,7 +40,9 @@ describe('fetchWithRetry error scenarios', () => {
     it('throws NetworkError when retries exhausted', async () => {
         const fetchMock = vi.fn().mockRejectedValue(new TypeError('boom'))
         vi.stubGlobal('fetch', fetchMock)
-        await expect(fetchWithRetry(new Request(url), { retries: 0 })).rejects.toBeInstanceOf(NetworkError)
+        await expect(fetchWithRetry(new Request(url), { retries: 0 })).rejects.toBeInstanceOf(
+            NetworkError,
+        )
     })
 
     it('retries on non-ok response then succeeds', async () => {
@@ -63,11 +65,14 @@ describe('fetchWithRetry error scenarios', () => {
     })
 
     it('times out requests after the given timeout', async () => {
-        const fetchMock = vi.fn((_: unknown, { signal }: { signal: AbortSignal }) =>
-            new Promise((resolve, reject) => {
-                setTimeout(() => resolve({ ok: true, status: 200 }), 3000)
-                signal.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')))
-            }),
+        const fetchMock = vi.fn(
+            (_: unknown, { signal }: { signal: AbortSignal }) =>
+                new Promise((resolve, reject) => {
+                    setTimeout(() => resolve({ ok: true, status: 200 }), 3000)
+                    signal.addEventListener('abort', () =>
+                        reject(new DOMException('aborted', 'AbortError')),
+                    )
+                }),
         )
         vi.stubGlobal('fetch', fetchMock)
         const promise = fetchWithRetry(new Request(url), { timeout: 10, retries: 0 })
