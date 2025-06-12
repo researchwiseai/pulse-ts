@@ -39,6 +39,9 @@ exclude_patterns = [
   "**/target/**",
   "**/templates/**",
   "**/testdata/**",
+  "**/.codex/**",
+  "AGENTS.md",
+  "openapi.yml",
   "**/vendor/**",
 ]
 
@@ -71,8 +74,10 @@ enabled = false
 [[plugin]]
 name = "prettier"
 
-[[plugin]]
-name = "radarlint-js"
+### radarlint-js plugin disabled to reduce noise
+# [[plugin]]
+# name = "radarlint-js"
+mode = "comment"
 
 [[plugin]]
 name = "radarlint-python"

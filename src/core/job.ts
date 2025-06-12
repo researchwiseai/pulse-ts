@@ -22,7 +22,7 @@ export class Job<T, After = T> {
     /** Authenticator to sign requests. */
     private readonly auth: Auth
     /** Poll interval in milliseconds (default: 1000ms). */
-    private pollIntervalMs: number
+    private readonly pollIntervalMs: number
     /** Function to process the result after job completion. */
     private readonly after: (result: T) => Promise<After> | After
 
