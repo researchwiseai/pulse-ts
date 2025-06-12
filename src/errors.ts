@@ -17,3 +17,17 @@ export class PulseAPIError extends Error {
         this.body = body
     }
 }
+
+export class TimeoutError extends Error {
+    constructor(url: string, timeout: number) {
+        super(`Request to ${url} timed out after ${timeout}ms`)
+        this.name = 'TimeoutError'
+    }
+}
+
+export class NetworkError extends Error {
+    constructor(url: string, cause: Error) {
+        super(`Network error while requesting ${url}: ${cause.message}`)
+        this.name = 'NetworkError'
+    }
+}
