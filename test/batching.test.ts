@@ -66,7 +66,7 @@ describe('stitchResults', () => {
             [4, 5, 6],
             [7, 8, 9],
         ]
-        const result = stitchResults([{ matrix }], [], full, full)
+        const result = stitchResults([{ matrix }], full, full)
         expect(result).toEqual(matrix)
     })
 
@@ -77,7 +77,7 @@ describe('stitchResults', () => {
             [10, 11, 12],
             [20, 21, 22],
         ]
-        const result = stitchResults([{ matrix: block }], [], fullA, fullB)
+        const result = stitchResults([{ matrix: block }], fullA, fullB)
         expect(result).toEqual(block)
     })
 })

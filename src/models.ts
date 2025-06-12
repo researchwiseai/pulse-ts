@@ -11,6 +11,13 @@ export type EmbeddingResponse = components['schemas']['EmbeddingsResponse']
 
 export type SimilarityResponse = components['schemas']['SimilarityResponse']
 
+export type SimilarityResponseMatrix = Omit<
+    components['schemas']['SimilarityResponse'],
+    'matrix'
+> & {
+    matrix: number[][]
+}
+
 export type Theme = components['schemas']['Theme']
 
 export type ThemesResponse = components['schemas']['ThemesResponse']
@@ -21,4 +28,4 @@ export type SentimentResponse = components['schemas']['SentimentResponse']
 
 export type ExtractionsResponse = components['schemas']['ExtractionsResponse']
 
-export type ExtractionResult = ExtractionsResponse['extractions'][number][number][number]
+export type ExtractionResult = ExtractionsResponse['extractions']

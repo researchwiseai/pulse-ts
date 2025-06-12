@@ -1,7 +1,6 @@
 import type { Theme as ThemeModel } from '../models'
 import { ThemeAllocationResult } from '../results/ThemeAllocationResult'
-import type { ThemeGenerationResult } from '../results/ThemeGenerationResult'
-import { ThemeGeneration, ThemeGenerationDependent } from './ThemeGeneration'
+import { ThemeGenerationDependent } from './ThemeGeneration'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 
 /**
@@ -114,13 +113,11 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
         const simTexts = this.themeRepresentatives(ctx)
         const fastFlag = this.fast ?? ctx.fast
         const resp = await ctx.client.compareSimilarity(
-            { setA: ctx.dataset, setB: simTexts },
+            { setA: ctx.sources[this.sourceNames.inputs], setB: simTexts },
             { fast: fastFlag },
         )
-        // similarity matrix or nested arrays
-        const simMatrix: number[][] = resp.matrix
         // compute assignments
-        const assignments = simMatrix.map(row =>
+        const assignments = resp.matrix.map(row =>
             row.reduce(
                 (bestIdx, _, i) => ((row[i] as number) > (row[bestIdx] as number) ? i : bestIdx),
                 0,
@@ -128,12 +125,12 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
         )
 
         return new ThemeAllocationResult(
-            ctx.dataset,
+            ctx.sources[this.sourceNames.inputs],
             labels,
             assignments,
             this.singleLabel,
             this.threshold,
-            simMatrix,
+            resp.matrix,
         )
     }
 }

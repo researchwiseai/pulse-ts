@@ -55,9 +55,8 @@ export function makeCrossBodies<A, B>(setA: A[], setB: B[], flatten: boolean): C
  */
 export function stitchResults(
     results: { matrix: number[][] }[],
-    bodies: any[],
-    fullA: any[],
-    fullB: any[],
+    fullA: unknown[],
+    fullB: unknown[],
 ): number[][] {
     const isSelf = fullA === fullB
     if (isSelf) {

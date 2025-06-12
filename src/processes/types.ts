@@ -9,7 +9,8 @@ import type { CoreClient } from '../core/clients/CoreClient'
  * @property client  The CoreClient instance for handling external interactions.
  * @property fast    When true, enables fast processing mode, potentially skipping non-critical steps.
  * @property results A record mapping identifiers to arbitrary result data produced during processing.
- * @property dataset The array of data items that the workflow will operate on.
+ * @property sources A record mapping identifiers to arrays of source strings, representing input data for processes.
+ * @property processes An array of Process instances that define the workflow steps to be executed.
  */
 export interface ContextBase {
     client: CoreClient
@@ -18,7 +19,7 @@ export interface ContextBase {
 
     results: Record<string, unknown>
 
-    dataset: string[]
+    sources: Record<string, string[]>
 
     processes: readonly Process<string, unknown>[]
 }
@@ -96,9 +97,7 @@ export type TupleToResult<T extends readonly Process<string, unknown>[]> = {
  * }
  */
 export function staticImplements<T>() {
-    return <U extends T>(constructor: U) => {
-        constructor
-    }
+    return <U extends T>(constructor: U) => constructor
 }
 
 /**
@@ -112,14 +111,3 @@ export function staticImplements<T>() {
  * ```
  */
 export type MutableTuple<T extends readonly unknown[]> = { -readonly [K in keyof T]: T[K] }
-
-/**
- * Creates a tuple of `Process` items with preserved types.
- *
- * Helper designed for use in Analyzer or DSL to ensure type safety
- *
- * @typeParam P - A readonly tuple of `Process` instances with string identifiers and unknown payloads.
- * @param items - The `Process` instances to include in the tuple.
- * @returns The input `Process` instances as a tuple with their types preserved.
- */
-export const processes = <P extends readonly Process<string, unknown>[]>(...items: P): P => items

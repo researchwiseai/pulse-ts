@@ -16,13 +16,33 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
     version?: string
     fast?: boolean
 
+    sourceNames = {
+        inputs: 'dataset',
+        themes: 'themes',
+    }
+
     constructor(
-        options: { themes?: string[]; version?: string; fast?: boolean; name?: Name } = {},
+        options: {
+            themes?: string[]
+            version?: string
+            fast?: boolean
+            name?: Name
+            sourceNames?: { inputs: string; themes: string }
+        } = {},
     ) {
         super(options)
         this.version = options.version
         this.fast = options.fast
         this.name = options.name ?? (ThemeExtraction.id as Name)
+
+        if (options.sourceNames) {
+            if (options.sourceNames.inputs) {
+                this.sourceNames.inputs = options.sourceNames.inputs
+            }
+            if (options.sourceNames.themes) {
+                this.sourceNames.themes = options.sourceNames.themes
+            }
+        }
     }
 
     get id() {
@@ -32,9 +52,16 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
     async run(ctx: ContextBase) {
         const fastFlag = this.fast ?? ctx.fast
         const response = await ctx.client.extractElements(
-            { inputs: ctx.dataset, themes: this.themeRepresentatives(ctx) },
+            {
+                inputs: ctx.sources[this.sourceNames.inputs],
+                themes: this.themeRepresentatives(ctx),
+            },
             { fast: fastFlag },
         )
-        return new ThemeExtractionResult(response, ctx.dataset, this.themeLabels(ctx))
+        return new ThemeExtractionResult(
+            response,
+            ctx.sources[this.sourceNames.inputs],
+            this.themeLabels(ctx),
+        )
     }
 }
