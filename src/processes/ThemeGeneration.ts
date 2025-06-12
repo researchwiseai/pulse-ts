@@ -156,10 +156,10 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
      * @param ctx - The context containing the dataset, client, and configuration options.
      * @returns A promise that resolves to a `ThemeGenerationResult` with the generated themes.
      */
-    async run(
-        ctx: Pick<ContextBase, 'client' | 'fast' | 'dataset'>,
-    ): Promise<ThemeGenerationResult> {
-        let texts: string[] = ctx.dataset.slice()
+    async run(ctx: ContextBase): Promise<ThemeGenerationResult> {
+        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const arr = ctx.datasets[inp]
+        let texts: string[] = Array.isArray(arr) ? [...arr] : []
         const fastFlag = this.fast ?? ctx.fast
         const sampleSize = fastFlag ? 200 : 1000
         if (texts.length > sampleSize) {
@@ -267,7 +267,7 @@ export abstract class ThemeGenerationDependent {
                 )
             }
 
-            return (ctx.results[tgProcess.name] as ThemeGenerationResult).themes.slice()
+        return (ctx.datasets[tgProcess.name] as ThemeGenerationResult).themes.slice()
         }
     }
 }

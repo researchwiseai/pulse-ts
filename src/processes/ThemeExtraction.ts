@@ -29,12 +29,15 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         return ThemeExtraction.id
     }
 
-    async run(ctx: ContextBase) {
+    async run(ctx: ContextBase): Promise<ThemeExtractionResult> {
+        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const arr = ctx.datasets[inp]
+        const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast
         const response = await ctx.client.extractElements(
-            { inputs: ctx.dataset, themes: this.themeRepresentatives(ctx) },
+            { inputs: texts, themes: this.themeRepresentatives(ctx) },
             { fast: fastFlag },
         )
-        return new ThemeExtractionResult(response, ctx.dataset, this.themeLabels(ctx))
+        return new ThemeExtractionResult(response, texts, this.themeLabels(ctx))
     }
 }

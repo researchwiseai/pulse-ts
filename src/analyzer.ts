@@ -3,13 +3,13 @@
  */
 import type { CoreClient } from './core/clients/CoreClient'
 import * as Processes from './processes'
-import type { MutableTuple, TupleToResult } from './processes/types'
+import type { MutableTuple, TupleToResult, ContextBase } from './processes/types'
 
 /** Options for Analyzer. */
 export interface AnalyzerOptions<
     ProcessCollection extends readonly Processes.Process<string, unknown>[],
 > {
-    /** Array of input texts. */
+    /** Initial datasets mapping alias to array of texts. */
     dataset: string[]
     /** Processing steps to execute. */
     processes: ProcessCollection
@@ -20,19 +20,16 @@ export interface AnalyzerOptions<
 }
 
 export class Analyzer<ProcessCollection extends readonly Processes.Process<string, unknown>[]> {
-    dataset: string[]
+    private datasets: Record<string, unknown>
     processes: ProcessCollection
     fast: boolean
     client: CoreClient
-    /** In-memory results mapping process id to wrapped result. */
-    results: Record<string, unknown>
 
     constructor(opts: AnalyzerOptions<ProcessCollection>) {
-        this.dataset = opts.dataset
+        this.datasets = { dataset: opts.dataset }
         this.processes = opts.processes ?? []
         this.fast = opts.fast ?? false
         this.client = opts.client
-        this.results = {}
         this.resolveDependencies()
     }
 
@@ -63,12 +60,25 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
         const output: [string, unknown][] = []
         for (const proc of this.processes) {
             const id = proc.id
-            const result = await proc.run(this)
-            // Store in results for the next process to be able to access
+            const inputs: string[] = (proc as any)._inputs ?? ['dataset']
+            const alias = inputs[0]
+            if (!(alias in this.datasets)) {
+                throw new Error(`Dataset '${alias}' not found for process '${id}'`)
+            }
+            const data = this.datasets[alias]
+            const ctx: ContextBase = {
+                client: this.client,
+                fast: this.fast,
+                datasets: this.datasets,
+                processes: this.processes,
+            }
+            ctx.datasets[alias] = Array.isArray(data) ? data : [data]
+            const result = await proc.run(ctx)
+
+            this.datasets[id] = result
             output.push([id, result])
-            this.results = Object.fromEntries(output)
         }
-        return this.results as TupleToResult<ProcessCollection>
+        return Object.fromEntries(output) as TupleToResult<ProcessCollection>
     }
 
     /** Close underlying resources (noop) . */

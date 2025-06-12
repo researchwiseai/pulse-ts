@@ -22,13 +22,13 @@ export class Cluster<Name extends string = 'cluster'> implements Process<Name, C
         return Cluster.id
     }
 
-    async run(ctx: Pick<ContextBase, 'client' | 'fast' | 'dataset'>): Promise<ClusterResult> {
-        const texts: string[] = Array.isArray(ctx.dataset) ? ctx.dataset : []
+    async run(ctx: ContextBase): Promise<ClusterResult> {
+        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const arr = ctx.datasets[inp]
+        const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast
-        const upperTriangle = await ctx.client.compareSimilarity(
-            {
-                set: texts,
-            },
+        await ctx.client.compareSimilarity(
+            { set: texts },
             { fast: fastFlag, awaitJobResult: true },
         )
 
