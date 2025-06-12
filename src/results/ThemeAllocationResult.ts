@@ -23,7 +23,12 @@ export class ThemeAllocationResult {
         return this.themesArr
     }
 
-    /** Assign single theme per text. */
+    /**
+     * Assign a single theme per text based on the similarity threshold.
+     *
+     * @param threshold - Optional override for the similarity threshold.
+     * @returns A record mapping each text to the assigned theme label or null.
+     */
     assignSingle(threshold?: number): Record<string, string | null> {
         const thr = threshold ?? this.threshold
         const result: Record<string, string | null> = {}
@@ -39,7 +44,12 @@ export class ThemeAllocationResult {
         return result
     }
 
-    /** Assign top-k themes per text. */
+    /**
+     * Assign the top-K themes per text based on similarity scores.
+     *
+     * @param k - Number of top themes to select; defaults to number of available themes.
+     * @returns An array where each entry maps theme positions to theme labels for each text.
+     */
     assignMulti(k?: number): Array<Record<string, string>> {
         const topK = k ?? this.themesArr.length
         return this.similarity.map(row => {

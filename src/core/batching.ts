@@ -24,8 +24,11 @@ export function makeSelfChunks<T>(items: T[]): T[][] {
  * Represents the body for a cross-comparison chunk.
  */
 export interface CrossBody<A, B> {
+    /** Subset of items from set A for this chunk. */
     setA: A[]
+    /** Subset of items from set B for this chunk. */
     setB: B[]
+    /** Whether results should be returned in a flattened format. */
     flatten: boolean
 }
 
@@ -106,6 +109,15 @@ function stitchCross<A, B>(results: { matrix: number[][] }[], fullA: A[], fullB:
     return matrix
 }
 
+/**
+ * Stitch together partial similarity result matrices into a full matrix.
+ *
+ * @param results - Array of partial result objects with similarity matrices.
+ * @param bodies - The corresponding CrossBody definitions for each result chunk.
+ * @param fullA - The full array of items from set A used in comparison.
+ * @param fullB - The full array of items from set B used in comparison.
+ * @returns A complete similarity matrix of dimensions fullA.length × fullB.length.
+ */
 export function stitchResults<A, B>(
     results: { matrix: number[][] }[],
     bodies: CrossBody<A, B>[],

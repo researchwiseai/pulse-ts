@@ -5,27 +5,12 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
 type ProcWithInputs = { _inputs?: string[] }
 
 /**
- * Process: classify sentiment for texts.
+ * Process that performs sentiment analysis on input texts.
+ *
+ * @template Name - Custom name type for this process instance.
+ * @implements Process<Name, SentimentResult>
  */
-
 @staticImplements<ProcessStatic<'sentiment', SentimentResult>>()
-/**
- * Represents a sentiment analysis process that can be run within a processing pipeline.
- *
- * @template Name - The name type for the process, defaults to 'sentiment'.
- *
- * @implements {Process<Name, SentimentResult>}
- *
- * @property {string} name - The name of the process instance.
- * @property {string[]} dependsOn - List of process IDs this process depends on.
- * @property {boolean} [fast] - Optional flag to enable fast sentiment analysis.
- *
- * @constructor
- * @param {Object} [options] - Optional configuration for the sentiment process.
- * @param {boolean} [options.fast] - Whether to use the fast analysis mode.
- * @param {Name} [options.name] - Custom name for the process instance.
-
- */
 export class Sentiment<Name extends string = 'sentiment'>
     implements Process<Name, SentimentResult>
 {
@@ -54,11 +39,10 @@ export class Sentiment<Name extends string = 'sentiment'>
     fast?: boolean
 
     /**
-     * Creates a new instance of the class.
+     * Create a new Sentiment process instance.
      *
-     * @param options - Optional configuration object.
-     * @param options.fast - If true, enables fast mode.
-     * @param options.name - Optional name for the instance. Defaults to `Sentiment.id` if not provided.
+     * @param options.fast - If true, enables fast (synchronous) sentiment analysis.
+     * @param options.name - Optional custom name for this process instance.
      */
     constructor(options: { fast?: boolean; name?: Name } = {}) {
         this.fast = options.fast
@@ -74,10 +58,10 @@ export class Sentiment<Name extends string = 'sentiment'>
     }
 
     /**
-     * Runs the sentiment analysis using the provided context.
-     * @param {ContextBase} ctx - The context containing the dataset and client.
-     * @returns {Promise<SentimentResult>} The result of the sentiment analysis.
-     * @returns
+     * Execute the sentiment analysis process.
+     *
+     * @param ctx - Execution context including datasets, client, and fast flag.
+     * @returns A promise resolving to a SentimentResult object.
      */
     async run(ctx: ContextBase): Promise<SentimentResult> {
         const inp = (this as unknown as ProcWithInputs)._inputs?.[0] ?? 'dataset'
