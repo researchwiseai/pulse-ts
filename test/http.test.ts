@@ -61,7 +61,7 @@ describe('fetchWithRetry error scenarios', () => {
                 new Promise((resolve, reject) => {
                     setTimeout(() => resolve({ ok: true, status: 200 }), 3000)
                     signal.addEventListener('abort', () => reject(new Error('Request aborted')))
-                })
+                }),
         )
         vi.stubGlobal('fetch', fetchMock)
         const promise = fetchWithRetry(url, { timeout: 10, retries: 0 })
