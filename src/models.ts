@@ -19,8 +19,6 @@ export interface SimilarityResponse {
     matrix: number[][]
     /** Flattened similarity scores (if requested). */
     flattened: number[]
-    /** Convenience alias for reading similarity scores uniformly (matrix or flattened). */
-    similarity: number[][]
     /** Scenario of comparison: 'self' for within one set, 'cross' for between two sets. */
     scenario: 'self' | 'cross'
     /** Mode of result shape: 'matrix' or 'flattened'. */

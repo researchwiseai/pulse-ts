@@ -11,6 +11,7 @@ import { Sentiment } from './processes/Sentiment'
 import { ClusterResult } from './results'
 import { ThemeAllocationResult } from './results/ThemeAllocationResult'
 import { SentimentResult } from './results/SentimentResult'
+import { processes } from './processes/types'
 
 /**
  * Load input strings from an array or a file path (.txt, .csv, .tsv).
@@ -44,13 +45,14 @@ export function getStrings(source: string[] | string): string[] {
  */
 export async function sentimentAnalysis(
     inputData: string[] | string,
-    client: CoreClient
-): Promise<SentimentResult[]> {
+    client: CoreClient,
+): Promise<SentimentResult> {
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
+    const sentimentProcess = new Sentiment({ fast })
     const analyzer = new Analyzer({
         dataset: texts,
-        processes: [new Sentiment()],
+        processes: [sentimentProcess],
         client,
         fast,
     })
@@ -64,13 +66,14 @@ export async function sentimentAnalysis(
 export async function themeAllocation(
     inputData: string[] | string,
     client: CoreClient,
-    themes?: string[]
+    themes?: string[],
 ): Promise<ThemeAllocationResult> {
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
+    const proc = new ThemeAllocation({ themes })
     const analyzer = new Analyzer({
         dataset: texts,
-        processes: [new ThemeAllocation({ themes })],
+        processes: [proc],
         client,
         fast,
     })
@@ -83,13 +86,13 @@ export async function themeAllocation(
  */
 export async function clusterAnalysis(
     inputData: string[] | string,
-    client: CoreClient
+    client: CoreClient,
 ): Promise<ClusterResult> {
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
     const analyzer = new Analyzer({
         dataset: texts,
-        processes: [new Cluster({})],
+        processes: processes(new Cluster()),
         client,
         fast,
     })

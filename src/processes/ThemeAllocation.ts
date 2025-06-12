@@ -80,7 +80,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
             fast?: boolean
             threshold?: number
             name?: Name
-        } = {}
+        } = {},
     ) {
         super(options)
         this.singleLabel = options.singleLabel ?? true
@@ -115,7 +115,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
         const fastFlag = this.fast ?? ctx.fast
         const resp = await ctx.client.compareSimilarity(
             { setA: ctx.dataset, setB: simTexts },
-            { fast: fastFlag }
+            { fast: fastFlag },
         )
         // similarity matrix or nested arrays
         const simMatrix: number[][] = resp.matrix
@@ -123,8 +123,8 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
         const assignments = simMatrix.map(row =>
             row.reduce(
                 (bestIdx, _, i) => ((row[i] as number) > (row[bestIdx] as number) ? i : bestIdx),
-                0
-            )
+                0,
+            ),
         )
 
         return new ThemeAllocationResult(
@@ -133,7 +133,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
             assignments,
             this.singleLabel,
             this.threshold,
-            simMatrix
+            simMatrix,
         )
     }
 }

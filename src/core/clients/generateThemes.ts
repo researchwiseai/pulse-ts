@@ -7,7 +7,7 @@ import type { UniversalFeatureOptions } from './types'
 
 export interface GenerateThemeOptions<
     Fast extends boolean | undefined,
-    AwaitJobResult extends boolean | undefined
+    AwaitJobResult extends boolean | undefined,
 > extends UniversalFeatureOptions<Fast, AwaitJobResult> {
     minThemes?: number
     maxThemes?: number
@@ -17,11 +17,11 @@ export interface GenerateThemeOptions<
 export async function generateThemes<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-    Result = AwaitJobResult extends false ? Job<ThemesResponse> : ThemesResponse
+    Result = AwaitJobResult extends false ? Job<ThemesResponse> : ThemesResponse,
 >(
     client: CoreClient,
     inputs: string[],
-    { awaitJobResult, fast, maxThemes, minThemes }: GenerateThemeOptions<Fast, AwaitJobResult> = {}
+    { awaitJobResult, fast, maxThemes, minThemes }: GenerateThemeOptions<Fast, AwaitJobResult> = {},
 ) {
     const path = `${client.baseUrl}/themes`
     const payload: Record<string, unknown> = { inputs, fast, minThemes, maxThemes }
@@ -40,7 +40,7 @@ export async function generateThemes<
     }
     if (response.status === 202) {
         const { jobId } = json as { jobId: string }
-        const job = new Job<ThemesResponse>(jobId, client.baseUrl, client.auth)
+        const job = new Job<ThemesResponse>({ jobId, baseUrl: client.baseUrl, auth: client.auth })
         if (awaitJobResult) {
             return (await job.result()) as Result
         }

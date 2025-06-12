@@ -57,7 +57,7 @@ export function stitchResults(
     results: { matrix: number[][] }[],
     bodies: any[],
     fullA: any[],
-    fullB: any[]
+    fullB: any[],
 ): number[][] {
     const isSelf = fullA === fullB
     if (isSelf) {
@@ -65,7 +65,7 @@ export function stitchResults(
         const n = fullA.length
         const matrix: number[][] = Array.from({ length: n }, () => Array(n).fill(0))
         const offsets: number[] = [0]
-        for (const c of chunks) offsets.push((offsets[offsets.length - 1] as number) + c.length)
+        for (const c of chunks) offsets.push(offsets[offsets.length - 1] + c.length)
         let idx = 0
         for (let i = 0; i < chunks.length; i++) {
             for (let j = i; j < chunks.length; j++) {
@@ -74,13 +74,13 @@ export function stitchResults(
                         matrix: number[][]
                     }
                 ).matrix
-                const r0 = offsets[i] as number
-                const r1 = offsets[i + 1] as number
-                const c0 = offsets[j] as number
-                const c1 = offsets[j + 1] as number
+                const r0 = offsets[i]
+                const r1 = offsets[i + 1]
+                const c0 = offsets[j]
+                const c1 = offsets[j + 1]
                 for (let r = r0; r < r1; r++) {
                     for (let c = c0; c < c1; c++) {
-                        matrix[r][c] = block[r - r0]?.[c - c0] as number
+                        matrix[r][c] = block[r - r0]?.[c - c0]
                         if (i !== j) {
                             matrix[c][r] = block[r - r0][c - c0]
                         }
@@ -94,7 +94,7 @@ export function stitchResults(
     const chunksA = makeSelfChunks(fullA)
     const chunksB = makeSelfChunks(fullB)
     const matrix: number[][] = Array.from({ length: fullA.length }, () =>
-        Array(fullB.length).fill(0)
+        Array(fullB.length).fill(0),
     )
     const offsetsA: number[] = [0]
     for (const c of chunksA) offsetsA.push(offsetsA[offsetsA.length - 1] + c.length)

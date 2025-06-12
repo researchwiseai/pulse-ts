@@ -7,7 +7,10 @@ import type { ExtractionsResponse } from '../models'
  * Results of clustering with helper methods.
  */
 export class ClusterResult {
-    constructor(private matrix: number[][], private texts: string[]) {}
+    constructor(
+        private matrix: number[][],
+        private texts: string[],
+    ) {}
 
     /** Raw similarity matrix. */
     get similarityMatrix(): number[][] {
@@ -22,7 +25,7 @@ export class ThemeExtractionResult {
     constructor(
         private response: ExtractionsResponse,
         private texts: string[],
-        private themes: string[]
+        private themes: string[],
     ) {}
 
     /** Nested list of extracted elements per text per theme. */
