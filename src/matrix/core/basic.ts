@@ -99,10 +99,22 @@ export const UQInt = z
  */
 export const asUQInt = (n: number): UQInt => UQInt.parse(n)
 
+/**
+ * Type guard to determine whether a number has been branded as a QInt.
+ *
+ * @param n - The value to test.
+ * @returns True if the value is a branded QInt, false otherwise.
+ */
 export function isQInt(n: number): n is QInt {
     return (n as QInt)?.__QInt !== undefined
 }
 
+/**
+ * Type guard to determine whether a number has been branded as a UQInt.
+ *
+ * @param n - The value to test.
+ * @returns True if the value is a branded UQInt, false otherwise.
+ */
 export function isUQInt(n: number): n is UQInt {
     return (n as UQInt)?.__UQInt !== undefined
 }

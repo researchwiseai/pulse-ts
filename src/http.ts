@@ -46,7 +46,13 @@ async function attemptFetch(input: Request, init: RequestInit, timeout: number):
 }
 
 /**
- * Normalize fetch errors into TimeoutError or NetworkError, or rethrow.
+ * Normalize fetch errors into TimeoutError or NetworkError, or rethrow other errors.
+ *
+ * @param err - The error thrown during fetch.
+ * @param url - The request URL being fetched.
+ * @param timeout - Timeout duration in milliseconds.
+ * @throws TimeoutError when request is aborted.
+ * @throws NetworkError when a network error occurs.
  */
 function handleFetchError(err: unknown, url: string, timeout: number): never {
     if (err instanceof DOMException && err.name === 'AbortError') {
@@ -59,7 +65,13 @@ function handleFetchError(err: unknown, url: string, timeout: number): never {
 }
 
 /**
- * Fetch with retry and timeout handling.
+ * Perform a fetch request with automatic timeout and retry support.
+ *
+ * @param input - The Request object to send.
+ * @param options - Fetch options including timeout, retries, and other RequestInit fields.
+ * @returns A promise resolving to the Response object.
+ * @throws TimeoutError if the request times out after the specified duration.
+ * @throws NetworkError for network-related failures after retries.
  */
 export async function fetchWithRetry(
     input: Request,

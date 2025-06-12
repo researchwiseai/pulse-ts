@@ -26,6 +26,15 @@ export class Job<T, After = T> {
     /** Function to process the result after job completion. */
     private readonly after: (result: T) => Promise<After> | After
 
+    /**
+     * Create a new Job instance to poll a background job on the Pulse API.
+     *
+     * @param options.jobId - Identifier of the job returned by the Pulse API.
+     * @param options.baseUrl - Base URL of the Pulse API (without trailing slash).
+     * @param options.auth - Authenticator instance to sign polling requests.
+     * @param options.pollIntervalMs - Milliseconds between polling attempts. Defaults to 1000.
+     * @param options.after - Optional callback to transform the raw result payload.
+     */
     constructor({
         jobId,
         baseUrl,
@@ -41,7 +50,11 @@ export class Job<T, After = T> {
     }
 
     /**
-     * Polls the Pulse API until the job completes, then fetches and returns the result.
+     * Polls the Pulse API until the background job completes and returns its final result.
+     *
+     * @returns A promise that resolves to the parsed job result, processed by the `after` callback.
+     * @throws {PulseAPIError} If the API returns an error status for the job status query.
+     * @throws {Error} If fetching the job result fails or the job status is 'failed'.
      */
     async result(): Promise<After> {
         while (true) {

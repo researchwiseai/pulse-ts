@@ -1,3 +1,14 @@
+/**
+ * Options for the OAuth2 Authorization Code PKCE authentication flow.
+ *
+ * @property tokenUrl - URL of the OAuth2 token endpoint.
+ * @property clientId - Client identifier issued by the authorization server.
+ * @property code - Authorization code received from the authorization server.
+ * @property redirectUri - Redirect URI used in the authorization request.
+ * @property codeVerifier - PKCE code verifier corresponding to the code challenge.
+ * @property scope - Optional space-delimited OAuth2 scopes.
+ * @property audience - Optional API audience parameter.
+ */
 export interface AuthorizationCodePKCEOptions {
     tokenUrl: string
     clientId: string
@@ -8,6 +19,14 @@ export interface AuthorizationCodePKCEOptions {
     audience?: string
 }
 
+/**
+ * Options for the OAuth2 Client Credentials authentication flow.
+ *
+ * @property tokenUrl - URL of the OAuth2 token endpoint.
+ * @property clientId - Client identifier issued by the authorization server.
+ * @property clientSecret - Client secret issued by the authorization server.
+ * @property audience - Optional API audience parameter.
+ */
 export interface ClientCredentialsOptions {
     tokenUrl: string
     clientId: string
@@ -15,15 +34,31 @@ export interface ClientCredentialsOptions {
     audience?: string
 }
 
+/**
+ * Authentication interface for obtaining and refreshing access tokens.
+ */
 export interface Auth {
+    /**
+     * Generator that attaches authentication credentials to outgoing requests.
+     *
+     * @param req - Original Request object.
+     * @returns An AsyncGenerator yielding an authenticated Request.
+     */
     authFlow(req: Request): AsyncGenerator<Request, Request>
+    /** Perform token refresh and update internal token state. */
     _refreshToken(): Promise<void>
 
+    /** OAuth2 access token or undefined if not yet acquired. */
     accessToken: string | undefined
+    /** OAuth2 refresh token or undefined if not applicable. */
     refreshToken: string | undefined
+    /** Unix timestamp (seconds) when the access token expires; undefined if unknown. */
     expiresAt: number | undefined
 }
 
+/**
+ * Implements the OAuth2 Client Credentials flow to obtain access tokens.
+ */
 export class ClientCredentialsAuth implements Auth {
     private readonly tokenUrl: string
     private readonly clientId: string
@@ -45,6 +80,11 @@ export class ClientCredentialsAuth implements Auth {
         return this._expiresAt
     }
 
+    /**
+     * Create a ClientCredentialsAuth instance.
+     *
+     * @param options - Configuration for the client credentials flow.
+     */
     constructor(options: ClientCredentialsOptions) {
         this.tokenUrl = options.tokenUrl
         this.clientId = options.clientId
@@ -89,6 +129,9 @@ export class ClientCredentialsAuth implements Auth {
     }
 }
 
+/**
+ * Implements the OAuth2 Authorization Code PKCE flow to obtain and refresh access and refresh tokens.
+ */
 export class AuthorizationCodePKCEAuth {
     private readonly _tokenUrl: string
     private readonly _clientId: string
@@ -114,6 +157,11 @@ export class AuthorizationCodePKCEAuth {
         return this._expiresAt
     }
 
+    /**
+     * Create an AuthorizationCodePKCEAuth instance.
+     *
+     * @param options - Configuration for the authorization code PKCE flow.
+     */
     constructor(options: AuthorizationCodePKCEOptions) {
         this._tokenUrl = options.tokenUrl
         this._clientId = options.clientId
