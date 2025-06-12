@@ -31,6 +31,9 @@ jobs:
             - name: Run lint
               run: bun run lint
 
+            - name: Build library
+              run: bun run build
+
             - name: Run tests
               run: bun run test
 

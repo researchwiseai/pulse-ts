@@ -1,12 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, beforeAll, afterAll } from 'vitest'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import * as http from '../src/http'
 import { PulseAPIError } from '../src/errors'
-import type { Auth } from '../src'
+import { ClientCredentialsAuth, type Auth } from '../src'
+import { setupPolly } from './setupPolly'
 
 const dummyAuth: Auth = {
     authFlow: async function* (req: Request) {
         yield req
+        return req
     },
     _refreshToken: () => Promise.resolve(),
     refreshToken: '',
@@ -21,6 +23,14 @@ describe('CoreClient', () => {
     beforeEach(() => {
         client = new CoreClient({ baseUrl, auth: dummyAuth })
         vi.restoreAllMocks()
+    })
+
+    afterAll(() => {
+        vi.clearAllMocks()
+        vi.resetModules()
+        vi.resetAllMocks()
+        vi.clearAllTimers()
+        vi.useRealTimers()
     })
 
     describe('createEmbeddings', () => {
@@ -255,7 +265,11 @@ describe('CoreClient', () => {
                     } else {
                         const outbound = request as Request
                         const requestBody = await outbound.json()
-                        expect(requestBody).toStrictEqual({ set: ['x'], fast: true, flatten: true })
+                        expect(requestBody).toStrictEqual({
+                            set: ['x'],
+                            fast: true,
+                            flatten: false,
+                        })
 
                         const requestHeaders = outbound.headers
                         expect(requestHeaders.get('Content-type')).toBe('application/json')
@@ -291,5 +305,59 @@ describe('CoreClient', () => {
         } as any)
         const resp = await client.analyzeSentiment(['a'], { fast: true })
         expect(resp).toEqual(body)
+    })
+})
+
+describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => {
+    setupPolly()
+
+    const client = new CoreClient({
+        baseUrl: process.env.PULSE_BASE_URL ?? 'https://dev.core.researchwiseai.com/pulse/v1',
+        auth: new ClientCredentialsAuth({
+            clientId: process.env.PULSE_CLIENT_ID ?? '',
+            clientSecret: process.env.PULSE_CLIENT_SECRET ?? '',
+            tokenUrl: process.env.PULSE_TOKEN_URL ?? '',
+            audience: process.env.PULSE_AUDIENCE ?? '',
+        }),
+    })
+
+    it('createEmbeddings returns data', async () => {
+        const resp = await client.createEmbeddings(['test'], { fast: true })
+        expect(resp).toBeDefined()
+        expect(resp.embeddings.length).toBe(1)
+        expect(resp.embeddings[0].vector.length).toBeGreaterThan(0)
+    })
+
+    it('compareSimilarity returns flattened data when doing self', async () => {
+        const resp = await client.compareSimilarity({ set: ['test1', 'test2'] }, { fast: true })
+        expect(resp).toBeDefined()
+        expect(resp.matrix).not.toBeDefined()
+        expect(resp.flattened.length).toBe(1)
+    })
+    it('compareSimilarity returns flattened and matrix data when doing a cross', async () => {
+        const resp = await client.compareSimilarity(
+            { setA: ['test1', 'test2'], setB: ['testAlpha', 'testBravo'] },
+            { fast: true },
+        )
+        expect(resp).toBeDefined()
+        expect(resp.matrix.length).toBe(2)
+        expect(resp.flattened.length).toBe(4)
+    })
+    it('generateThemes returns data', async () => {
+        const resp = await client.generateThemes(
+            ['apple', 'orange', 'banana', 'gold', 'silver', 'bronze'],
+            {
+                fast: true,
+                minThemes: 1,
+                maxThemes: 2,
+            },
+        )
+        expect(resp).toBeDefined()
+        expect(resp.themes.length).toBeGreaterThan(0)
+    })
+    it('analyzeSentiment returns data', async () => {
+        const resp = await client.analyzeSentiment(['test'], { fast: true })
+        expect(resp).toBeDefined()
+        expect(resp.results.length).toBe(1)
     })
 })

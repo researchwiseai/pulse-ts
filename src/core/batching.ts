@@ -69,14 +69,18 @@ export function stitchResults(
         let idx = 0
         for (let i = 0; i < chunks.length; i++) {
             for (let j = i; j < chunks.length; j++) {
-                const block = results[idx++].matrix
+                const block = (
+                    results[idx++] as {
+                        matrix: number[][]
+                    }
+                ).matrix
                 const r0 = offsets[i]
                 const r1 = offsets[i + 1]
                 const c0 = offsets[j]
                 const c1 = offsets[j + 1]
                 for (let r = r0; r < r1; r++) {
                     for (let c = c0; c < c1; c++) {
-                        matrix[r][c] = block[r - r0][c - c0]
+                        matrix[r][c] = block[r - r0]?.[c - c0]
                         if (i !== j) {
                             matrix[c][r] = block[r - r0][c - c0]
                         }

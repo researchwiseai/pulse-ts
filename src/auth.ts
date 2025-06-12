@@ -16,7 +16,7 @@ export interface ClientCredentialsOptions {
 }
 
 export interface Auth {
-    authFlow(req: Request): AsyncGenerator<Request>
+    authFlow(req: Request): AsyncGenerator<Request, Request>
     _refreshToken(): Promise<void>
 
     accessToken: string | undefined
