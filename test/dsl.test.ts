@@ -25,7 +25,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
                 .source('comments', comments)
                 .source('themes', existing)
                 .themeAllocation({ inputs: 'comments', themesFrom: 'themes' })
-            const results = await wf.run(undefined, { client })
+            const results = await wf.run([], { client })
             expect(results).toHaveProperty('themeAllocation')
             const ta = results.themeAllocation
             expect(ta).not.toBeInstanceOf(Job)
