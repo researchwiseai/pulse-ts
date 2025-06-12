@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, beforeAll, afterAll } from 'vitest'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import * as http from '../src/http'
-import { PulseAPIError } from '../src/errors'
+import { PulseAPIError, TimeoutError } from '../src/errors'
 import { ClientCredentialsAuth, type Auth } from '../src'
 import { setupPolly } from './setupPolly'
 
@@ -216,6 +216,12 @@ describe('CoreClient', () => {
                     json: async () => errBody,
                 } as any)
                 await expect(client.createEmbeddings(['x'])).rejects.toBeInstanceOf(PulseAPIError)
+            })
+
+            it('propagates network errors', async () => {
+                const err = new TimeoutError('http://x', 1000)
+                vi.spyOn(http, 'fetchWithRetry').mockRejectedValue(err)
+                await expect(client.createEmbeddings(['x'])).rejects.toBe(err)
             })
         })
     })
