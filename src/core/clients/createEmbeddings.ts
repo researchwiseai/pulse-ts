@@ -5,10 +5,10 @@ import { Job } from '../job'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 
-export interface CreateEmbeddingsOptions<
+export type CreateEmbeddingsOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-> extends UniversalFeatureOptions<Fast, AwaitJobResult> {}
+> = UniversalFeatureOptions<Fast, AwaitJobResult>
 
 export async function createEmbeddings<
     Fast extends boolean | undefined = undefined,

@@ -99,7 +99,7 @@ function _bin(a: unknown, b: unknown, op: (x: number, y: number) => number): unk
 // add
 export function add(a: number, b: number): number
 export function add<V extends number>(a: Vector<V>, b: number): Vector<V>
-export function add<V extends number>(a: number, b: Vector<number>): Vector<number>
+export function add<V extends number>(a: number, b: Vector<V>): Vector<V>
 export function add<R extends number, C extends number>(
     a: Matrix2D<number, R, C>,
     b: number,
