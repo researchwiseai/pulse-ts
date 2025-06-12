@@ -1,6 +1,12 @@
 /**
  * Data models & types for Pulse API requests and responses.
- * TODO: Generate or hand-craft these interfaces/classes based on the OpenAPI specification.
+ *
+ * @remarks
+ * These interfaces define the structures of request payloads and response
+ * objects used by the Pulse API. They are generated or handcrafted based
+ * on the OpenAPI specification.
+ *
+ * @todo Provide additional details or examples for each interface if needed.
  */
 
 /** Response for text embeddings creation. */

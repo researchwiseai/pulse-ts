@@ -13,21 +13,32 @@ import { Analyzer } from './analyzer'
 import type { Processes } from '.'
 import type { ContextBase } from './processes'
 
+/**
+ * Callbacks to monitor the lifecycle events of a workflow execution.
+ */
 type MonitorCallbacks = {
+    /** Called before workflow execution starts. */
     onRunStart?: () => void
+    /** Called before each process starts; receives the process id. */
     onProcessStart?: (id: string) => void
+    /** Called after each process completes; receives the process id and its result. */
     onProcessEnd?: (id: string, res: unknown) => void
+    /** Called after the entire workflow execution finishes. */
     onRunEnd?: () => void
 }
 
 /**
- * Workflow builder for custom pipelines.
- */
-/**
- * Internal process type with DSL metadata.
+ * Internal helper type for workflow processes carrying DSL metadata.
+ * @internal
  */
 type DSLProcess = Processes.Process<string> & { _origId?: string; _inputs?: string[] }
 
+/**
+ * Workflow builder for composing and executing custom pipelines of processes.
+ *
+ * Provides a fluent API to define data sources and processing steps,
+ * then execute them either in DSL mode or via the Analyzer.
+ */
 export class Workflow {
     private datasets: Record<string, unknown> = {}
     private readonly processes: DSLProcess[] = []
@@ -35,7 +46,11 @@ export class Workflow {
     private monitors: MonitorCallbacks = {}
 
     /**
-     * Register named dataset for DSL steps.
+     * Register a named dataset for use within the workflow.
+     *
+     * @param name - Alias to reference the dataset in later processing steps.
+     * @param data - The dataset value, typically an array of items or strings.
+     * @returns The Workflow instance for chaining.
      */
     source(name: string, data: unknown): this {
         if (this.datasets[name]) {
@@ -45,6 +60,13 @@ export class Workflow {
         return this
     }
 
+    /**
+     * Internal helper to add a process to the workflow with optional aliasing.
+     *
+     * @param proc - The process instance to register.
+     * @param name - Optional custom process identifier.
+     * @internal
+     */
     private addProcess(proc: DSLProcess, name?: string): void {
         const orig = proc.id
         const count = (this.idCounts[orig] || 0) + 1
@@ -65,6 +87,12 @@ export class Workflow {
         this.processes.push(proc)
     }
 
+    /**
+     * Add a theme generation step to the workflow.
+     *
+     * @param options - Configuration for themeGeneration (minThemes, maxThemes, context, fast, source, name).
+     * @returns The Workflow instance for chaining.
+     */
     themeGeneration(
         options: {
             minThemes?: number
@@ -90,6 +118,12 @@ export class Workflow {
         return this
     }
 
+    /**
+     * Add a theme allocation step to the workflow.
+     *
+     * @param options - Configuration for themeAllocation (themes, fast, singleLabel, threshold, inputs, themesFrom, name).
+     * @returns The Workflow instance for chaining.
+     */
     themeAllocation(
         options: {
             themes?: string[]
@@ -137,6 +171,12 @@ export class Workflow {
         return this
     }
 
+    /**
+     * Add a theme extraction step to the workflow.
+     *
+     * @param options - Configuration for themeExtraction (themes, version, fast, inputs, themesFrom, name).
+     * @returns The Workflow instance for chaining.
+     */
     themeExtraction(
         options: {
             themes?: string[]
@@ -168,6 +208,12 @@ export class Workflow {
         return this
     }
 
+    /**
+     * Add a sentiment analysis step to the workflow.
+     *
+     * @param options - Configuration for sentiment (fast, source, name).
+     * @returns The Workflow instance for chaining.
+     */
     sentiment(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, source, name } = options
         const proc = new Sentiment({ fast })
@@ -184,6 +230,12 @@ export class Workflow {
         return this
     }
 
+    /**
+     * Add a clustering step to the workflow.
+     *
+     * @param options - Configuration for cluster (fast, source, name).
+     * @returns The Workflow instance for chaining.
+     */
     cluster(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, source, name } = options
         const proc = new Cluster({ fast })
@@ -201,7 +253,10 @@ export class Workflow {
     }
 
     /**
-     * Register lifecycle callbacks.
+     * Register callback handlers for workflow lifecycle events.
+     *
+     * @param monitors - An object containing optional callbacks for monitoring execution.
+     * @returns The Workflow instance for chaining.
      */
     monitor(monitors: MonitorCallbacks): this {
         this.monitors = monitors
@@ -209,7 +264,10 @@ export class Workflow {
     }
 
     /**
-     * Load workflow from JSON or YAML file.
+     * Load a workflow definition from a JSON or YAML file.
+     *
+     * @param filePath - Path to the workflow file containing a 'pipeline' array.
+     * @returns A new Workflow instance built from the file specification.
      */
     static fromFile(filePath: string): Workflow {
         const wf = new Workflow()
@@ -236,7 +294,11 @@ export class Workflow {
     }
 
     /**
-     * Execute workflow: DSL mode if datasets registered, else Analyzer mode.
+     * Execute the workflow. Uses DSL mode if data sources were registered, otherwise falls back to Analyzer mode.
+     *
+     * @param dataset - Input dataset array if not pre-registered via source().
+     * @param options - Execution options including CoreClient and fast flag.
+     * @returns A record mapping process identifiers to their execution results.
      */
     async run(
         dataset: string[],
@@ -260,6 +322,14 @@ export class Workflow {
         return analyzer.run()
     }
 
+    /**
+     * Internal implementation of DSL-style workflow execution.
+     *
+     * @param client - CoreClient instance for API calls.
+     * @param fast - Optional fast flag for processing steps.
+     * @returns A record of intermediate and final results by process id.
+     * @internal
+     */
     private async runDsl(client: CoreClient, fast?: boolean): Promise<Record<string, unknown>> {
         const ctxDatasets = { ...this.datasets }
         const results: Record<string, unknown> = {}
@@ -293,7 +363,9 @@ export class Workflow {
     }
 
     /**
-     * Return adjacency list of workflow DAG.
+     * Generate an adjacency list representation of the workflow directed acyclic graph (DAG).
+     *
+     * @returns A mapping from each process id to its list of dependency ids.
      */
     graph(): Record<string, string[]> {
         const edges: Record<string, string[]> = {}
