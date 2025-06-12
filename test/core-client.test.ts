@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterAll } from 'vitest'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import * as http from '../src/http'
 import { PulseAPIError, TimeoutError } from '../src/errors'

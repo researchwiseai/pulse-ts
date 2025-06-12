@@ -94,7 +94,7 @@ export type TupleToResult<T extends readonly Process<string, unknown>[]> = {
  */
 export function staticImplements<T>() {
     return <U extends T>(constructor: U) => {
-        constructor
+        return constructor
     }
 }
 

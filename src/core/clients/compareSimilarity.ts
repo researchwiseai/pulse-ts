@@ -18,10 +18,10 @@ export interface CompareSimilarityCross {
 
 export type CompareSimilarityInputs = CompareSimilaritySelf | CompareSimilarityCross
 
-export interface CompareSimilarityOptions<
+export type CompareSimilarityOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-> extends UniversalFeatureOptions<Fast, AwaitJobResult> {}
+> = UniversalFeatureOptions<Fast, AwaitJobResult>
 
 export async function compareSimilarity<
     Fast extends boolean | undefined = undefined,

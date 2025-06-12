@@ -17,11 +17,7 @@ export function typeofCellsMatrix<T>(x: Matrix<T> | NestedArray<T>): string {
 }
 
 // Compute cosine similarity between two vectors
-export function cosineSimilarity(
-    a: FlatBuffer<number>,
-    b: FlatBuffer<number>,
-    {}: {} = {},
-): number {
+export function cosineSimilarity(a: FlatBuffer<number>, b: FlatBuffer<number>): number {
     let dot = 0
     let normA = 0
     let normB = 0
