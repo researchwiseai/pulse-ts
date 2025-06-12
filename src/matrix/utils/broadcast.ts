@@ -97,15 +97,9 @@ function _bin(a: unknown, b: unknown, op: (x: number, y: number) => number): unk
 }
 
 // add
-export function add<R extends number, C extends number>(a: number, b: number): number
-export function add<R extends number, C extends number>(
-    a: Vector<number, C>,
-    b: number,
-): Vector<number, C>
-export function add<R extends number, C extends number>(
-    a: number,
-    b: Vector<number, C>,
-): Vector<number, C>
+export function add(a: number, b: number): number
+export function add<V extends number>(a: Vector<V>, b: number): Vector<V>
+export function add<V extends number>(a: number, b: Vector<number>): Vector<number>
 export function add<R extends number, C extends number>(
     a: Matrix2D<number, R, C>,
     b: number,
@@ -119,11 +113,11 @@ export function add<R extends number, C extends number>(
     b: Vector<number, C>,
 ): Matrix2D<number, R, C>
 export function add<R extends number, C extends number>(
-    a: Vector<number, C>,
+    a: Vector<number, R>,
     b: Matrix2D<number, R, C>,
 ): Matrix2D<number, R, C>
 export function add<R extends number, C extends number>(
-    a: Vector<number, C>,
+    a: Vector<number, R>,
     b: Vector<number, C>,
 ): Matrix2D<number, R, C>
 export function add<R extends number, C extends number>(
@@ -147,15 +141,9 @@ export function add(a: unknown, b: unknown): unknown {
 }
 
 // subtract
-export function sub<R extends number, C extends number>(a: number, b: number): number
-export function sub<R extends number, C extends number>(
-    a: Vector<number, C>,
-    b: number,
-): Vector<number, C>
-export function sub<R extends number, C extends number>(
-    a: number,
-    b: Vector<number, C>,
-): Vector<number, C>
+export function sub(a: number, b: number): number
+export function sub<V extends number>(a: Vector<V>, b: number): Vector<V>
+export function sub<V extends number>(a: number, b: Vector<V>): Vector<V>
 export function sub<R extends number, C extends number>(
     a: Matrix2D<number, R, C>,
     b: number,
@@ -169,7 +157,7 @@ export function sub<R extends number, C extends number>(
     b: Vector<number, C>,
 ): Matrix2D<number, R, C>
 export function sub<R extends number, C extends number>(
-    a: Vector<number, C>,
+    a: Vector<number, R>,
     b: Matrix2D<number, R, C>,
 ): Matrix2D<number, R, C>
 export function sub<R extends number, C extends number>(
@@ -188,15 +176,9 @@ export function sub(a: unknown, b: unknown): unknown {
 }
 
 // multiply
-export function mul<R extends number, C extends number>(a: number, b: number): number
-export function mul<R extends number, C extends number>(
-    a: Vector<number, C>,
-    b: number,
-): Vector<number, C>
-export function mul<R extends number, C extends number>(
-    a: number,
-    b: Vector<number, C>,
-): Vector<number, C>
+export function mul(a: number, b: number): number
+export function mul<V extends number>(a: Vector<V>, b: number): Vector<V>
+export function mul<V extends number>(a: number, b: Vector<V>): Vector<V>
 export function mul<R extends number, C extends number>(
     a: Matrix2D<number, R, C>,
     b: number,
@@ -210,7 +192,7 @@ export function mul<R extends number, C extends number>(
     b: Vector<number, C>,
 ): Matrix2D<number, R, C>
 export function mul<R extends number, C extends number>(
-    a: Vector<number, C>,
+    a: Vector<number, R>,
     b: Matrix2D<number, R, C>,
 ): Matrix2D<number, R, C>
 export function mul<R extends number, C extends number>(
@@ -235,15 +217,9 @@ export function mul(a: unknown, b: unknown): unknown {
 }
 
 // divide
-export function div<R extends number, C extends number>(a: number, b: number): number
-export function div<R extends number, C extends number>(
-    a: Vector<number, C>,
-    b: number,
-): Vector<number, C>
-export function div<R extends number, C extends number>(
-    a: number,
-    b: Vector<number, C>,
-): Vector<number, C>
+export function div(a: number, b: number): number
+export function div<V extends number>(a: Vector<V>, b: number): Vector<V>
+export function div<V extends number>(a: number, b: Vector<V>): Vector<V>
 export function div<R extends number, C extends number>(
     a: Matrix2D<number, R, C>,
     b: number,
@@ -257,7 +233,7 @@ export function div<R extends number, C extends number>(
     b: Vector<number, C>,
 ): Matrix2D<number, R, C>
 export function div<R extends number, C extends number>(
-    a: Vector<number, C>,
+    a: Vector<number, R>,
     b: Matrix2D<number, R, C>,
 ): Matrix2D<number, R, C>
 export function div<R extends number, C extends number>(
@@ -269,12 +245,8 @@ export function div(a: unknown, b: unknown): unknown {
 }
 
 // power
-export function pow<R extends number, C extends number>(a: number, b: number): number
-export function pow<R extends number, C extends number>(
-    a: Vector<number, C>,
-    b: number,
-): Vector<number, C>
-
+export function pow(a: number, b: number): number
+export function pow<V extends number>(a: Vector<V>, b: number): Vector<V>
 export function pow<R extends number, C extends number>(
     a: Matrix2D<number, R, C>,
     b: number,
@@ -288,7 +260,7 @@ export function pow<R extends number, C extends number>(
     b: Vector<number, C>,
 ): Matrix2D<number, R, C>
 export function pow<R extends number, C extends number>(
-    a: Vector<number, C>,
+    a: Vector<number, R>,
     b: Matrix2D<number, R, C>,
 ): Matrix2D<number, R, C>
 export function pow<R extends number, C extends number>(

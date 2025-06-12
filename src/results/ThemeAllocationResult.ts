@@ -42,7 +42,7 @@ export class ThemeAllocationResult {
     /** Assign top-k themes per text. */
     assignMulti(k?: number): Array<Record<string, string>> {
         const topK = k ?? this.themesArr.length
-        return this.similarity.map((row, i) => {
+        return this.similarity.map(row => {
             const sorted = row
                 .map((val, idx) => [idx, val] as [number, number])
                 .sort((a, b) => b[1] - a[1])
