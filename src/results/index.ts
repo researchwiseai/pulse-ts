@@ -1,7 +1,7 @@
 /**
  * Result helper classes for analysis processes.
  */
-import type { ExtractionsResponse } from '../models'
+import type { ExtractionResult, ExtractionsResponse } from '../models'
 
 /**
  * Results of clustering with helper methods.
@@ -29,7 +29,7 @@ export class ThemeExtractionResult {
     ) {}
 
     /** Nested list of extracted elements per text per theme. */
-    get extractions(): any[] {
+    get extractions(): ExtractionResult[] {
         return this.response.extractions
     }
 
