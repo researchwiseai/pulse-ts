@@ -6,6 +6,10 @@ import { SentimentResult } from '../src/results/SentimentResult'
 import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClientCredentialsAuth } from '../src/auth'
+import { ThemeGeneration } from '../src/processes/ThemeGeneration'
+import { Sentiment } from '../src/processes/Sentiment'
+import { ThemeAllocation } from '../src/processes/ThemeAllocation'
+import { processes } from '../src/processes/types'
 
 const clientId = process.env.PULSE_CLIENT_ID
 const clientSecret = process.env.PULSE_CLIENT_SECRET
@@ -39,7 +43,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const reviews = ['a', 'b', 'c']
             const az = new Analyzer({
                 dataset: reviews,
-                processes: [new ThemeGeneration({ minThemes: 2, maxThemes: 3 })],
+                processes: processes(new ThemeGeneration({ minThemes: 2, maxThemes: 3 })),
                 client,
                 fast: true,
             })
@@ -57,8 +61,9 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const reviews = ['good', 'bad', 'meh']
             const az = new Analyzer({
                 dataset: reviews,
-                processes: [new Sentiment({})],
+                processes: processes(new Sentiment()),
                 client,
+                fast: true,
             })
             const res = await az.run()
             expect(res.sentiment).toBeInstanceOf(SentimentResult)
@@ -76,9 +81,9 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const staticThemes = ['A', 'B']
             const az = new Analyzer({
                 dataset: reviews,
-                processes: [
+                processes: processes(
                     new ThemeAllocation({ themes: staticThemes, singleLabel: true, threshold: 0 }),
-                ],
+                ),
                 client,
                 fast: true,
             })

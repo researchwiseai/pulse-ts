@@ -31,7 +31,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
 
     describe('themeAllocation starter', () => {
         setupPolly()
-        it('allocates themes implicitly', async () => {
+        it('allocates themes implicitly', { timeout: 30_000 }, async () => {
             const reviews = ['good', 'bad']
             const res = await themeAllocation(reviews, client)
             expect(res).toBeInstanceOf(ThemeAllocationResult)

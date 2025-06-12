@@ -3,11 +3,11 @@
  */
 import type { CoreClient } from './core/clients/CoreClient'
 import * as Processes from './processes'
-import type { MutableTuple } from './processes/types'
+import type { MutableTuple, TupleToResult } from './processes/types'
 
 /** Options for Analyzer. */
 export interface AnalyzerOptions<
-    ProcessCollection extends readonly Processes.Process<string, unknown>[]
+    ProcessCollection extends readonly Processes.Process<string, unknown>[],
 > {
     /** Array of input texts. */
     dataset: string[]
@@ -59,18 +59,19 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
     /**
      * Execute the configured processes and wrap results.
      */
-    async run(): Promise<AnalysisResult> {
-        const output: Record<string, any> = {}
+    async run(): Promise<TupleToResult<ProcessCollection>> {
+        const output: [string, unknown][] = []
         for (const proc of this.processes) {
             const id = proc.id
-            output[id] = await proc.run(this)
+            const result = await proc.run(this)
             // Store in results for the next process to be able to access
-            this.results = output
+            output.push([id, result])
+            this.results = Object.fromEntries(output)
         }
-        return new AnalysisResult(output)
+        return this.results as TupleToResult<ProcessCollection>
     }
 
-    /** Close underlying resources (noop). */
+    /** Close underlying resources (noop) . */
     close(): void {
         // no resources to close in this implementation
     }
