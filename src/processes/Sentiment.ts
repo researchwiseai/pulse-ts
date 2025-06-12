@@ -76,7 +76,7 @@ export class Sentiment<Name extends string = 'sentiment'>
      * @returns {Promise<SentimentResult>} The result of the sentiment analysis.
      * @returns
      */
-    async run(ctx: ContextBase) {
+    async run(ctx: Pick<ContextBase, 'client' | 'fast' | 'dataset'>): Promise<SentimentResult> {
         const fastFlag = this.fast ?? ctx.fast
         const response = await ctx.client.analyzeSentiment(ctx.dataset, { fast: fastFlag })
         return new SentimentResult(response, ctx.dataset)

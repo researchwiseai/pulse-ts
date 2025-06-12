@@ -13,7 +13,7 @@ import type { UniversalFeatureOptions } from './types'
  */
 export interface AnalyzeSentimentOptions<
     Fast extends boolean | undefined,
-    AwaitJobResult extends boolean | undefined
+    AwaitJobResult extends boolean | undefined,
 > extends UniversalFeatureOptions<Fast, AwaitJobResult> {}
 /**
  * Analyzes the sentiment of the provided inputs using the CoreClient.
@@ -31,11 +31,11 @@ export interface AnalyzeSentimentOptions<
 export async function analyzeSentiment<
     Fast extends boolean | undefined = undefined,
     AwaitJobResult extends boolean | undefined = undefined,
-    Result = AwaitJobResult extends false ? Job<SentimentResponse> : SentimentResponse
+    Result = AwaitJobResult extends false ? Job<SentimentResponse> : SentimentResponse,
 >(
     client: CoreClient,
     inputs: string[],
-    { fast, awaitJobResult }: AnalyzeSentimentOptions<Fast, AwaitJobResult> = {}
+    { fast, awaitJobResult }: AnalyzeSentimentOptions<Fast, AwaitJobResult> = {},
 ): Promise<Result> {
     const path = `${client.baseUrl}/sentiment`
     const payload: Record<string, unknown> = { fast, inputs }
@@ -54,7 +54,11 @@ export async function analyzeSentiment<
     }
     if (response.status === 202) {
         const { jobId } = json as { jobId: string }
-        const job = new Job<SentimentResponse>(jobId, client.baseUrl, client.auth)
+        const job = new Job<SentimentResponse>({
+            jobId,
+            baseUrl: client.baseUrl,
+            auth: client.auth,
+        })
         if (awaitJobResult !== false) {
             return (await job.result()) as Result
         }

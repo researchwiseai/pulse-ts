@@ -5,7 +5,10 @@ import type { SentimentResponse, SentimentResult as CoreSentimentResult } from '
  */
 
 export class SentimentResult {
-    constructor(private response: SentimentResponse, private texts: string[]) {}
+    constructor(
+        private response: SentimentResponse,
+        private texts: string[],
+    ) {}
 
     /** List of raw sentiment results. */
     get sentiments(): CoreSentimentResult[] {

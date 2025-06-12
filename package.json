@@ -1,16 +1,19 @@
 {
     "name": "@rwai/pulse",
     "version": "0.1.0",
-    "module": "src/index.ts",
+    "module": "dist/index.mjs",
     "type": "module",
     "scripts": {
         "test": "vitest --run",
         "test:watch": "vitest --watch",
         "fmt": "qlty fmt",
         "lint": "qlty check",
-        "docs": "typedoc --options typedoc.json"
+        "docs": "typedoc --options typedoc.json",
+        "typecheck": "tsc --noEmit",
+        "build": "tsup src/index.ts --format cjs,esm --dts --out-dir dist --clean --target node18 --tsconfig tsconfig.build.json"
     },
     "devDependencies": {
+        "@pollyjs/adapter-fetch": "latest",
         "@pollyjs/adapter-node-http": "latest",
         "@pollyjs/core": "latest",
         "@pollyjs/persister-fs": "latest",
@@ -19,10 +22,18 @@
         "markdown-it": "^14.1.0",
         "markdownlint": "^0.38.0",
         "markdownlint-cli": "^0.45.0",
+        "tsup": "latest",
         "typedoc": "latest",
+        "undici": "^7.10.0",
+        "utility-types": "^3.11.0",
         "vitest": "latest"
     },
     "peerDependencies": {
         "typescript": "^5"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "dependencies": {
+        "zod": "^3.25.63"
     }
 }

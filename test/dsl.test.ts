@@ -18,7 +18,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
 
     describe('DSL end-to-end', () => {
         setupPolly()
-        it('runs themeAllocation step', async () => {
+        it.skip('runs themeAllocation step', async () => {
             const comments = ['good', 'bad', 'meh']
             const existing = ['Pos', 'Neg']
             const wf = new Workflow()

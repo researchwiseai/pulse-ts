@@ -12,17 +12,17 @@ export interface ExtractElementsInputs {
 
 export interface ExtractElementsOptions<
     Fast extends boolean | undefined,
-    AwaitJobResult extends boolean | undefined
+    AwaitJobResult extends boolean | undefined,
 > extends UniversalFeatureOptions<Fast, AwaitJobResult> {}
 
 export async function extractElements<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-    Result = AwaitJobResult extends false ? Job<ExtractionsResponse> : ExtractionsResponse
+    Result = AwaitJobResult extends false ? Job<ExtractionsResponse> : ExtractionsResponse,
 >(
     client: CoreClient,
     inputs: ExtractElementsInputs,
-    { awaitJobResult, fast }: ExtractElementsOptions<Fast, AwaitJobResult> = {}
+    { awaitJobResult, fast }: ExtractElementsOptions<Fast, AwaitJobResult> = {},
 ) {
     const path = `${client.baseUrl}/themes`
     const payload: Record<string, unknown> = { ...inputs, fast }
@@ -41,7 +41,11 @@ export async function extractElements<
     }
     if (response.status === 202) {
         const { jobId } = json as { jobId: string }
-        const job = new Job<ExtractionsResponse>(jobId, client.baseUrl, client.auth)
+        const job = new Job<ExtractionsResponse>({
+            jobId,
+            baseUrl: client.baseUrl,
+            auth: client.auth,
+        })
         if (awaitJobResult) {
             return (await job.result()) as Result
         }
