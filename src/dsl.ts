@@ -24,19 +24,19 @@ type MonitorCallbacks = {
  * Workflow builder for custom pipelines.
  */
 export class Workflow {
-    private sources: Record<string, any> = {}
+    private datasets: Record<string, any> = {}
     private processes: Processes.Process<string>[] = []
     private idCounts: Record<string, number> = {}
     private monitors: MonitorCallbacks = {}
 
     /**
-     * Register named data source for DSL steps.
+     * Register named dataset for DSL steps.
      */
     source(name: string, data: any): this {
-        if (this.sources[name]) {
+        if (this.datasets[name]) {
             throw new Error(`Source '${name}' already registered`)
         }
-        this.sources[name] = data
+        this.datasets[name] = data
         return this
     }
 
@@ -46,12 +46,12 @@ export class Workflow {
         this.idCounts[orig] = count
         ;(proc as any)._origId = orig
         if (name) {
-            if (this.sources[name] || this.processes.some(p => p.id === name)) {
+            if (this.datasets[name] || this.processes.some(p => p.id === name)) {
                 throw new Error(`Process name '${name}' already registered`)
             }
-            ;(proc as any).id = name
+            Object.defineProperty(proc, 'id', { value: name, writable: false, configurable: true })
         } else if (count > 1) {
-            ;(proc as any).id = `${orig}_${count}`
+            Object.defineProperty(proc, 'id', { value: `${orig}_${count}`, writable: false, configurable: true })
         }
         this.processes.push(proc)
     }
@@ -72,7 +72,7 @@ export class Workflow {
         const alias = source || 'dataset'
         if (
             alias !== 'dataset' &&
-            !this.sources[alias] &&
+            !this.datasets[alias] &&
             !this.processes.some(p => p.id === alias)
         ) {
             throw new Error(`Unknown source for themeGeneration: '${alias}'`)
@@ -97,7 +97,7 @@ export class Workflow {
         if (themes == null && themesFrom == null) {
             if (
                 textAlias !== 'dataset' &&
-                !this.sources[textAlias] &&
+                !this.datasets[textAlias] &&
                 !this.processes.some(p => p.id === textAlias)
             ) {
                 throw new Error(`Unknown inputs source for themeAllocation: '${textAlias}'`)
@@ -109,7 +109,7 @@ export class Workflow {
         const proc = new ThemeAllocation({ themes, singleLabel, fast, threshold })
         this.addProcess(proc, name)
         const inp = inputs || 'dataset'
-        if (inp !== 'dataset' && !this.sources[inp] && !this.processes.some(p => p.id === inp)) {
+        if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
             throw new Error(`Unknown inputs source for themeAllocation: '${inp}'`)
         }
         ;(proc as any)._inputs = [inp]
@@ -142,7 +142,7 @@ export class Workflow {
         const proc = new ThemeExtraction({ themes, version, fast })
         this.addProcess(proc, name)
         const inp = inputs || 'dataset'
-        if (inp !== 'dataset' && !this.sources[inp] && !this.processes.some(p => p.id === inp)) {
+        if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
             throw new Error(`Unknown inputs source for themeExtraction: '${inp}'`)
         }
         ;(proc as any)._inputs = [inp]
@@ -168,7 +168,7 @@ export class Workflow {
         const alias = source || 'dataset'
         if (
             alias !== 'dataset' &&
-            !this.sources[alias] &&
+            !this.datasets[alias] &&
             !this.processes.some(p => p.id === alias)
         ) {
             throw new Error(`Unknown source for sentiment: '${alias}'`)
@@ -184,7 +184,7 @@ export class Workflow {
         const alias = source || 'dataset'
         if (
             alias !== 'dataset' &&
-            !this.sources[alias] &&
+            !this.datasets[alias] &&
             !this.processes.some(p => p.id === alias)
         ) {
             throw new Error(`Unknown source for cluster: '${alias}'`)
@@ -234,14 +234,14 @@ export class Workflow {
     }
 
     /**
-     * Execute workflow: DSL mode if sources registered, else Analyzer mode.
+     * Execute workflow: DSL mode if datasets registered, else Analyzer mode.
      */
     async run(dataset: string[], options: { client: CoreClient; fast?: boolean }): Promise<any> {
         const client = options.client
         const fast = options.fast
-        if (Object.keys(this.sources).length > 0) {
-            if (dataset != null && !this.sources.dataset) {
-                this.sources.dataset = dataset
+        if (Object.keys(this.datasets).length > 0) {
+            if (dataset != null && !this.datasets.dataset) {
+                this.datasets.dataset = dataset
             }
             return this.runDsl(client, fast)
         }
@@ -256,7 +256,7 @@ export class Workflow {
     }
 
     private async runDsl(client: CoreClient, fast?: boolean): Promise<any> {
-        const ctxSources = { ...this.sources }
+        const ctxDatasets = { ...this.datasets }
         const results: Record<string, any> = {}
         this.monitors.onRunStart?.()
         for (const proc of this.processes) {
@@ -266,21 +266,21 @@ export class Workflow {
                 throw new Error(`No input source for process '${proc.id}'`)
             }
             const alias = inputs[0]
-            if (!(alias in ctxSources)) {
+            if (!(alias in ctxDatasets)) {
                 throw new Error(`Source '${alias}' not found for process '${proc.id}'`)
             }
-            const data = ctxSources[alias]
+            const data = ctxDatasets[alias]
             const ctx: ContextBase = {
                 client,
                 fast: fast ?? false,
                 results,
-                dataset: ctxSources[alias],
+                dataset: Array.isArray(data) ? data : [].concat(data),
                 processes: this.processes,
             }
-            ctx.dataset = Array.isArray(data) ? data : [].concat(data)
             const result = await proc.run(ctx)
 
             results[proc.id] = result
+            ctxDatasets[proc.id] = result
             this.monitors.onProcessEnd?.(proc.id, result)
         }
         this.monitors.onRunEnd?.()

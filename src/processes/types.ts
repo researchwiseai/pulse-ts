@@ -8,17 +8,14 @@ import type { CoreClient } from '../core/clients/CoreClient'
  *
  * @property client  The CoreClient instance for handling external interactions.
  * @property fast    When true, enables fast processing mode, potentially skipping non-critical steps.
- * @property results A record mapping identifiers to arbitrary result data produced during processing.
- * @property dataset The array of data items that the workflow will operate on.
+ * @property datasets A record mapping source/process identifiers to their data or result values.
  */
 export interface ContextBase {
     client: CoreClient
 
     fast: boolean
 
-    results: Record<string, unknown>
-
-    dataset: string[]
+    datasets: Record<string, unknown>
 
     processes: readonly Process<string, unknown>[]
 }
