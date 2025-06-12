@@ -6,17 +6,17 @@ import { defineConfig } from 'eslint/config'
 
 export default defineConfig([
     {
-        files: ['**/*.{js,mjs,cjs,ts}'],
+        files: ['src/**/*.{js,mjs,cjs,ts}'],
         plugins: { js },
         extends: ['js/recommended'],
     },
     {
-        files: ['**/*.{js,mjs,cjs,ts}'],
+        files: ['src.**/*.{js,mjs,cjs,ts}'],
         languageOptions: { globals: globals.node },
     },
     tseslint.configs.recommended,
     {
-        files: ['**/*.ts'],
+        files: ['src.**/*.ts'],
         rules: {
             '@typescript-eslint/no-unused-vars': [
                 'error',
