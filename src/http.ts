@@ -13,21 +13,30 @@ export interface FetchOptions extends RequestInit {
     retries?: number
 }
 
+import { NetworkError, TimeoutError } from './errors'
+
 export async function fetchWithRetry(
     input: Request,
     options: FetchOptions = {},
 ): Promise<Response> {
     const { timeout = 30000, retries = 1, ...init } = options
+    const baseRequest = input
     let attempt = 0
     while (true) {
         attempt++
         const controller = new AbortController()
         const timer = setTimeout(() => controller.abort(), timeout)
+        const request = new Request(baseRequest)
         try {
-            const authorization = input.headers?.get('authorization')
-            const response = await fetch(input, {
+            const authorization = request.headers.get('authorization')
+            const headerObj: Record<string, string> = {}
+            request.headers.forEach((v, k) => {
+                headerObj[k] = v
+            })
+            const response = await fetch(request, {
                 ...init,
                 headers: {
+                    ...headerObj,
                     ...init.headers,
                     ...(authorization ? { authorization } : {}),
                 },
@@ -42,6 +51,12 @@ export async function fetchWithRetry(
             clearTimeout(timer)
             if (attempt <= retries) {
                 continue
+            }
+            if (err instanceof DOMException && err.name === 'AbortError') {
+                throw new TimeoutError(request.url, timeout)
+            }
+            if (err instanceof TypeError) {
+                throw new NetworkError(request.url, err)
             }
             throw err
         }
