@@ -7,6 +7,7 @@
         "test": "vitest --run",
         "test:watch": "vitest --watch",
         "fmt": "prettier --config .qlty/configs/.prettierrc.json --write .",
+        "qlty:check": "qlty check",
         "lint": "eslint --fix --config .qlty/configs/eslint.config.mjs .",
         "docs": "typedoc --options typedoc.json",
         "typecheck": "tsc --noEmit",
