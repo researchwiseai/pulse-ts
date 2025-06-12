@@ -32,6 +32,7 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
  * console.log(result.themes); // Output: Array of generated themes
  *
  * @example Using the process in a Analyzer pipeline:
+ *
  * const pipeline = new Analyzer({
  *     dataset: ['text1', 'text2', 'text3'],
  *     processes: [
@@ -45,6 +46,7 @@ import { staticImplements, type ContextBase, type Process, type ProcessStatic } 
  * });
  * const result = await pipeline.run(context);
  * console.log(result.themes); // Output: Array of generated themes
+ *
  *
  * @public
  * @template Name - The name of the process, defaults to 'theme_generation'.

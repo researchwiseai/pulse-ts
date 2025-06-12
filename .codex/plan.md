@@ -12,10 +12,10 @@ This is a living scratch pad. Update as work progresses.
 - [Overview](#overview)
 - [Plan](#plan)
 - [Tasks](#tasks)
-  - [Backlog](#backlog)
-  - [In Progress](#in-progress)
-  - [Done](#done)
-  - [Deferred](#deferred)
+    - [Backlog](#backlog)
+    - [In Progress](#in-progress)
+    - [Done](#done)
+    - [Deferred](#deferred)
 - [Lessons Learned](#lessons-learned)
 - [Tests Skipped](#tests-skipped)
 - [Python Test Suite Reference](#python-test-suite-reference)
@@ -85,8 +85,6 @@ extract_elements endpoint -- [x] Port pagination / batching utilities
 
 ### In Progress
 
-- [ ] Generate Typedoc API reference
-
 ### Done
 
 - [x] Initialize bun project (`bun init`)
@@ -109,6 +107,8 @@ extract_elements endpoint -- [x] Port pagination / batching utilities
 - [x] Create GitHub Actions workflow for tests, Qlty checks, and build on main
 - [x] Port DSL / Workflow builder & Analysis layer
 - [x] Update README.md with TypeScript usage examples
+- [x] Generate Typedoc API reference
+- [x] Add documentation examples for authentication, DSL, and starters
 
 ### Deferred
 
