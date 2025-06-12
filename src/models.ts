@@ -21,5 +21,4 @@ export type SentimentResponse = components['schemas']['SentimentResponse']
 
 export type ExtractionsResponse = components['schemas']['ExtractionsResponse']
 
-export type ExtractionResult =
-    ExtractionsResponse['extractions'][number][number][number]
+export type ExtractionResult = ExtractionsResponse['extractions'][number][number][number]
