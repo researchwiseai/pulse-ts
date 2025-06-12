@@ -15,7 +15,7 @@ export interface FetchOptions extends RequestInit {
 
 export async function fetchWithRetry(
     input: Request,
-    options: FetchOptions = {}
+    options: FetchOptions = {},
 ): Promise<Response> {
     const { timeout = 30000, retries = 1, ...init } = options
     let attempt = 0
