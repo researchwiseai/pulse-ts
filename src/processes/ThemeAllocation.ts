@@ -109,17 +109,18 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
      * @param ctx - The context object containing the dataset, process results, and client for similarity comparison.
      * @returns A promise that resolves to a `ThemeAllocationResult` with the allocation details.
      */
-    async run(ctx: ContextBase) {
+    async run(ctx: ContextBase): Promise<ThemeAllocationResult> {
+        const inp = (this as any)._inputs?.[0] ?? 'dataset'
+        const arr = ctx.datasets[inp]
+        const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const labels = this.themeLabels(ctx)
         const simTexts = this.themeRepresentatives(ctx)
         const fastFlag = this.fast ?? ctx.fast
         const resp = await ctx.client.compareSimilarity(
-            { setA: ctx.dataset, setB: simTexts },
+            { setA: texts, setB: simTexts },
             { fast: fastFlag },
         )
-        // similarity matrix or nested arrays
         const simMatrix: number[][] = resp.matrix
-        // compute assignments
         const assignments = simMatrix.map(row =>
             row.reduce(
                 (bestIdx, _, i) => ((row[i] as number) > (row[bestIdx] as number) ? i : bestIdx),
@@ -128,7 +129,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
         )
 
         return new ThemeAllocationResult(
-            ctx.dataset,
+            texts,
             labels,
             assignments,
             this.singleLabel,
