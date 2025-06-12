@@ -236,7 +236,7 @@ export class Workflow {
     /**
      * Execute workflow: DSL mode if sources registered, else Analyzer mode.
      */
-    async run(dataset?: any, options: { client?: CoreClient; fast?: boolean } = {}): Promise<any> {
+    async run(dataset: string[], options: { client: CoreClient; fast?: boolean }): Promise<any> {
         const client = options.client
         const fast = options.fast
         if (Object.keys(this.sources).length > 0) {
@@ -255,8 +255,7 @@ export class Workflow {
         return analyzer.run()
     }
 
-    private async runDsl(client?: CoreClient, fast?: boolean): Promise<any> {
-        const c = client ?? new CoreClient({ baseUrl: '', auth: null as any })
+    private async runDsl(client: CoreClient, fast?: boolean): Promise<any> {
         const ctxSources = { ...this.sources }
         const results: Record<string, any> = {}
         this.monitors.onRunStart?.()
@@ -272,7 +271,7 @@ export class Workflow {
             }
             const data = ctxSources[alias]
             const ctx: ContextBase = {
-                client: c,
+                client,
                 fast: fast ?? false,
                 results,
                 dataset: ctxSources[alias],
@@ -303,7 +302,7 @@ export class Workflow {
         for (const p of this.processes) {
             const alias = p.id
             let deps: string[] = []
-            for (const dep of (p as any).dependsOn || []) {
+            for (const dep of p.dependsOn || []) {
                 deps = deps.concat(origMap[dep] || [])
             }
             for (const inp of (p as any)._inputs || []) {
