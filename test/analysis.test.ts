@@ -30,7 +30,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
     describe('Analyzer without processes', () => {
         setupPolly()
         it('returns empty result container', async () => {
-            const az = new Analyzer({ dataset: [], processes: [], client })
+            const az = new Analyzer({ datasets: { dataset: [] }, processes: [], client })
             const res = await az.run()
             expect(res).toBeInstanceOf(Object)
             expect((res as any).themeGeneration).toBeUndefined()
@@ -42,7 +42,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
         it('generates between min and max themes', async () => {
             const reviews = ['a', 'b', 'c']
             const az = new Analyzer({
-                dataset: reviews,
+                datasets: { dataset: reviews },
                 processes: processes(new ThemeGeneration({ minThemes: 2, maxThemes: 3 })),
                 client,
                 fast: true,
@@ -60,7 +60,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
         it('analyzes sentiment for each text', async () => {
             const reviews = ['good', 'bad', 'meh']
             const az = new Analyzer({
-                dataset: reviews,
+                datasets: { dataset: reviews },
                 processes: processes(new Sentiment()),
                 client,
                 fast: true,
@@ -80,7 +80,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const reviews = ['x', 'y']
             const staticThemes = ['A', 'B']
             const az = new Analyzer({
-                dataset: reviews,
+                datasets: { dataset: reviews },
                 processes: processes(
                     new ThemeAllocation({ themes: staticThemes, singleLabel: true, threshold: 0 }),
                 ),
