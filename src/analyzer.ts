@@ -102,19 +102,3 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
         // no resources to close in this implementation
     }
 }
-
-/**
- * Container for analysis results, exposing process outcomes as properties.
- */
-/**
- * Wrapper for analysis results, exposing process outcomes as properties.
- */
-export class AnalysisResult {
-    constructor(results: Record<string, unknown>) {
-        Object.assign(this, results)
-    }
-
-    toJSON(): Record<string, unknown> {
-        return { ...this }
-    }
-}

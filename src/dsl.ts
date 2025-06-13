@@ -31,7 +31,15 @@ type MonitorCallbacks = {
  * Internal helper type for workflow processes carrying DSL metadata.
  * @internal
  */
-type DSLProcess = Processes.Process<string> & { _origId?: string; _inputs?: string[] }
+/**
+ * Internal helper type for workflow processes carrying DSL metadata.
+ * @internal
+ */
+type DSLProcess = Processes.Process<string> & {
+    _origId?: string
+    _inputs?: string[]
+    _themesFromAlias?: string
+}
 
 /**
  * Workflow builder for composing and executing custom pipelines of processes.
@@ -97,14 +105,14 @@ export class Workflow {
         options: {
             minThemes?: number
             maxThemes?: number
-            context?: unknown
+            context?: string
             fast?: boolean
             source?: string
             name?: string
         } = {},
     ): this {
         const { minThemes, maxThemes, context, fast, source, name } = options
-        const proc = new ThemeGeneration({ minThemes, maxThemes, context, fast })
+        const proc = new ThemeGeneration({ minThemes, maxThemes, context, fast }) as DSLProcess
         this.addProcess(proc, name)
         const alias = source ?? 'dataset'
         if (
@@ -149,7 +157,7 @@ export class Workflow {
                 this.themeGeneration({ source: textAlias })
             }
         }
-        const proc = new ThemeAllocation({ themes, singleLabel, fast, threshold })
+        const proc = new ThemeAllocation({ themes, singleLabel, fast, threshold }) as DSLProcess
         this.addProcess(proc, name)
         const inp = inputs ?? 'dataset'
         if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
@@ -188,7 +196,7 @@ export class Workflow {
         } = {},
     ): this {
         const { themes, version, fast, inputs, themesFrom, name } = options
-        const proc = new ThemeExtraction({ themes, version, fast })
+        const proc = new ThemeExtraction({ themes, version, fast }) as DSLProcess
         this.addProcess(proc, name)
         const inp = inputs ?? 'dataset'
         if (inp !== 'dataset' && !this.datasets[inp] && !this.processes.some(p => p.id === inp)) {
@@ -216,7 +224,7 @@ export class Workflow {
      */
     sentiment(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, source, name } = options
-        const proc = new Sentiment({ fast })
+        const proc = new Sentiment({ fast }) as DSLProcess
         this.addProcess(proc, name)
         const alias = source ?? 'dataset'
         if (
@@ -238,7 +246,7 @@ export class Workflow {
      */
     cluster(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, source, name } = options
-        const proc = new Cluster({ fast })
+        const proc = new Cluster({ fast }) as DSLProcess
         this.addProcess(proc, name)
         const alias = source ?? 'dataset'
         if (
@@ -348,8 +356,7 @@ export class Workflow {
             const ctx: ContextBase = {
                 client,
                 fast: fast ?? false,
-                results,
-                dataset: Array.isArray(data) ? data : [].concat(data),
+                datasets: ctxDatasets,
                 processes: this.processes,
             }
             const result = await proc.run(ctx)

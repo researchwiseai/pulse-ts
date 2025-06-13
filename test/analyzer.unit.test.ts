@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { Analyzer, AnalysisResult } from '../src/analyzer'
+import { Analyzer } from '../src/analyzer'
 import { ThemeGeneration } from '../src/processes/ThemeGeneration'
 import { ThemeAllocation } from '../src/processes/ThemeAllocation'
 import { ThemeExtraction } from '../src/processes/ThemeExtraction'
@@ -77,11 +77,5 @@ describe('Analyzer run and AnalysisResult', () => {
         const res = await analyzer.run()
         expect(res.p1).toBe(1)
         expect(res.p2).toBe(2)
-    })
-
-    it('AnalysisResult exposes result properties', () => {
-        const result = new AnalysisResult({ a: 1, b: 2 })
-        expect((result as any).a).toBe(1)
-        expect((result as any).b).toBe(2)
     })
 })

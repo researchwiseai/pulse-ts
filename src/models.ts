@@ -88,6 +88,6 @@ export type ExtractionResult = Record<string, unknown>
 export interface ExtractionsResponse {
     /** Unique request identifier or job request id. */
     requestId: string
-    /** List of extraction results for each input. */
-    extractions: ExtractionResult[]
+    /** Nested list of extraction results for each input per theme. */
+    extractions: ExtractionResult[][][]
 }
