@@ -51,7 +51,7 @@ export async function sentimentAnalysis(
     const fast = texts.length <= 200
     const sentimentProcess = new Sentiment({ fast })
     const analyzer = new Analyzer({
-        dataset: texts,
+        datasets: { dataset: texts },
         processes: [sentimentProcess],
         client,
         fast,
@@ -72,7 +72,7 @@ export async function themeAllocation(
     const fast = texts.length <= 200
     const proc = new ThemeAllocation({ themes })
     const analyzer = new Analyzer({
-        dataset: texts,
+        datasets: { dataset: texts },
         processes: [proc],
         client,
         fast,
@@ -91,7 +91,7 @@ export async function clusterAnalysis(
     const texts = getStrings(inputData)
     const fast = texts.length <= 200
     const analyzer = new Analyzer({
-        dataset: texts,
+        datasets: { dataset: texts },
         processes: processes(new Cluster()),
         client,
         fast,

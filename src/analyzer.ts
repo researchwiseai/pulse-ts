@@ -16,7 +16,7 @@ export interface AnalyzerOptions<
     ProcessCollection extends readonly Processes.Process<string, unknown>[],
 > {
     /** Initial datasets mapping alias to array of texts. */
-    dataset: string[]
+    datasets: Record<string, string[]>
     /** Processing steps to execute. */
     processes: ProcessCollection
     /** Core client to call API endpoints. */
@@ -37,7 +37,7 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
     client: CoreClient
 
     constructor(opts: AnalyzerOptions<ProcessCollection>) {
-        this.datasets = { dataset: opts.dataset }
+        this.datasets = { ...opts.datasets }
         this.processes = opts.processes ?? []
         this.fast = opts.fast ?? false
         this.client = opts.client
@@ -68,7 +68,7 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
      * Execute the configured processes in sequence and return their results.
      *
      * @returns A mapping from process names to their execution results.
-     * @throws Error if any process input alias is not found in the dataset map.
+     * @throws Error if any process input alias is not found in the datasets map.
      */
     async run(): Promise<TupleToResult<ProcessCollection>> {
         const output: [string, unknown][] = []
