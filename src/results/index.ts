@@ -44,7 +44,7 @@ export class ThemeExtractionResult {
     ) {}
 
     /** Nested list of extracted elements per text per theme. */
-    get extractions(): ExtractionResult[][][] {
+    get extractions(): string[][][] {
         return this.response.extractions
     }
 
