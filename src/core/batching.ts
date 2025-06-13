@@ -118,13 +118,13 @@ function stitchCross<A, B>(results: { matrix: number[][] }[], fullA: A[], fullB:
  * @param fullB - The full array of items from set B used in comparison.
  * @returns A complete similarity matrix of dimensions fullA.length × fullB.length.
  */
-export function stitchResults<A, B>(
+export function stitchResults<A>(
     results: { matrix: number[][] }[],
-    bodies: CrossBody<A, B>[],
+    bodies: CrossBody<A, A>[],
     fullA: A[],
-    fullB: B[],
+    fullB: A[],
 ): number[][] {
-    return (fullA as unknown) === (fullB as unknown)
+    return fullA.every((a, ia) => fullB[ia] === a)
         ? stitchSelf(results, fullA)
         : stitchCross(results, fullA, fullB)
 }
