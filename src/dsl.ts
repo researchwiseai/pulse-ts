@@ -304,25 +304,22 @@ export class Workflow {
     /**
      * Execute the workflow. Uses DSL mode if data sources were registered, otherwise falls back to Analyzer mode.
      *
-     * @param dataset - Input dataset array if not pre-registered via source().
-     * @param options - Execution options including CoreClient and fast flag.
+     * @param options - Execution options including CoreClient, input datasets and fast flag.
      * @returns A record mapping process identifiers to their execution results.
      */
     async run(
-        dataset: string[],
-        options: { client: CoreClient; fast?: boolean },
+        options: { client: CoreClient; datasets?: Record<string, string[]>; fast?: boolean },
     ): Promise<Record<string, unknown>> {
-        const client = options.client
-        const fast = options.fast
+        const { client, datasets = {}, fast } = options
         if (Object.keys(this.datasets).length > 0) {
-            if (dataset != null && !this.datasets.dataset) {
-                this.datasets.dataset = dataset
+            for (const [name, data] of Object.entries(datasets)) {
+                if (!this.datasets[name]) this.datasets[name] = data
             }
             return this.runDsl(client, fast)
         }
         // simple linear mode
         const analyzer = new Analyzer({
-            dataset,
+            datasets,
             processes: this.processes,
             client,
             fast,
@@ -352,7 +349,6 @@ export class Workflow {
             if (!(alias in ctxDatasets)) {
                 throw new Error(`Source '${alias}' not found for process '${proc.id}'`)
             }
-            const data = ctxDatasets[alias]
             const ctx: ContextBase = {
                 client,
                 fast: fast ?? false,

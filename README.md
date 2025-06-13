@@ -56,7 +56,7 @@ const wf = new Workflow()
     .theme_generation()
     .cluster()
 
-const results = await wf.run(undefined, { client })
+const results = await wf.run({ client })
 console.log(results.sentiment.summary())
 ```
 
