@@ -352,7 +352,6 @@ export class Workflow {
             if (!(alias in ctxDatasets)) {
                 throw new Error(`Source '${alias}' not found for process '${proc.id}'`)
             }
-            const data = ctxDatasets[alias]
             const ctx: ContextBase = {
                 client,
                 fast: fast ?? false,

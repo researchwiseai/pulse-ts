@@ -124,5 +124,7 @@ export function stitchResults<A, B>(
     fullA: A[],
     fullB: B[],
 ): number[][] {
-    return fullA === fullB ? stitchSelf(results, fullA) : stitchCross(results, fullA, fullB)
+    return (fullA as unknown) === (fullB as unknown)
+        ? stitchSelf(results, fullA)
+        : stitchCross(results, fullA, fullB)
 }
