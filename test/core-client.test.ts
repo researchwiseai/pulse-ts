@@ -346,7 +346,7 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
             { fast: true },
         )
         expect(resp).toBeDefined()
-        expect(resp.matrix.length).toBe(2)
+        expect(resp.matrix!.length).toBe(2)
         expect(resp.flattened.length).toBe(4)
     })
     it('generateThemes returns data', async () => {
