@@ -122,7 +122,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
             { setA: texts, setB: simTexts },
             { fast: fastFlag },
         )
-        const simMatrix: number[][] = resp.matrix
+        const simMatrix: number[][] = resp.matrix!
         const assignments = simMatrix.map(row =>
             row.reduce(
                 (bestIdx, _, i) => ((row[i] as number) > (row[bestIdx] as number) ? i : bestIdx),
