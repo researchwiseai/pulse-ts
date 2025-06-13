@@ -10,7 +10,7 @@ describe('Analyzer resolveDependencies', () => {
     it('injects ThemeGeneration when ThemeAllocation without themes provided', () => {
         const alloc = new ThemeAllocation()
         const analyzer = new Analyzer({
-            dataset: [],
+            datasets: { dataset: [] },
             processes: [alloc],
             client: {} as CoreClient,
         })
@@ -22,7 +22,7 @@ describe('Analyzer resolveDependencies', () => {
         const alloc = new ThemeAllocation()
         const extract = new ThemeExtraction()
         const analyzer = new Analyzer({
-            dataset: [],
+            datasets: { dataset: [] },
             processes: [alloc, extract],
             client: {} as CoreClient,
         })
@@ -43,7 +43,7 @@ describe('Analyzer resolveDependencies', () => {
         expect(
             () =>
                 new Analyzer({
-                    dataset: [],
+                    datasets: { dataset: [] },
                     processes: [new Dummy()],
                     client: {} as CoreClient,
                 }),
@@ -70,7 +70,7 @@ describe('Analyzer run and AnalysisResult', () => {
             }
         }
         const analyzer = new Analyzer({
-            dataset: [],
+            datasets: { dataset: [] },
             processes: [new P1(), new P2()],
             client: {} as CoreClient,
         })
