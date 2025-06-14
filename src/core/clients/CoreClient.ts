@@ -29,7 +29,7 @@ export class CoreClient {
      * @param options - Configuration options including the API baseUrl and authentication.
      */
     constructor(options: CoreClientOptions) {
-        this._baseUrl = options.baseUrl.replace(/\/+$/g, '')
+        this._baseUrl = options.baseUrl.replace(/\/{1,100}$/g, '')
         this._auth = options.auth
     }
 
