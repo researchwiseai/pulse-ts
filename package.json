@@ -39,6 +39,6 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "dependencies": {
-        "zod": "^3.25.63"
+        "zod": "^3.25.64"
     }
 }
