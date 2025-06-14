@@ -1,18 +1,41 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest'
-import { generateThemes } from './generateThemes'
-import type { CoreClient } from './CoreClient'
-import { PulseAPIError } from '../../errors'
-import { fetchWithRetry } from '../../http'
-import { Job } from '../job'
+import { generateThemes } from '../generateThemes'
+import type { CoreClient } from '../CoreClient'
+import { PulseAPIError } from '../../../errors'
+import { fetchWithRetry } from '../../../http'
+import { Job } from '../../job'
+import { setupPolly } from '../../../../test/setupPolly'
+import type { Theme, ThemesResponse } from '../../../models'
 
-vi.mock('../../http', () => ({
+vi.mock('../../../http', () => ({
     fetchWithRetry: vi.fn(),
 }))
-vi.mock('../job', () => ({
+vi.mock('../../job', () => ({
     Job: vi.fn(),
 }))
 
+// Mock the Job class, including its constructor and methods
+vi.mock('../../job', async importOriginal => {
+    return {
+        ...(await importOriginal<typeof import('../../job')>()),
+        Job: vi.fn(function (this: any, options: any) {
+            this.jobId = options.jobId
+            this.baseUrl = options.baseUrl
+            this.auth = options.auth
+            this.result = vi.fn(
+                async () =>
+                    ({
+                        themes: [],
+                        requestId: 'req-123',
+                    }) satisfies ThemesResponse,
+            )
+        }),
+    }
+})
+
 describe('generateThemes', () => {
+    setupPolly()
+
     const fakeReq = {} as Request
     const fakeAuthFlow = vi.fn().mockReturnValue({
         next: () => Promise.resolve({ value: fakeReq }),
@@ -65,9 +88,10 @@ describe('generateThemes', () => {
         })
         ;(Job as unknown as Mock).mockImplementation(() => fakeJobInstance)
 
-        const result = await generateThemes(baseClient, ['input'])
+        const result = await generateThemes(baseClient, ['input'], { awaitJobResult: false })
         expect(result).toBe(fakeJobInstance)
         expect(Job).toHaveBeenCalledWith({
+            after: expect.any(Function),
             jobId: 'job-123',
             baseUrl: baseClient.baseUrl,
             auth: baseClient.auth,
