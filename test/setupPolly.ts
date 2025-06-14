@@ -35,10 +35,47 @@ export function setupPolly(options?: Record<string, unknown>) {
             ...(options || {}),
         })
 
-        polly.server.any().on('beforePersist', req => {
-            req.headers = {
-                ...req.headers,
-                authorization: 'Bearer <redacted>',
+        polly.server.any().on('beforePersist', (req, recording) => {
+            recording.request = {
+                ...req,
+                headers: {
+                    ...req.headers,
+                    ...(req.headers.authorization ? { authorization: 'Bearer <redacted>' } : {}),
+                },
+                requestArguments: {
+                    ...req.requestArguments,
+                    ...((req.requestArguments as any).options
+                        ? {
+                              options: {
+                                  ...(req.requestArguments as any).options,
+                                  headers: {},
+                              },
+                          }
+                        : {}),
+                },
+            }
+
+            if (recording.request?.response?.body) {
+                try {
+                    const raw = recording.request.response.body
+                    const body = typeof raw === 'string' ? JSON.parse(raw) : raw
+                    if ('access_token' in body) body.access_token = '<redacted>'
+                    if ('refresh_token' in body) body.refresh_token = '<redacted>'
+                    recording.request.response.body = JSON.stringify(body)
+                } catch {}
+            }
+
+            if (recording.response?.content?.text) {
+                console.log('redacting response body', recording.response)
+                try {
+                    const body = JSON.parse(recording.response.content.text as string)
+                    console.log('body', body)
+                    if ('access_token' in body) body.access_token = '<redacted>'
+                    if ('refresh_token' in body) body.refresh_token = '<redacted>'
+                    recording.response.content.text = JSON.stringify(body)
+
+                    console.log('redacted response body', recording.response)
+                } catch {}
             }
         })
     })

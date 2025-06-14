@@ -5,6 +5,7 @@ import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
 import { fetchWithRetry } from '../../../http'
 import { unflatten } from '../../../matrix'
+import { setupPolly } from '../../../../test/setupPolly'
 
 const fetchWithRetryMock = fetchWithRetry as unknown as MockedFunction<typeof fetchWithRetry>
 
@@ -49,6 +50,8 @@ function mockResponse(json: any, ok = true, status = 200): Response {
 }
 
 describe('compareSimilarity', () => {
+    setupPolly()
+
     let client: CoreClient
 
     beforeEach(() => {
