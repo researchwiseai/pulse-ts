@@ -10,7 +10,6 @@ type ProcWithInputs = { _inputs?: string[] }
  * This process computes a similarity matrix between all input texts and assigns clusters accordingly.
  *
  * @template Name - Custom name type for this process instance.
- * @implements Process<Name, ClusterResult>
  */
 @staticImplements<ProcessStatic<'cluster', ClusterResult>>()
 export class Cluster<Name extends string = 'cluster'> implements Process<Name, ClusterResult> {

@@ -11,7 +11,6 @@ type ProcWithInputs = { _inputs?: string[] }
  * Uses the Pulse API to perform element extraction for each theme.
  *
  * @template Name - Custom name for this process instance.
- * @implements Process<Name, ThemeExtractionResult>
  */
 @staticImplements<ProcessStatic<'themeExtraction', ThemeExtractionResult>>()
 export class ThemeExtraction<Name extends string = 'themeExtraction'>
