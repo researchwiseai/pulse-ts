@@ -43,7 +43,7 @@ export class Job<T, After = T> {
         pollIntervalMs = 1000,
     }: JobInfo<T, After>) {
         this.jobId = jobId
-        this.baseUrl = baseUrl.replace(/\/+$/, '') // Ensure no trailing slash
+        this.baseUrl = baseUrl.replace(/\/{1,100}$/, '') // Ensure no trailing slash
         this.auth = auth
         this.pollIntervalMs = pollIntervalMs
         this.after = after
