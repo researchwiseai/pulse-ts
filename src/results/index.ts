@@ -1,7 +1,7 @@
 /**
  * Result helper classes for analysis processes.
  */
-import type { ExtractionResult, ExtractionsResponse } from '../models'
+import type { ExtractionsResponse } from '../models'
 
 /**
  * Results of clustering with helper methods.

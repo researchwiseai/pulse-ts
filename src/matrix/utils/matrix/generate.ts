@@ -64,7 +64,7 @@ export interface MatrixConstructor {
  */
 export async function generateImpl<U, S extends string | string[]>(
     MatrixClass: MatrixConstructor,
-    { iterables, fn, poolSize = 10, headers: headerFn }: GenerateOptions<U, S>,
+    { fn, headers: headerFn, iterables, poolSize = 10 }: GenerateOptions<U, S>,
 ): Promise<{
     matrix: import('.').Matrix<U>
     report: {
@@ -197,7 +197,7 @@ export async function generateImpl<U, S extends string | string[]>(
  */
 export async function generateSelfImpl<U, S extends string | string[]>(
     MatrixClass: MatrixConstructor,
-    { iterable, fn: pairFn, poolSize, headers: headerFn, before }: GenerateSelfOptions<U, S>,
+    { before, fn: pairFn, headers: headerFn, iterable, poolSize }: GenerateSelfOptions<U, S>,
 ) {
     return generateImpl<U, S>(MatrixClass, {
         iterables: [iterable, iterable],

@@ -106,11 +106,11 @@ export class Matrix<T> {
      * Constructs a square matrix by self comparing a single iterable using a mapping function.
      */
     static async generateSelf<U, S extends string | string[] = string | string[]>({
-        iterable,
-        fn: pairFn,
-        poolSize,
-        headers: headerFn,
         before,
+        fn: pairFn,
+        headers: headerFn,
+        iterable,
+        poolSize,
     }: GenerateSelfOptions<U, S>): Promise<{
         matrix: Matrix<U>
         report: {
@@ -366,7 +366,7 @@ export class Matrix<T> {
 
         const flat: U[] = new Array(product(this.shape))
         let idx = 0
-        for (const { value, coords } of this.view) {
+        for (const { coords, value } of this.view) {
             flat[idx++] = (fn as (v: T, c: readonly number[]) => U)(value, coords)
         }
         const nested = unflatten(flat, this.shape) as NestedArray<U>
@@ -400,7 +400,7 @@ export class Matrix<T> {
             const sub = this.vectorize(axis)
             const newShape = this.shape.filter((_, i) => i !== axis)
             const flat: U[] = []
-            for (const { value, coords } of sub.asView()) {
+            for (const { coords, value } of sub.asView()) {
                 let acc2 = init
                 for (const v of value as unknown as Iterable<T>) {
                     acc2 = fn(acc2, v, coords)
@@ -412,7 +412,7 @@ export class Matrix<T> {
             return Matrix.from<U>(nested, headers)
         }
         let acc = init
-        for (const { value, coords } of this.view) {
+        for (const { coords, value } of this.view) {
             acc = fn(acc, value, coords)
         }
         return acc
@@ -517,7 +517,7 @@ export class Matrix<T> {
         const dims = this.shape
         const flatNew: U[] = []
         let K: number | undefined
-        for (const { value, coords } of this.view) {
+        for (const { coords, value } of this.view) {
             const arr = fn(value, coords)
             if (K === undefined) {
                 K = arr.length
@@ -551,7 +551,7 @@ export class Matrix<T> {
         const M = product(dims)
         const arrs: U[][] = []
         let K: number | undefined
-        for (const { value, coords } of this.view) {
+        for (const { coords, value } of this.view) {
             const arr = fn(value as T, coords)
             if (K === undefined) {
                 K = arr.length

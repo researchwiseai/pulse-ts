@@ -22,7 +22,7 @@ export class VectorView<S> extends NDView<
     public readonly vecLen: number
     private readonly orig: NDView<S>
 
-    constructor({ base, shape, offset, strides, dim, vecLen, orig }: VectorViewOpts<S>) {
+    constructor({ base, dim, offset, orig, shape, strides, vecLen }: VectorViewOpts<S>) {
         super(base, shape, offset, strides)
         this.dim = dim
         this.vecLen = vecLen
