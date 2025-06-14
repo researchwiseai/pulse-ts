@@ -92,3 +92,23 @@ bun run build
 
 This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
 IDEs will automatically pick up these types for improved editor support.
+
+## Downloading Release Artifacts
+
+Pre-built bundles are attached to each GitHub release along with a detached
+signature and SBOM. The `sbom.xml` file lists all dependencies used to produce
+the package.
+
+Download and verify the tarball for a specific tag:
+
+```bash
+VERSION=<tag>
+curl -LO https://github.com/rwai/pulse-ts/releases/download/$VERSION/pulse-ts-$VERSION.tgz
+curl -LO https://github.com/rwai/pulse-ts/releases/download/$VERSION/pulse-ts-$VERSION.tgz.sig
+cosign verify-blob --key cosign.pub \
+    --signature pulse-ts-$VERSION.tgz.sig \
+    pulse-ts-$VERSION.tgz
+```
+
+If verification succeeds you can unpack the archive and inspect `sbom.xml` for
+its dependency metadata.
