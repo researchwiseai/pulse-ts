@@ -112,9 +112,9 @@ export type HeaderRecord =
  *  ],
  * [
  *
- * The outer array corresponds to header rows, and each inner array is a group
- * of header definitions. Every header object must have a unique `key` string
- * and also includes all additional properties defined by `HeaderRecord`.
+ * The first dimension corresponds with the dimensions of the matrix,
+ * the second second represents each column within the given dimension,
+ * and the innermost array contains key-value pairs for each header record.
  */
 export type Headers = Array<
     Array<
