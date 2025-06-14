@@ -92,3 +92,13 @@ bun run build
 
 This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
 IDEs will automatically pick up these types for improved editor support.
+
+## Generating models
+
+Generate TypeScript models from the OpenAPI schema:
+
+```bash
+bun run generate
+```
+
+This will update `src/models.ts` with the latest types.
