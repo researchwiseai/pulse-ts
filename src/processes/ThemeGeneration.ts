@@ -1,10 +1,12 @@
-import type { Theme } from '../models'
+import type { components } from '../models'
 import { ThemeGenerationResult } from '../results/ThemeGenerationResult'
 import { shuffle } from './shuffle'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 
 // Internal helper for DSL-provided inputs metadata
 type ProcWithInputs = { _inputs?: string[] }
+
+type Theme = components['schemas']['Theme']
 
 /**
  * Process: uses an LLM to generate themes from input strings.
@@ -54,7 +56,6 @@ type ProcWithInputs = { _inputs?: string[] }
  * @public
  * @template Name - The name of the process, defaults to 'theme_generation'.
  * @extends Process<Name, ThemeGenerationResult>
- * @implements ProcessStatic<'theme_generation', ThemeGenerationResult>
  * @see {@link ThemeGenerationResult} for the structure of the result.
  * @see {@link Theme} for the structure of a theme.
  * @see {@link ContextBase} for the context in which the process runs.

@@ -3,7 +3,7 @@
  */
 import fs from 'fs'
 import path from 'path'
-import type { CoreClient } from './core/clients/CoreClient'
+import { CoreClient } from './core/clients/CoreClient'
 import { Analyzer } from './analyzer'
 import { Cluster } from './processes/Cluster'
 import { ThemeAllocation } from './processes/ThemeAllocation'
@@ -65,7 +65,7 @@ export async function sentimentAnalysis(
  */
 export async function themeAllocation(
     inputData: string[] | string,
-    client: CoreClient,
+    client?: CoreClient,
     themes?: string[],
 ): Promise<ThemeAllocationResult> {
     const texts = getStrings(inputData)
@@ -74,7 +74,7 @@ export async function themeAllocation(
     const analyzer = new Analyzer({
         datasets: { dataset: texts },
         processes: [proc],
-        client,
+        client: client ?? new CoreClient(),
         fast,
     })
     const res = await analyzer.run()

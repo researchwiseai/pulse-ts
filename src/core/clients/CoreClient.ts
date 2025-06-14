@@ -1,4 +1,4 @@
-import type { Auth } from '../../auth'
+import { Auth } from '../../auth'
 import { analyzeSentiment, type AnalyzeSentimentOptions } from './analyzeSentiment'
 import {
     compareSimilarity,
@@ -21,16 +21,18 @@ import { generateThemes, type GenerateThemeOptions } from './generateThemes'
  */
 export class CoreClient {
     private readonly _baseUrl: string
-    private readonly _auth: Auth
+    private readonly _auth: Auth.Auth
 
     /**
      * Construct a new CoreClient.
      *
      * @param options - Configuration options including the API baseUrl and authentication.
      */
-    constructor(options: CoreClientOptions) {
-        this._baseUrl = options.baseUrl.replace(/\/{1,100}$/g, '')
-        this._auth = options.auth
+    constructor(options: Partial<CoreClientOptions> = {}) {
+        this._baseUrl =
+            options?.baseUrl?.replace(/\/{1,100}$/g, '') ??
+            'https://core.researchwiseai.com/pulse/v1'
+        this._auth = options.auth ?? new Auth.AutoAuth()
     }
 
     /** The normalized base URL used for API requests. */
@@ -39,7 +41,7 @@ export class CoreClient {
     }
 
     /** The authenticator instance used to sign requests. */
-    get auth(): Auth {
+    get auth(): Auth.Auth {
         return this._auth
     }
 

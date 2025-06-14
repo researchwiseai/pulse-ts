@@ -1,8 +1,4 @@
-import type { ThemesResponse, Theme } from '../models'
-
-/**
- * Results of theme generation with helper methods.
- */
+import type { components } from '../models'
 
 /**
  * Results of theme generation with helper methods.
@@ -11,10 +7,10 @@ export class ThemeGenerationResult {
     /**
      * @param response - The raw themes response from the API.
      */
-    constructor(private response: ThemesResponse) {}
+    constructor(private response: components['schemas']['ThemesResponse']) {}
 
     /** Array of generated Theme objects. */
-    get themes(): Theme[] {
+    get themes(): components['schemas']['Theme'][] {
         return this.response.themes
     }
 

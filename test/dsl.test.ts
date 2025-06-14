@@ -28,7 +28,7 @@ describe('DSL id uniqueness and naming', () => {
         )
     })
 })
-import { ClientCredentialsAuth } from '../src/auth'
+import { ClientCredentialsAuth } from '../src/auth/ClientCredentialsAuth'
 import { Job } from '../src/core/job'
 
 const clientId = process.env.PULSE_CLIENT_ID

@@ -1,8 +1,8 @@
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
-import type { EmbeddingResponse } from '../../models'
 import type { Job } from '../job'
 import { requestFeature } from './requestFeature'
+import type { components } from '../../models'
 
 /**
  * Options controlling embeddings creation requests.
@@ -32,6 +32,10 @@ export async function createEmbeddings<
     client: CoreClient,
     inputs: string[],
     options: CreateEmbeddingsOptions<Fast, AwaitJobResult> = {},
-): Promise<AwaitJobResult extends false ? Job<EmbeddingResponse> : EmbeddingResponse> {
+): Promise<
+    AwaitJobResult extends false
+        ? Job<components['schemas']['EmbeddingsResponse']>
+        : components['schemas']['EmbeddingsResponse']
+> {
     return requestFeature(client, '/embeddings', { inputs }, options)
 }

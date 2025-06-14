@@ -4,7 +4,7 @@ import * as http from '../src/http'
 import type { Auth } from '../src/auth'
 
 describe('Job.result', () => {
-    const dummyAuth: Auth = {
+    const dummyAuth: Auth.Auth = {
         authFlow: async function* (req: Request) {
             yield req
             return req

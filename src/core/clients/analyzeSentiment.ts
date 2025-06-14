@@ -1,8 +1,8 @@
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
-import type { SentimentResponse } from '../../models'
 import type { Job } from '../job'
 import { requestFeature } from './requestFeature'
+import type { components } from '../../models'
 
 /**
  * Configuration options for the analyzeSentiment function.
@@ -34,6 +34,10 @@ export async function analyzeSentiment<
     client: CoreClient,
     inputs: string[],
     options: AnalyzeSentimentOptions<Fast, AwaitJobResult> = {},
-): Promise<AwaitJobResult extends false ? Job<SentimentResponse> : SentimentResponse> {
+): Promise<
+    AwaitJobResult extends false
+        ? Job<components['schemas']['SentimentResponse']>
+        : components['schemas']['SentimentResponse']
+> {
     return requestFeature(client, '/sentiment', { inputs }, options)
 }
