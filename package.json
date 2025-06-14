@@ -11,7 +11,8 @@
         "lint": "eslint --fix --config .qlty/configs/eslint.config.mjs .",
         "docs": "typedoc --options typedoc.json",
         "typecheck": "tsc --noEmit",
-        "build": "tsup"
+        "build": "tsup",
+        "generate": "openapi-typescript openapi.yml -o src/models.ts"
     },
     "devDependencies": {
         "@eslint/markdown": "^6.5.0",
