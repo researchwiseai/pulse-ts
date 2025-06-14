@@ -16,7 +16,7 @@ import type { ContextBase } from './processes'
 /**
  * Callbacks to monitor the lifecycle events of a workflow execution.
  */
-type MonitorCallbacks = {
+export type MonitorCallbacks = {
     /** Called before workflow execution starts. */
     onRunStart?: () => void
     /** Called before each process starts; receives the process id. */

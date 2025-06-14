@@ -50,9 +50,6 @@ export interface Process<
  * @template Return - The return type of the process, defaults to unknown.
  *
  * @property id - A unique identifier for the process class.
- * @constructor Creates a new instance of the process with optional configuration.
- * @param options - Optional configuration object containing the process name.
- * @returns An instance of the Process with the specified name and return type.
  */
 export interface ProcessStatic<Name extends string, Return = unknown> {
     new (options?: { name?: Name }): Process<Name, Return>
@@ -82,6 +79,7 @@ export type TupleToResult<T extends readonly Process<string, unknown>[]> = {
  * @returns A class decorator that enforces the static interface implementation.
  *
  * @example
+ * ```typescript
  * interface MyStatic {
  *   new (): any;
  *   staticMethod(): void;
@@ -91,6 +89,7 @@ export type TupleToResult<T extends readonly Process<string, unknown>[]> = {
  * class MyClass {
  *   static staticMethod() { ... }
  * }
+ * ```
  */
 export function staticImplements<T>() {
     return <U extends T>(constructor: U) => {
