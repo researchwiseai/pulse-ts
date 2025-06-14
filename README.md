@@ -92,3 +92,22 @@ bun run build
 
 This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
 IDEs will automatically pick up these types for improved editor support.
+
+## Testing
+
+Run the unit tests with Bun:
+
+```bash
+bun run test
+```
+
+Integration tests require several environment variables. Create a `.env` file (or
+export them in your shell) providing:
+
+- `PULSE_CLIENT_ID`
+- `PULSE_CLIENT_SECRET`
+- `PULSE_TOKEN_URL`
+- `PULSE_AUDIENCE`
+- `PULSE_BASE_URL`
+
+See `.env.example` for a template.
