@@ -44,10 +44,11 @@ export function setupPolly(options?: Record<string, unknown>) {
                 },
                 requestArguments: {
                     ...req.requestArguments,
-                    ...((req.requestArguments as any).options
+                    ...((req.requestArguments as { options: Record<string, unknown> }).options
                         ? {
                               options: {
-                                  ...(req.requestArguments as any).options,
+                                  ...(req.requestArguments as { options: Record<string, unknown> })
+                                      .options,
                                   headers: {},
                               },
                           }

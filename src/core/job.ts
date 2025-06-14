@@ -36,11 +36,11 @@ export class Job<T, After = T> {
      * @param options.after - Optional callback to transform the raw result payload.
      */
     constructor({
-        jobId,
-        baseUrl,
-        auth,
-        pollIntervalMs = 1000,
         after = resp => resp as unknown as After,
+        auth,
+        baseUrl,
+        jobId,
+        pollIntervalMs = 1000,
     }: JobInfo<T, After>) {
         this.jobId = jobId
         this.baseUrl = baseUrl.replace(/\/+$/, '') // Ensure no trailing slash

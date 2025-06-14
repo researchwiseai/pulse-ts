@@ -1,5 +1,5 @@
 if (typeof window === 'undefined' && process.env.DEBUG_PROXY) {
-    import('undici').then(({ setGlobalDispatcher, ProxyAgent }) => {
+    import('undici').then(({ ProxyAgent, setGlobalDispatcher }) => {
         // Point to the Postman proxy you started on port 5555
         const dispatcher = new ProxyAgent(process.env.DEBUG_PROXY!) // e.g. 'http://127.0.0.1:5555'
         setGlobalDispatcher(dispatcher) // affect **all** subsequent fetch() calls
@@ -79,7 +79,7 @@ export async function fetchWithRetry(
     input: Request,
     options: Omit<FetchOptions, 'headers'> = {},
 ): Promise<Response> {
-    const { timeout = 30000, retries = 1, ...init } = options
+    const { retries = 1, timeout = 30000, ...init } = options
     let attempt = 0
     while (true) {
         attempt++

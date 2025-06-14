@@ -111,7 +111,7 @@ export class Workflow {
             name?: string
         } = {},
     ): this {
-        const { minThemes, maxThemes, context, fast, source, name } = options
+        const { context, fast, maxThemes, minThemes, name, source } = options
         const proc = new ThemeGeneration({ minThemes, maxThemes, context, fast }) as DSLProcess
         this.addProcess(proc, name)
         const alias = source ?? 'dataset'
@@ -143,7 +143,7 @@ export class Workflow {
             name?: string
         } = {},
     ): this {
-        const { themes, fast, singleLabel, threshold, inputs, themesFrom, name } = options
+        const { fast, inputs, name, singleLabel, themes, themesFrom, threshold } = options
         const textAlias = inputs ?? 'dataset'
         if (themes == null && themesFrom == null) {
             if (
@@ -195,7 +195,7 @@ export class Workflow {
             name?: string
         } = {},
     ): this {
-        const { themes, version, fast, inputs, themesFrom, name } = options
+        const { fast, inputs, name, themes, themesFrom, version } = options
         const proc = new ThemeExtraction({ themes, version, fast }) as DSLProcess
         this.addProcess(proc, name)
         const inp = inputs ?? 'dataset'
@@ -223,7 +223,7 @@ export class Workflow {
      * @returns The Workflow instance for chaining.
      */
     sentiment(options: { fast?: boolean; source?: string; name?: string } = {}): this {
-        const { fast, source, name } = options
+        const { fast, name, source } = options
         const proc = new Sentiment({ fast }) as DSLProcess
         this.addProcess(proc, name)
         const alias = source ?? 'dataset'
@@ -245,7 +245,7 @@ export class Workflow {
      * @returns The Workflow instance for chaining.
      */
     cluster(options: { fast?: boolean; source?: string; name?: string } = {}): this {
-        const { fast, source, name } = options
+        const { fast, name, source } = options
         const proc = new Cluster({ fast }) as DSLProcess
         this.addProcess(proc, name)
         const alias = source ?? 'dataset'
