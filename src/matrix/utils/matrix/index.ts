@@ -112,7 +112,7 @@ export class Matrix<T> {
         iterable,
         poolSize,
     }: GenerateSelfOptions<U, S>): Promise<{
-        matrix: Matrix<U>
+        matrix: Matrix<U | undefined>
         report: {
             cellsPerSecond: number
             cells: number
@@ -128,11 +128,11 @@ export class Matrix<T> {
         }
         timeline: () => string
     }> {
-        return Matrix.generate<U, S>({
+        return Matrix.generate<U | undefined, S>({
             iterables: [iterable, iterable],
             fn: async coords => {
                 if (coords[0] <= coords[1]) {
-                    return { result: undefined as unknown as U }
+                    return { result: undefined as unknown as U | undefined }
                 }
 
                 return pairFn(coords[0], coords[1])
