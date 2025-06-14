@@ -25,6 +25,19 @@ npm install @rwai/pulse
 yarn add @rwai/pulse
 ```
 
+## Getting Started
+
+We have organized into several distinct units to make it both easy to get up and running quickly and
+to provide a solid foundation for building more complex applications.
+
+### Starters
+
+````ts
+import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse'
+const sentiments = await sentimentAnalysis(['text1', 'text2'])
+const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'])
+
+
 ## Authentication
 
 Configure OAuth2 credentials and create a client:
@@ -41,7 +54,7 @@ const client = new CoreClient({
     baseUrl: 'https://api.rwai.com/pulse',
     auth,
 })
-```
+````
 
 ## Workflow DSL
 
@@ -101,8 +114,8 @@ Run the unit tests with Bun:
 bun run test
 ```
 
-Integration tests require several environment variables. Create a `.env` file (or
-export them in your shell) providing:
+Integration tests require several environment variables. Create a `.env` file (or export them in
+your shell) providing:
 
 - `PULSE_CLIENT_ID`
 - `PULSE_CLIENT_SECRET`

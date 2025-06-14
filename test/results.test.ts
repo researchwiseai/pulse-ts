@@ -3,16 +3,11 @@ import { ClusterResult, ThemeExtractionResult } from '../src/results'
 import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
 import { SentimentResult } from '../src/results/SentimentResult'
 import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
-import type {
-    ThemesResponse,
-    SentimentResponse,
-    SentimentResult as CoreSentimentResult,
-    ExtractionsResponse,
-} from '../src/models'
+import type { components } from '../src/models'
 
 describe('ThemeGenerationResult', () => {
     it('toArray returns expected metadata', () => {
-        const response: ThemesResponse = {
+        const response: components['schemas']['ThemesResponse'] = {
             requestId: 'id',
             themes: [
                 {
@@ -41,12 +36,15 @@ describe('ThemeGenerationResult', () => {
 describe('SentimentResult', () => {
     it('toArray and summary produce correct outputs', () => {
         const texts = ['I', 'am', 'ok']
-        const coreResults: CoreSentimentResult[] = [
+        const coreResults: components['schemas']['SentimentResult'][] = [
             { sentiment: 'positive', confidence: 0.5 },
             { sentiment: 'negative', confidence: 0.4 },
             { sentiment: 'positive', confidence: 0.9 },
         ]
-        const response: SentimentResponse = { requestId: 'id', results: coreResults }
+        const response: components['schemas']['SentimentResponse'] = {
+            requestId: 'id',
+            results: coreResults,
+        }
         const r = new SentimentResult(response, texts)
         const arr = r.toArray()
         expect(arr).toEqual([
@@ -93,7 +91,7 @@ describe('ClusterResult', () => {
 
 describe('ThemeExtractionResult', () => {
     it('toArray returns expected extraction rows', () => {
-        const response: ExtractionsResponse = {
+        const response: components['schemas']['ExtractionsResponse'] = {
             requestId: 'id',
             extractions: [
                 [['A1', 'A2'], []],

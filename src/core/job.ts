@@ -6,7 +6,7 @@ import type { Auth } from '../auth'
 export interface JobInfo<T, After = T> {
     readonly jobId: string
     readonly baseUrl: string
-    readonly auth: Auth
+    readonly auth: Auth.Auth
     readonly pollIntervalMs?: number
     after?: (result: T) => Promise<After> | After
 }
@@ -21,7 +21,7 @@ export class Job<T, After = T> {
     /** Base URL of the Pulse API (no trailing slash). */
     private readonly baseUrl: string
     /** Authenticator to sign requests. */
-    private readonly auth: Auth
+    private readonly auth: Auth.Auth
     /** Poll interval in milliseconds (default: 1000ms). */
     private readonly pollIntervalMs: number
     /** Function to process the result after job completion. */

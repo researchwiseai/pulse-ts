@@ -1,8 +1,8 @@
-import type { SentimentResponse, SentimentResult as CoreSentimentResult } from '../models'
-
 /**
  * Results of sentiment analysis with helper methods.
  */
+
+import type { components } from '../models'
 
 /**
  * Results of sentiment analysis with helper methods.
@@ -13,12 +13,12 @@ export class SentimentResult {
      * @param texts - The array of input texts corresponding to results.
      */
     constructor(
-        private response: SentimentResponse,
+        private response: components['schemas']['SentimentResponse'],
         private texts: string[],
     ) {}
 
     /** Array of raw sentiment result objects. */
-    get sentiments(): CoreSentimentResult[] {
+    get sentiments() {
         return this.response.results
     }
 

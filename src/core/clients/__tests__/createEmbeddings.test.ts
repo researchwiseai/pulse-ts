@@ -4,8 +4,8 @@ import { fetchWithRetry } from '../../../http'
 import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
 import type { CoreClient } from '../CoreClient'
-import type { EmbeddingResponse } from '../../../models'
 import { setupPolly } from '../../../../test/setupPolly'
+import type { components } from '../../../models'
 
 vi.mock('../../../http', () => ({
     fetchWithRetry: vi.fn(),
@@ -53,7 +53,7 @@ describe('createEmbeddings', () => {
     })
 
     it('returns EmbeddingResponse on 200 ok', async () => {
-        const responseBody: EmbeddingResponse = {
+        const responseBody: components['schemas']['EmbeddingsResponse'] = {
             requestId: 'req-123',
             embeddings: [{ id: '', text: '', vector: [0.3] }],
         }
