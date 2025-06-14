@@ -105,9 +105,8 @@ This will update `src/models.ts` with the latest types.
 
 ## Downloading Release Artifacts
 
-Pre-built bundles are attached to each GitHub release along with a detached
-signature and SBOM. The `sbom.xml` file lists all dependencies used to produce
-the package.
+Pre-built bundles are attached to each GitHub release along with a detached signature and SBOM. The
+`sbom.xml` file lists all dependencies used to produce the package.
 
 Download and verify the tarball for a specific tag:
 
@@ -120,9 +119,10 @@ cosign verify-blob --key cosign.pub \
     pulse-ts-$VERSION.tgz
 ```
 
-If verification succeeds you can unpack the archive and inspect `sbom.xml` for
-its dependency metadata.
+If verification succeeds you can unpack the archive and inspect `sbom.xml` for its dependency
+metadata.
 
 ## Security
 
-For information on how to report security vulnerabilities, see [SECURITY.md](./SECURITY.md). We aim to acknowledge reports within 2 business days.
+For information on how to report security vulnerabilities, see [SECURITY.md](./SECURITY.md). We aim
+to acknowledge reports within 2 business days.
