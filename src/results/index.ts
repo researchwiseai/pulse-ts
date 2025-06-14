@@ -66,3 +66,7 @@ export class ThemeExtractionResult {
         return rows
     }
 }
+
+export { SentimentResult } from './SentimentResult'
+export { ThemeGenerationResult } from './ThemeGenerationResult'
+export { ThemeAllocationResult } from './ThemeAllocationResult'
