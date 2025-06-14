@@ -2,7 +2,8 @@ import { fetchWithRetry, type FetchOptions } from '../http'
 import { PulseAPIError } from '../errors'
 import type { Auth } from '../auth'
 
-interface JobInfo<T, After = T> {
+/** @internal */
+export interface JobInfo<T, After = T> {
     readonly jobId: string
     readonly baseUrl: string
     readonly auth: Auth
@@ -29,11 +30,12 @@ export class Job<T, After = T> {
     /**
      * Create a new Job instance to poll a background job on the Pulse API.
      *
-     * @param options.jobId - Identifier of the job returned by the Pulse API.
-     * @param options.baseUrl - Base URL of the Pulse API (without trailing slash).
-     * @param options.auth - Authenticator instance to sign polling requests.
-     * @param options.pollIntervalMs - Milliseconds between polling attempts. Defaults to 1000.
-     * @param options.after - Optional callback to transform the raw result payload.
+     * @param options - Configuration for polling the job.
+     *   - `jobId`: Identifier of the job returned by the Pulse API.
+     *   - `baseUrl`: Base URL of the Pulse API (without trailing slash).
+     *   - `auth`: Authenticator instance to sign polling requests.
+     *   - `pollIntervalMs`: Milliseconds between polling attempts. Defaults to 1000.
+     *   - `after`: Optional callback to transform the raw result payload.
      */
     constructor({
         after = resp => resp as unknown as After,

@@ -54,7 +54,6 @@ type ProcWithInputs = { _inputs?: string[] }
  * @public
  * @template Name - The name of the process, defaults to 'theme_generation'.
  * @extends Process<Name, ThemeGenerationResult>
- * @implements ProcessStatic<'theme_generation', ThemeGenerationResult>
  * @see {@link ThemeGenerationResult} for the structure of the result.
  * @see {@link Theme} for the structure of a theme.
  * @see {@link ContextBase} for the context in which the process runs.
