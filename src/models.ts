@@ -15,7 +15,7 @@ export interface paths {
         put?: never
         /**
          * Generate dense vector embeddings for input strings (synchronous or asynchronous).
-         * @description Generates dense vector embeddings for input strings in a single batch.
+         * Generates dense vector embeddings for input strings in a single batch.
          *     Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
          *
          *     • Synchronous mode processes up to 200 input strings and returns embeddings immediately (HTTP 200).
@@ -40,7 +40,7 @@ export interface paths {
         put?: never
         /**
          * Compute cosine similarity between strings (self or cross).
-         * @description Computes pairwise cosine similarity between input strings.
+         * Computes pairwise cosine similarity between input strings.
          *     Supports self-similarity (provide `set`) and cross-similarity (provide `set_a` and `set_b`), with synchronous (`fast=true`) and asynchronous (`fast=false` or omitted) modes.
          *
          *     • In synchronous mode, self-similarity supports up to 100 input strings; cross-similarity requires |set_a|×|set_b| ≤ 10,000. Returns similarities immediately (HTTP 200).
@@ -65,7 +65,7 @@ export interface paths {
         put?: never
         /**
          * Cluster open-ended text responses into thematic groups.
-         * @description Groups input strings into latent themes using LLM-based clustering.
+         * Groups input strings into latent themes using LLM-based clustering.
          *     Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
          *
          *      - In synchronous mode, processes up to 200 input strings and returns themes immediately (HTTP 200).
@@ -93,7 +93,7 @@ export interface paths {
         put?: never
         /**
          * Classify sentiment of each input string.
-         * @description Classifies the sentiment of each input string as positive, negative, neutral, or mixed, with confidence scores ∈ [0,1].
+         * Classifies the sentiment of each input string as positive, negative, neutral, or mixed, with confidence scores ∈ [0,1].
          *     Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
          *
          *      - In synchronous mode, processes up to 200 input strings and returns results immediately (HTTP 200).
@@ -120,7 +120,7 @@ export interface paths {
         put?: never
         /**
          * Extract elements matching themes from input strings.
-         * @description Extracts substrings from inputs that match the provided themes.
+         * Extracts substrings from inputs that match the provided themes.
          *     Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
          *
          *      - Both modes support up to 200 input strings and up to 50 themes.
@@ -146,7 +146,7 @@ export interface paths {
         }
         /**
          * Retrieve status of an asynchronous job.
-         * @description Retrieves the status of a previously submitted long-running job.
+         * Retrieves the status of a previously submitted long-running job.
          *     Returns `pending`, `completed`, or `failed`. When `completed`, includes
          *     a `resultUrl` to download results.
          *
@@ -166,13 +166,13 @@ export interface components {
     schemas: {
         ErrorResponse: {
             message: string
-            /** @description Optional array of error detail messages */
+            /** Optional array of error detail messages */
             details?: string[]
         }
         EmbeddingsRequest: {
-            /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 2000. */
+            /** List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 2000. */
             inputs: string[]
-            /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
+            /** Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean
         }
         EmbeddingDocument: {
@@ -185,16 +185,16 @@ export interface components {
             requestId: string
         }
         SimilarityRequest: {
-            /** @description Array of strings for self-similarity. For synchronous (fast=true), max 100; for asynchronous (fast=false or omitted), max 44,721. */
+            /** Array of strings for self-similarity. For synchronous (fast=true), max 100; for asynchronous (fast=false or omitted), max 44,721. */
             set?: string[]
-            /** @description Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 10,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
+            /** Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 10,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
             set_a?: string[]
-            /** @description Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 10,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
+            /** Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 10,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
             set_b?: string[]
             version?: string
-            /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
+            /** Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean
-            /** @description For cross-similarity, flatten the matrix into a 1-D array. Ignored for self-similarity. Default false. */
+            /** For cross-similarity, flatten the matrix into a 1-D array. Ignored for self-similarity. Default false. */
             flatten?: boolean
         } & (unknown | unknown)
         SimilarityResponse: {
@@ -208,21 +208,21 @@ export interface components {
             requestId: string
         }
         ThemesRequest: {
-            /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 500. */
+            /** List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 500. */
             inputs: string[]
             minThemes?: number
             maxThemes?: number
             context?: string
             version?: string
             prune?: number
-            /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
+            /** Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean
         }
         Theme: {
             shortLabel: string
             label: string
             description: string
-            /** @description Two representative input strings for the theme. */
+            /** Two representative input strings for the theme. */
             representatives: string[]
         }
         ThemesResponse: {
@@ -230,10 +230,10 @@ export interface components {
             requestId: string
         }
         SentimentRequest: {
-            /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 10,000. */
+            /** List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 10,000. */
             inputs: string[]
             version?: string
-            /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
+            /** Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean
         }
         SentimentResult: {
@@ -249,11 +249,11 @@ export interface components {
             inputs: string[]
             themes: string[]
             version?: string
-            /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
+            /** Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean
         }
         ExtractionsResponse: {
-            /** @description 3D array of extracted elements, shape [inputs.length][themes.length][K] */
+            /** 3D array of extracted elements, shape [inputs.length][themes.length][K] */
             extractions: string[][][]
             requestId: string
         }
@@ -285,7 +285,7 @@ export interface operations {
             }
         }
         responses: {
-            /** @description Embeddings successfully created. */
+            /** Embeddings successfully created. */
             200: {
                 headers: {
                     [name: string]: unknown
@@ -294,7 +294,7 @@ export interface operations {
                     'application/json': components['schemas']['EmbeddingsResponse']
                 }
             }
-            /** @description Bad request - validation error (e.g., >200 strings). */
+            /** Bad request - validation error (e.g., >200 strings). */
             400: {
                 headers: {
                     [name: string]: unknown
@@ -318,7 +318,7 @@ export interface operations {
             }
         }
         responses: {
-            /** @description Similarity values returned successfully. */
+            /** Similarity values returned successfully. */
             200: {
                 headers: {
                     [name: string]: unknown
@@ -327,7 +327,7 @@ export interface operations {
                     'application/json': components['schemas']['SimilarityResponse']
                 }
             }
-            /** @description Bad request - validation error (e.g., invalid input). */
+            /** Bad request - validation error (e.g., invalid input). */
             400: {
                 headers: {
                     [name: string]: unknown
@@ -351,7 +351,7 @@ export interface operations {
             }
         }
         responses: {
-            /** @description Thematic clustering completed successfully. */
+            /** Thematic clustering completed successfully. */
             200: {
                 headers: {
                     [name: string]: unknown
@@ -360,7 +360,7 @@ export interface operations {
                     'application/json': components['schemas']['ThemesResponse']
                 }
             }
-            /** @description Bad request - validation error (e.g., inputs >200 strings). */
+            /** Bad request - validation error (e.g., inputs >200 strings). */
             400: {
                 headers: {
                     [name: string]: unknown
@@ -384,7 +384,7 @@ export interface operations {
             }
         }
         responses: {
-            /** @description Sentiment analysis results. */
+            /** Sentiment analysis results. */
             200: {
                 headers: {
                     [name: string]: unknown
@@ -393,7 +393,7 @@ export interface operations {
                     'application/json': components['schemas']['SentimentResponse']
                 }
             }
-            /** @description Bad request - validation error. */
+            /** Bad request - validation error. */
             400: {
                 headers: {
                     [name: string]: unknown
@@ -417,7 +417,7 @@ export interface operations {
             }
         }
         responses: {
-            /** @description Extraction results returned successfully. */
+            /** Extraction results returned successfully. */
             200: {
                 headers: {
                     [name: string]: unknown
@@ -426,7 +426,7 @@ export interface operations {
                     'application/json': components['schemas']['ExtractionsResponse']
                 }
             }
-            /** @description Bad request - validation error. */
+            /** Bad request - validation error. */
             400: {
                 headers: {
                     [name: string]: unknown
@@ -440,7 +440,7 @@ export interface operations {
     getJobStatus: {
         parameters: {
             query: {
-                /** @description Unique identifier for the job. */
+                /** Unique identifier for the job. */
                 jobId: string
             }
             header?: never
@@ -449,7 +449,7 @@ export interface operations {
         }
         requestBody?: never
         responses: {
-            /** @description Job status returned successfully. */
+            /** Job status returned successfully. */
             200: {
                 headers: {
                     [name: string]: unknown
@@ -458,7 +458,7 @@ export interface operations {
                     'application/json': components['schemas']['JobStatusResponse']
                 }
             }
-            /** @description Missing or invalid jobId query parameter. */
+            /** Missing or invalid jobId query parameter. */
             400: {
                 headers: {
                     [name: string]: unknown
@@ -467,7 +467,7 @@ export interface operations {
                     'application/json': components['schemas']['ErrorResponse']
                 }
             }
-            /** @description Job not found. */
+            /** Job not found. */
             404: {
                 headers: {
                     [name: string]: unknown
@@ -476,7 +476,7 @@ export interface operations {
                     'application/json': components['schemas']['ErrorResponse']
                 }
             }
-            /** @description Internal server error. */
+            /** Internal server error. */
             500: {
                 headers: {
                     [name: string]: unknown

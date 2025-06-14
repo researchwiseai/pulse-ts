@@ -8,16 +8,15 @@ type ProcWithInputs = { _inputs?: string[] }
  * Process that performs sentiment analysis on input texts.
  *
  * @template Name - Custom name type for this process instance.
- * @implements Process<Name, SentimentResult>
  */
 @staticImplements<ProcessStatic<'sentiment', SentimentResult>>()
 export class Sentiment<Name extends string = 'sentiment'>
     implements Process<Name, SentimentResult>
 {
     /**
-     * @static
+     * The static identifier for the sentiment process.
+     *
      * @readonly
-     * @property {string} id - The static identifier for the sentiment process.
      */
     static readonly id = 'sentiment'
     /**
