@@ -92,3 +92,45 @@ bun run build
 
 This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
 IDEs will automatically pick up these types for improved editor support.
+
+## Regenerating API models
+
+The file `src/models.ts` is generated from the OpenAPI specification. If the
+schema changes run:
+
+```bash
+bun run generate
+```
+
+This will invoke `openapi-typescript` on `openapi.yml` and update the models.
+
+## Integration tests
+
+End-to-end tests require a valid Pulse account. Before running them, set the
+following environment variables:
+
+- `PULSE_CLIENT_ID`
+- `PULSE_CLIENT_SECRET`
+- `PULSE_TOKEN_URL`
+- `PULSE_AUDIENCE`
+- `PULSE_BASE_URL` (optional, defaults to the audience URL)
+
+With these variables defined, execute:
+
+```bash
+bun run test
+```
+
+## Release notes
+
+### v1.0.0
+
+- Typed `CoreClient` with OAuth2 authentication support
+- Flexible workflow DSL for building analysis pipelines
+- Convenience starter functions for common tasks
+- Typed API models generated from the Pulse OpenAPI spec
+- Automated documentation generation with Typedoc
+
+## License
+
+Released under the [MIT license](LICENSE).
