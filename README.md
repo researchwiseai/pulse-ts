@@ -92,3 +92,7 @@ bun run build
 
 This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
 IDEs will automatically pick up these types for improved editor support.
+
+## Security
+
+For information on how to report security vulnerabilities, see [SECURITY.md](./SECURITY.md). We aim to acknowledge reports within 2 business days.
