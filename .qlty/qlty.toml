@@ -43,6 +43,7 @@ exclude_patterns = [
   "AGENTS.md",
   "openapi.yml",
   "**/vendor/**",
+  "src/models.ts",
 ]
 
 test_patterns = [
