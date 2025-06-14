@@ -307,9 +307,11 @@ export class Workflow {
      * @param options - Execution options including CoreClient, input datasets and fast flag.
      * @returns A record mapping process identifiers to their execution results.
      */
-    async run(
-        options: { client: CoreClient; datasets?: Record<string, string[]>; fast?: boolean },
-    ): Promise<Record<string, unknown>> {
+    async run(options: {
+        client: CoreClient
+        datasets?: Record<string, string[]>
+        fast?: boolean
+    }): Promise<Record<string, unknown>> {
         const { client, datasets = {}, fast } = options
         if (Object.keys(this.datasets).length > 0) {
             for (const [name, data] of Object.entries(datasets)) {
