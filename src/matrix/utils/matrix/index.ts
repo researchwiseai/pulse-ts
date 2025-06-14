@@ -132,7 +132,6 @@ export class Matrix<T> {
             iterables: [iterable, iterable],
             fn: async coords => {
                 if (coords[0] <= coords[1]) {
-                    // TODO: Come up with a better solution for this
                     return { result: undefined as unknown as U }
                 }
 
