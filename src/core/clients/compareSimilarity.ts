@@ -1,10 +1,12 @@
 import { unflatten } from '../../matrix'
-import type { SimilarityResponse } from '../../models'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 import type { Optional } from 'utility-types'
 import type { Job } from '../job'
 import { requestFeature } from './requestFeature'
+import type { components } from '../../models'
+
+type SimilarityResponse = components['schemas']['SimilarityResponse']
 
 /**
  * Input shape for self-comparison similarity where a single set is compared to itself.

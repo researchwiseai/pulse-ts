@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { ClientCredentialsAuth, AuthorizationCodePKCEAuth } from '../src/auth'
+import { AuthorizationCodePKCEAuth } from '../src/auth/AuthorizationCodePKCEAuth'
+import { ClientCredentialsAuth } from '../src/auth/ClientCredentialsAuth'
 
 describe('ClientCredentialsAuth', () => {
     beforeEach(() => {

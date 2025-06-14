@@ -1,6 +1,6 @@
 import { PulseAPIError } from '../../errors'
 import { fetchWithRetry, type FetchOptions } from '../../http'
-import type { ExtractionsResponse } from '../../models'
+import type { components } from '../../models'
 import { Job } from '../job'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
@@ -39,7 +39,9 @@ export type ExtractElementsOptions<
 export async function extractElements<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-    Result = AwaitJobResult extends false ? Job<ExtractionsResponse> : ExtractionsResponse,
+    Result = AwaitJobResult extends false
+        ? Job<components['schemas']['ExtractionsResponse']>
+        : components['schemas']['ExtractionsResponse'],
 >(
     client: CoreClient,
     inputs: ExtractElementsInputs,
@@ -62,7 +64,7 @@ export async function extractElements<
     }
     if (response.status === 202) {
         const { jobId } = json as { jobId: string }
-        const job = new Job<ExtractionsResponse>({
+        const job = new Job<components['schemas']['ExtractionsResponse']>({
             jobId,
             baseUrl: client.baseUrl,
             auth: client.auth,
@@ -72,5 +74,5 @@ export async function extractElements<
         }
         return job as Result
     }
-    return json as ExtractionsResponse as Result
+    return json as components['schemas']['ExtractionsResponse'] as Result
 }

@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach, vi, afterAll } from 'vitest'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import * as http from '../src/http'
 import { PulseAPIError, TimeoutError } from '../src/errors'
-import { ClientCredentialsAuth, type Auth } from '../src'
 import { setupPolly } from './setupPolly'
+import { Auth } from '../src/auth'
 
-const dummyAuth: Auth = {
+const dummyAuth: Auth.Auth = {
     authFlow: async function* (req: Request) {
         yield req
         return req
@@ -319,7 +319,7 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
 
     const client = new CoreClient({
         baseUrl: process.env.PULSE_BASE_URL ?? 'https://dev.core.researchwiseai.com/pulse/v1',
-        auth: new ClientCredentialsAuth({
+        auth: new Auth.ClientCredentialsAuth({
             clientId: process.env.PULSE_CLIENT_ID ?? '',
             clientSecret: process.env.PULSE_CLIENT_SECRET ?? '',
             tokenUrl: process.env.PULSE_TOKEN_URL ?? '',

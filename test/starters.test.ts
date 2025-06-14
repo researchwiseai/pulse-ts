@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
 import { getStrings, themeAllocation, clusterAnalysis } from '../src/starters'
-import { ClientCredentialsAuth } from '../src/auth'
+import { ClientCredentialsAuth } from '../src/auth/ClientCredentialsAuth'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClusterResult } from '../src/results'
 import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'

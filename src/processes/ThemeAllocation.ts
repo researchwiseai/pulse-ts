@@ -1,4 +1,4 @@
-import type { Theme as ThemeModel } from '../models'
+import type { components } from '../models'
 import { ThemeAllocationResult } from '../results/ThemeAllocationResult'
 import { ThemeGenerationDependent } from './ThemeGeneration'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
@@ -77,7 +77,7 @@ export class ThemeAllocation<Name extends string = 'themeAllocation'>
      */
     constructor(
         options: {
-            themes?: string[] | ThemeModel[]
+            themes?: string[] | components['schemas']['Theme'][]
             singleLabel?: boolean
             fast?: boolean
             threshold?: number

@@ -1,8 +1,8 @@
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
-import type { ThemesResponse } from '../../models'
 import type { Job } from '../job'
 import { requestFeature } from './requestFeature'
+import type { components } from '../../models'
 
 /**
  * Options for theme generation requests.
@@ -36,7 +36,11 @@ export async function generateThemes<
     client: CoreClient,
     inputs: string[],
     options: GenerateThemeOptions<Fast, AwaitJobResult> = {},
-): Promise<AwaitJobResult extends false ? Job<ThemesResponse> : ThemesResponse> {
+): Promise<
+    AwaitJobResult extends false
+        ? Job<components['schemas']['ThemesResponse']>
+        : components['schemas']['ThemesResponse']
+> {
     return requestFeature(
         client,
         '/themes',

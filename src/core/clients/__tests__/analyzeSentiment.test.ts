@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vites
 import { analyzeSentiment } from '../analyzeSentiment'
 import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
-import type { SentimentResponse } from '../../../models'
 import { fetchWithRetry } from '../../../http'
 import { setupPolly } from '../../../../test/setupPolly'
+import type { components } from '../../../models'
 
 const fetchWithRetryMock = fetchWithRetry as unknown as MockedFunction<typeof fetchWithRetry>
 
@@ -31,7 +31,7 @@ describe('analyzeSentiment', () => {
     })
 
     it('returns SentimentResponse on 200', async () => {
-        const responseJson: SentimentResponse = {
+        const responseJson: components['schemas']['SentimentResponse'] = {
             requestId: 'req-123',
             results: [
                 { sentiment: 'positive', confidence: 0.95 },
@@ -90,7 +90,7 @@ describe('analyzeSentiment', () => {
         mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))
 
         // Mock Job.prototype.result
-        const jobResult: SentimentResponse = {
+        const jobResult: components['schemas']['SentimentResponse'] = {
             requestId: 'req-456',
             results: [{ sentiment: 'neutral', confidence: 0.5 }],
         }
@@ -113,7 +113,7 @@ describe('analyzeSentiment', () => {
         fetchWithRetryMock.mockResolvedValue(fakeResponse as unknown as Response)
         mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))
 
-        const jobResult: SentimentResponse = {
+        const jobResult: components['schemas']['SentimentResponse'] = {
             requestId: 'req-789',
             results: [{ sentiment: 'neutral', confidence: 0.5 }],
         }

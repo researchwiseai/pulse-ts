@@ -1,11 +1,5 @@
-/**
- * Result helper classes for analysis processes.
- */
-import type { ExtractionsResponse } from '../models'
+import type { components } from '../models'
 
-/**
- * Results of clustering with helper methods.
- */
 /**
  * Results of clustering with helper methods.
  */
@@ -28,9 +22,6 @@ export class ClusterResult {
 /**
  * Results of theme extraction with helper methods.
  */
-/**
- * Results of theme extraction with helper methods.
- */
 export class ThemeExtractionResult {
     /**
      * @param response - The API response containing extraction data.
@@ -38,7 +29,7 @@ export class ThemeExtractionResult {
      * @param themes - Theme labels corresponding to extraction categories.
      */
     constructor(
-        private response: ExtractionsResponse,
+        private response: components['schemas']['ExtractionsResponse'],
         private texts: string[],
         private themes: string[],
     ) {}

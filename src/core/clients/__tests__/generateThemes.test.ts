@@ -5,7 +5,7 @@ import { PulseAPIError } from '../../../errors'
 import { fetchWithRetry } from '../../../http'
 import { Job } from '../../job'
 import { setupPolly } from '../../../../test/setupPolly'
-import type { ThemesResponse } from '../../../models'
+import type { components } from '../../../models'
 
 vi.mock('../../../http', () => ({
     fetchWithRetry: vi.fn(),
@@ -27,7 +27,7 @@ vi.mock('../../job', async importOriginal => {
                     ({
                         themes: [],
                         requestId: 'req-123',
-                    }) satisfies ThemesResponse,
+                    }) satisfies components['schemas']['ThemesResponse'],
             )
         }),
     }
