@@ -9,7 +9,7 @@ const clientSecret = process.env.PULSE_CLIENT_SECRET
 
 const skip = !clientId || !clientSecret
 
-describe('getStrings', () => {
+describe('getStrings', { skip }, () => {
     it('returns array as-is', () => {
         const input = ['a', 'b']
         expect(getStrings(input)).toEqual(input)
