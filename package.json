@@ -10,6 +10,7 @@
         "qlty:check": "qlty check",
         "lint": "eslint --fix --config .qlty/configs/eslint.config.mjs .",
         "docs": "typedoc --options typedoc.json",
+        "generate": "openapi-typescript openapi.yml --output src/models.ts",
         "typecheck": "tsc --noEmit",
         "build": "tsup"
     },
