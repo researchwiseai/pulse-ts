@@ -70,6 +70,24 @@ stable release.
 - Configure GitHub Actions to run tests, Qlty checks, and build on push/main
 - Prepare package for npm publication
 
+8. **Refactor src/core/clients for production readiness**
+
+    - Extract recurring request/job logic into a generic helper.
+    - Standardize option destructuring (alphabetical order) and remove unnecessary `await`.
+    - Fix missing `context` field in generateThemes payload.
+    - Tighten payload typings instead of using `Record<string, unknown>`.
+    - DRY and centralize tests via shared test helpers; add coverage for extractElements.
+    - Update docs and examples accordingly.
+    - Configure lint rule to enforce alphabetical ordering in destructured variables.
+
+    > **Decisions & best practices:**
+    >
+    > - Keep `CoreClient` methods thin and delegate feature logic to reusable helpers.
+    > - Define explicit request/response interfaces to avoid `Record<string, unknown>`. Use the auto
+    >   generated API reference models is src/models.ts
+    > - Enforce alphabetical ordering of destructured variables and other style rules via linter.
+    > - Run lint with `--fix` to automatically standardize ordering and style differences.
+
 ---
 
 ## Tasks

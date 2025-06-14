@@ -1,9 +1,8 @@
-import { PulseAPIError } from '../../errors'
-import { fetchWithRetry, type FetchOptions } from '../../http'
-import type { SentimentResponse } from '../../models'
-import { Job } from '../job'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
+import type { SentimentResponse } from '../../models'
+import type { Job } from '../job'
+import { requestFeature } from './requestFeature'
 
 /**
  * Configuration options for the analyzeSentiment function.
@@ -31,38 +30,10 @@ export type AnalyzeSentimentOptions<
 export async function analyzeSentiment<
     Fast extends boolean | undefined = undefined,
     AwaitJobResult extends boolean | undefined = undefined,
-    Result = AwaitJobResult extends false ? Job<SentimentResponse> : SentimentResponse,
 >(
     client: CoreClient,
     inputs: string[],
-    { fast, awaitJobResult }: AnalyzeSentimentOptions<Fast, AwaitJobResult> = {},
-): Promise<Result> {
-    const path = `${client.baseUrl}/sentiment`
-    const payload: Record<string, unknown> = { fast, inputs }
-
-    const opts: FetchOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-    }
-    const request = new Request(path, opts)
-    const { value: authedRequest } = await client.auth.authFlow(request).next()
-    const response = await fetchWithRetry(authedRequest, opts)
-    const json = await response.json()
-    if (!response.ok) {
-        throw new PulseAPIError(response, json)
-    }
-    if (response.status === 202) {
-        const { jobId } = json as { jobId: string }
-        const job = new Job<SentimentResponse>({
-            jobId,
-            baseUrl: client.baseUrl,
-            auth: client.auth,
-        })
-        if (awaitJobResult !== false) {
-            return (await job.result()) as Result
-        }
-        return job as Result
-    }
-    return json as SentimentResponse as Result
+    options: AnalyzeSentimentOptions<Fast, AwaitJobResult> = {},
+): Promise<AwaitJobResult extends false ? Job<SentimentResponse> : SentimentResponse> {
+    return requestFeature(client, '/sentiment', { inputs }, options)
 }

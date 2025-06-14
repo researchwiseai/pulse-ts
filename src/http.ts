@@ -21,8 +21,10 @@ import { NetworkError, TimeoutError } from './errors'
 async function attemptFetch(input: Request, init: RequestInit, timeout: number): Promise<Response> {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeout)
-    const req = new Request(input)
+    // Use input Request directly to preserve body and headers without consuming its body
+    const req = input
     try {
+        // Merge existing request headers with init.headers, preserving authorization
         const headerObj: Record<string, string> = {}
         req.headers.forEach((v, k) => {
             headerObj[k] = v
@@ -75,14 +77,21 @@ function handleFetchError(err: unknown, url: string, timeout: number): never {
  */
 export async function fetchWithRetry(
     input: Request,
-    options: FetchOptions = {},
+    options: Omit<FetchOptions, 'headers'> = {},
 ): Promise<Response> {
     const { timeout = 30000, retries = 1, ...init } = options
     let attempt = 0
     while (true) {
         attempt++
         try {
-            const response = await attemptFetch(input, init, timeout)
+            const response = await attemptFetch(
+                input,
+                {
+                    ...init,
+                    headers: input.headers, // Preserve original request headers
+                },
+                timeout,
+            )
             if (!response.ok && attempt <= retries) continue
             return response
         } catch (err) {
