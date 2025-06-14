@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterAll } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterAll, beforeAll } from 'vitest'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import * as http from '../src/http'
 import { PulseAPIError, TimeoutError } from '../src/errors'
@@ -317,14 +317,18 @@ describe('CoreClient', () => {
 describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => {
     setupPolly()
 
-    const client = new CoreClient({
-        baseUrl: process.env.PULSE_BASE_URL ?? 'https://dev.core.researchwiseai.com/pulse/v1',
-        auth: new Auth.ClientCredentialsAuth({
-            clientId: process.env.PULSE_CLIENT_ID ?? '',
-            clientSecret: process.env.PULSE_CLIENT_SECRET ?? '',
-            tokenUrl: process.env.PULSE_TOKEN_URL ?? '',
-            audience: process.env.PULSE_AUDIENCE ?? '',
-        }),
+    let client: CoreClient
+
+    beforeAll(() => {
+        client = new CoreClient({
+            baseUrl: process.env.PULSE_BASE_URL ?? 'https://dev.core.researchwiseai.com/pulse/v1',
+            auth: new Auth.ClientCredentialsAuth({
+                clientId: process.env.PULSE_CLIENT_ID ?? '',
+                clientSecret: process.env.PULSE_CLIENT_SECRET ?? '',
+                tokenUrl: process.env.PULSE_TOKEN_URL ?? '',
+                audience: process.env.PULSE_AUDIENCE ?? '',
+            }),
+        })
     })
 
     it('createEmbeddings returns data', async () => {
