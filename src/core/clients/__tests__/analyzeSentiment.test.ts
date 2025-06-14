@@ -4,6 +4,7 @@ import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
 import type { SentimentResponse } from '../../../models'
 import { fetchWithRetry } from '../../../http'
+import { setupPolly } from '../../../../test/setupPolly'
 
 const fetchWithRetryMock = fetchWithRetry as unknown as MockedFunction<typeof fetchWithRetry>
 
@@ -23,6 +24,8 @@ const client = { baseUrl, auth: mockAuth } as any
 const inputs = ['I love this!', 'I hate that.']
 
 describe('analyzeSentiment', () => {
+    setupPolly()
+
     beforeEach(() => {
         vi.clearAllMocks()
     })

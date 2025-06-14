@@ -5,6 +5,7 @@ import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
 import type { CoreClient } from '../CoreClient'
 import type { EmbeddingResponse } from '../../../models'
+import { setupPolly } from '../../../../test/setupPolly'
 
 vi.mock('../../../http', () => ({
     fetchWithRetry: vi.fn(),
@@ -26,6 +27,8 @@ vi.mock('../../job', async importOriginal => {
 })
 
 describe('createEmbeddings', () => {
+    setupPolly()
+
     let client: CoreClient
 
     beforeEach(() => {
@@ -86,6 +89,7 @@ describe('createEmbeddings', () => {
         const res = await createEmbeddings(client, ['a', 'b'])
         expect(res).toEqual({ embeddings: [{ id: '1', text: 'alpha', vector: [0.1, 0.2] }] })
         expect(Job).toHaveBeenCalledWith({
+            after: expect.any(Function),
             jobId,
             baseUrl: client.baseUrl,
             auth: client.auth,
@@ -102,6 +106,7 @@ describe('createEmbeddings', () => {
         const res = await createEmbeddings(client, ['x'], { awaitJobResult: false, fast: false })
         expect(res).toHaveProperty('jobId')
         expect(Job).toHaveBeenCalledWith({
+            after: expect.any(Function),
             jobId,
             baseUrl: client.baseUrl,
             auth: client.auth,

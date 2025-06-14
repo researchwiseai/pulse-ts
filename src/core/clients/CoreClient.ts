@@ -71,8 +71,8 @@ export class CoreClient {
     async compareSimilarity<
         Fast extends boolean | undefined = undefined,
         AwaitJobResult extends boolean | undefined = undefined,
-    >(inputs: CompareSimilarityInputs, opts?: CompareSimilarityOptions<Fast, AwaitJobResult>) {
-        return await compareSimilarity(this, inputs, opts)
+    >(inputs: CompareSimilarityInputs, opts: CompareSimilarityOptions<Fast, AwaitJobResult> = {}) {
+        return compareSimilarity(this, inputs, opts)
     }
 
     /**
@@ -119,7 +119,7 @@ export class CoreClient {
     async extractElements<
         Fast extends boolean | undefined = undefined,
         AwaitJobResult extends boolean | undefined = undefined,
-    >(inputs: ExtractElementsInputs, opts: ExtractElementsOptions<Fast, AwaitJobResult>) {
-        return await extractElements(this, inputs, opts)
+    >(inputs: ExtractElementsInputs, opts: ExtractElementsOptions<Fast, AwaitJobResult> = {}) {
+        return extractElements(this, inputs, opts)
     }
 }
