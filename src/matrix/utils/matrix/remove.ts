@@ -192,7 +192,7 @@ function removeDimNumeric<T>(
 // In-source schema tests
 // qlty-ignore: qlty:similar-code
 if (import.meta.vitest) {
-    const { describe, it, expect } = import.meta.vitest
+    const { describe, expect, it } = import.meta.vitest
 
     describe('removeDimBoolean', () => {
         it('should remove a dimension with "and" method', () => {

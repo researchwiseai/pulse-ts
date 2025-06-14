@@ -92,7 +92,6 @@ describe('compareSimilarity', () => {
         const result = await compareSimilarity(client, inputs)
 
         expect(fetchWithRetry).toHaveBeenCalled()
-        const req = fetchWithRetryMock.mock.calls[0][0]
         const opts = fetchWithRetryMock.mock.calls[0][1]
         expect(JSON.parse(opts?.body as string)).toMatchObject({
             set_a: ['a'],
