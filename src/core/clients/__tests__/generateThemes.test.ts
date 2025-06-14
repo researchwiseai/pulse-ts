@@ -5,7 +5,7 @@ import { PulseAPIError } from '../../../errors'
 import { fetchWithRetry } from '../../../http'
 import { Job } from '../../job'
 import { setupPolly } from '../../../../test/setupPolly'
-import type { Theme, ThemesResponse } from '../../../models'
+import type { ThemesResponse } from '../../../models'
 
 vi.mock('../../../http', () => ({
     fetchWithRetry: vi.fn(),
