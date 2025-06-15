@@ -8,5 +8,9 @@
     "excludeProtected": true,
     "includeVersion": true,
     "disableGit": true,
-    "disableSources": true
+    "disableSources": true,
+    "projectDocuments": ["docs/starters.md"],
+    "sidebarLinks": {
+        "Starter Helpers": "starters.html"
+    }
 }

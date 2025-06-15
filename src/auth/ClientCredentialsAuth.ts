@@ -35,7 +35,10 @@ export class ClientCredentialsAuth implements Auth {
             options.tokenUrl ??
             process.env.PULSE_TOKEN_URL ??
             'https://research-wise-ai-eu.eu.auth0.com/oauth/token'
-        this.audience = options.audience ?? process.env.PULSE_AUDIENCE
+        this.audience =
+            options.audience ??
+            process.env.PULSE_AUDIENCE ??
+            'https://core.researchwiseai.com/pulse/v1'
         const clientId = options.clientId ?? process.env.PULSE_CLIENT_ID
         const clientSecret = options.clientSecret ?? process.env.PULSE_CLIENT_SECRET
 

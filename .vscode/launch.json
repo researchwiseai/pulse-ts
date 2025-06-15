@@ -11,6 +11,7 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "autoAttachChildProcesses": true,
+            "envFile": "${workspaceFolder}/.env.test",
             "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
         }
     ]

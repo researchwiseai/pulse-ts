@@ -14,5 +14,5 @@ export default defineConfig({
         'import.meta.vitest': 'undefined',
         'process.env.DEBUG_PROXY': 'false', // Disable the debug proxy in the build
     },
-    external: ['undici'],
+    external: ['undici', 'open'],
 })
