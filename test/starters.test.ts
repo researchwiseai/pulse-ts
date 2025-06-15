@@ -9,7 +9,7 @@ const clientSecret = process.env.PULSE_CLIENT_SECRET
 
 const skip = !clientId || !clientSecret
 
-describe('getStrings', { skip }, () => {
+describe('getStrings', () => {
     it('returns array as-is', () => {
         const input = ['a', 'b']
         expect(getStrings(input)).toEqual(input)
@@ -19,7 +19,7 @@ describe('getStrings', { skip }, () => {
     })
 })
 
-describe('starters', () => {
+describe('starters', { skip }, () => {
     describe('themeAllocation', () => {
         setupPolly()
         it('allocates themes implicitly', { timeout: 30_000 }, async () => {
