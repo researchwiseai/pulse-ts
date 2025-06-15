@@ -142,15 +142,7 @@ describe('AutoAuth', () => {
 
         it('should delegate authFlow method', async () => {
             const mockRequest = new Request('http://localhost')
-            const generator = auth.authFlow(mockRequest)
-            let result = await generator.next()
-            expect(result.value).toBe(mockRequest)
-            expect(result.done).toBe(false)
-            result = await generator.next()
-            expect(result.value).toBe(mockRequest)
-            expect(result.done).toBe(true)
-
-            expect(chosenAuthImpl.authFlow).toHaveBeenCalledWith(mockRequest)
+            await testAuthFlow(auth, mockRequest, chosenAuthImpl)
         })
 
         describe('when ClientCredentialsAuth is chosen', () => {
