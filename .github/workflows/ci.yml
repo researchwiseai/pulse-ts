@@ -35,9 +35,6 @@ jobs:
             - name: Build library
               run: bun run build
 
-            - name: Run tests
-              run: bun run test
-
             - name: Generate coverage report
               run: bun run test -- --coverage
               env:
@@ -45,7 +42,7 @@ jobs:
                   PULSE_CLIENT_SECRET: ${{ secrets.PULSE_CLIENT_SECRET }}
                   PULSE_TOKEN_URL: https://wise-dev.eu.auth0.com/oauth/token
                   PULSE_AUDIENCE: https://dev.core.researchwiseai.com/pulse/v1
-                  PULSE_BASE_UR: https://dev.core.researchwiseai.com/pulse/v1
+                  PULSE_BASE_URL: https://dev.core.researchwiseai.com/pulse/v1
 
             - name: Upload coverage to Qlty.sh
               uses: qltysh/qlty-action/coverage@v1
