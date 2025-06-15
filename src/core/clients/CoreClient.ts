@@ -31,6 +31,7 @@ export class CoreClient {
     constructor(options: Partial<CoreClientOptions> = {}) {
         this._baseUrl =
             options?.baseUrl?.replace(/\/{1,100}$/g, '') ??
+            process.env.PULSE_BASE_URL ??
             'https://core.researchwiseai.com/pulse/v1'
         this._auth = options.auth ?? new Auth.AutoAuth()
     }

@@ -32,11 +32,13 @@ to provide a solid foundation for building more complex applications.
 
 ### Starters
 
-````ts
+For a quick introduction to using the starter helpers, see the [Starter Helpers guide](docs/starters.md).
+
+```ts
 import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse'
 const sentiments = await sentimentAnalysis(['text1', 'text2'])
 const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'])
-
+```
 
 ## Authentication
 

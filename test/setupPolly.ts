@@ -67,15 +67,11 @@ export function setupPolly(options?: Record<string, unknown>) {
             }
 
             if (recording.response?.content?.text) {
-                console.log('redacting response body', recording.response)
                 try {
                     const body = JSON.parse(recording.response.content.text as string)
-                    console.log('body', body)
                     if ('access_token' in body) body.access_token = '<redacted>'
                     if ('refresh_token' in body) body.refresh_token = '<redacted>'
                     recording.response.content.text = JSON.stringify(body)
-
-                    console.log('redacted response body', recording.response)
                 } catch {}
             }
         })

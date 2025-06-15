@@ -16,6 +16,7 @@
         "generate": "openapi-typescript openapi.yml -o src/models.ts"
     },
     "devDependencies": {
+        "@dotenvx/dotenvx": "^1.44.2",
         "@eslint/markdown": "^6.5.0",
         "@pollyjs/adapter-fetch": "latest",
         "@pollyjs/adapter-node-http": "latest",
