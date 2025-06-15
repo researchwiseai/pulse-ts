@@ -12,6 +12,18 @@ describe('AutoAuth', () => {
     let mockPKCEAuthInstance: AuthorizationCodePKCEAuth
     let mockCCAuthInstance: ClientCredentialsAuth
 
+    async function testAuthFlow(auth: AutoAuth, mockRequest: Request, chosenAuthImpl: Auth) {
+        const generator = auth.authFlow(mockRequest)
+        let result = await generator.next()
+        expect(result.value).toBe(mockRequest)
+        expect(result.done).toBe(false)
+        result = await generator.next()
+        expect(result.value).toBe(mockRequest)
+        expect(result.done).toBe(true)
+
+        expect(chosenAuthImpl.authFlow).toHaveBeenCalledWith(mockRequest)
+    }
+
     beforeEach(() => {
         // Reset mocks before each test
         vi.resetAllMocks()
@@ -172,15 +184,7 @@ describe('AutoAuth', () => {
 
             it('should delegate authFlow method to ClientCredentialsAuth', async () => {
                 const mockRequest = new Request('http://localhost')
-                const generator = auth.authFlow(mockRequest)
-                let result = await generator.next()
-                expect(result.value).toBe(mockRequest)
-                expect(result.done).toBe(false)
-                result = await generator.next()
-                expect(result.value).toBe(mockRequest)
-                expect(result.done).toBe(true)
-
-                expect(chosenAuthImpl.authFlow).toHaveBeenCalledWith(mockRequest)
+                await testAuthFlow(auth, mockRequest, chosenAuthImpl)
             })
         })
     })
