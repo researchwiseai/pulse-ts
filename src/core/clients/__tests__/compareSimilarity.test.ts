@@ -47,6 +47,7 @@ function mockResponse(json: unknown, ok = true, status = 200): Response {
         ok,
         status,
         json: vi.fn().mockResolvedValue(json),
+        text: vi.fn().mockResolvedValue(JSON.stringify(json)),
     } as unknown as Response
 }
 

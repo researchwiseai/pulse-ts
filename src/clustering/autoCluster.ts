@@ -1,6 +1,4 @@
-import { calculateClusteringCost } from '.'
 import { findOptimalEps } from './helpers/findOptimalEps'
-import { calculateSilhouetteScore } from './helpers/calculateSilhouetteScore'
 import { cluster } from './cluster'
 import type {
     AutoConfigMap,
@@ -11,7 +9,11 @@ import type {
     KModesConfig,
     HACConfig,
 } from './types'
-import { normalizeSimilarityMatrix } from './helpers'
+import {
+    calculateSilhouetteScore,
+    calculateClusteringCost,
+    normalizeSimilarityMatrix,
+} from './helpers'
 
 /**
  * Performs automatic clustering on a similarity matrix using the specified mode and configuration.
