@@ -12,7 +12,9 @@ import {
     type ExtractElementsInputs,
     type ExtractElementsOptions,
 } from './extractElements'
+
 import { generateThemes, type GenerateThemeOptions } from './generateThemes'
+import { ENV_VAR, DEFAULTS } from '../../config'
 
 /**
  * Core client for interacting with the Pulse API operations.
@@ -31,8 +33,8 @@ export class CoreClient {
     constructor(options: Partial<CoreClientOptions> = {}) {
         this._baseUrl =
             options?.baseUrl?.replace(/\/{1,100}$/g, '') ??
-            process.env.PULSE_BASE_URL ??
-            'https://core.researchwiseai.com/pulse/v1'
+            process.env[ENV_VAR.BASE_URL] ??
+            DEFAULTS.BASE_URL
         this._auth = options.auth ?? new Auth.AutoAuth()
     }
 

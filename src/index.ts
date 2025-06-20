@@ -8,7 +8,7 @@ export * from './analyzer'
 
 export * from './results'
 export * from './dsl'
-export * from './starters'
+export * as Starters from './starters'
 
 export * as Auth from './auth/index'
 export * as Processes from './processes'

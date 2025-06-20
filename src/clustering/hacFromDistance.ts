@@ -18,13 +18,11 @@ import type { HACConfig, HACResult } from './types'
  * @param config An object `HACConfig` containing the configuration for the HAC algorithm.
  * @param config.k The target number of clusters to form. The algorithm will stop
  *                 merging clusters once this number is reached.
- * @param config.linkage The linkage criterion to use for calculating the distance
- *                       between clusters. Defaults to 'average' if not specified.
- *                       This criterion determines how the distance between two
+ * @param config.linkage This criterion determines how the distance between two
  *                       clusters is defined (e.g., 'single' for minimum distance
  *                       between points, 'complete' for maximum, 'average' for
  *                       average distance). The actual calculation is handled by
- *                       the `calculateClusterDistance` function (not shown here).
+ *                       the {@link calculateClusterDistance} function.
  * @returns An object `HACResult` containing the cluster assignments for each
  *          data point.
  * @returns.assignments An array of length `n` (the original number of data points),
@@ -35,7 +33,7 @@ import type { HACConfig, HACResult } from './types'
 export function hacFromDistance(distMatrix: number[][], config: HACConfig): HACResult {
     const { k, linkage = 'average' } = config
     const n = distMatrix.length
-    let clusters: number[][] = Array.from({ length: n }, (_, i) => [i])
+    const clusters: number[][] = Array.from({ length: n }, (_, i) => [i])
     while (clusters.length > k) {
         let closestA = -1,
             closestB = -1,

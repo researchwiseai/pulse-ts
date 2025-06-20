@@ -51,7 +51,7 @@ describe('ClientCredentialsAuth', () => {
             audience: 'http://api',
         })
         const req = new Request('http://api/test')
-        const gen = auth.authFlow(req)
+        const gen = auth.authFlow(req, true)
         const { value: out } = await gen.next()
         expect(out.headers.get('Authorization')).toBe('Bearer tok')
     })
@@ -114,11 +114,12 @@ describe('AuthorizationCodePKCEAuth', () => {
             codeVerifier: 'v',
             audience: 'http://api',
         })
-        const req1 = new Request('http://api/x')
-        const { value: out1 } = await auth.authFlow(req1).next()
+        const client = { baseUrl: 'http://api.com' }
+        const req1 = new Request('http://api.com/x')
+        const { value: out1 } = await auth.authFlow(req1, client).next()
         expect(out1.headers.get('Authorization')).toBe('Bearer tok')
-        const req2 = new Request('http://other/x')
-        const { value: out2 } = await auth.authFlow(req2).next()
+        const req2 = new Request('http://other.com/x')
+        const { value: out2 } = await auth.authFlow(req2, client).next()
         expect(out2).toBe(req2)
     })
 })

@@ -1,3 +1,4 @@
+import { ENV_VAR } from '../../config'
 import { PulseAPIError } from '../../errors'
 import { fetchWithRetry, type FetchOptions } from '../../http'
 import { Job } from '../job'
@@ -47,12 +48,17 @@ export async function requestFeature<
     }
 
     const request = new Request(url, init)
-    const { value: authedRequest } = await client.auth.authFlow(request).next()
+    const { value: authedRequest } = await client.auth.authFlow(request, client).next()
     const response = await fetchWithRetry(authedRequest, init)
-    const json = await response.json()
 
     if (!response.ok) {
-        throw new PulseAPIError(response, json)
+        throw new PulseAPIError(response, response.text())
+    }
+
+    const json = await response.json()
+
+    if (process.env[ENV_VAR.DEBUG_LOGGING]) {
+        console.log('Response Body:', JSON.stringify(json, null, 2))
     }
 
     if (response.status === 202) {

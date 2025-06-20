@@ -1,5 +1,7 @@
-import type { AuthorizationCodePKCEOptions } from './types'
+import type { Auth, AuthorizationCodePKCEOptions } from './types'
+import { ENV_VAR, DEFAULTS } from '../config'
 import { randomBytes, createHash } from 'crypto'
+import { BaseAuth } from './BaseAuth'
 
 /**
  * Base64-url encode a buffer (RFC 7636).
@@ -12,7 +14,7 @@ function base64URLEncode(buffer: Buffer): string {
  * Implements the OAuth2 Authorization Code PKCE flow to obtain and refresh access and refresh tokens.
  */
 
-export class AuthorizationCodePKCEAuth {
+export class AuthorizationCodePKCEAuth extends BaseAuth implements Auth {
     private readonly _tokenUrl: string
     private readonly _authorizeUrl: string
     private readonly _clientId: string
@@ -22,9 +24,7 @@ export class AuthorizationCodePKCEAuth {
     private readonly _scope?: string
     private readonly _audience?: string
 
-    private _accessToken?: string
     private _refreshTokenValue?: string
-    private _expiresAt?: number
 
     get accessToken(): string | undefined {
         return this._accessToken
@@ -44,13 +44,11 @@ export class AuthorizationCodePKCEAuth {
      * @param options - Configuration for the authorization code PKCE flow.
      */
     constructor(options: Partial<AuthorizationCodePKCEOptions> = {}) {
-        this._tokenUrl =
-            options.tokenUrl ??
-            process.env.PULSE_TOKEN_URL ??
-            'https://research-wise-ai-eu.eu.auth0.com/oauth/token'
+        super()
+        this._tokenUrl = options.tokenUrl ?? process.env[ENV_VAR.TOKEN_URL] ?? DEFAULTS.TOKEN_URL
         this._authorizeUrl =
             options.authorizeUrl ??
-            process.env.PULSE_AUTHORIZE_URL ??
+            process.env[ENV_VAR.AUTHORIZE_URL] ??
             (() => {
                 try {
                     return `${new URL(this._tokenUrl).origin}/authorize`
@@ -60,18 +58,12 @@ export class AuthorizationCodePKCEAuth {
             })()
         this._code = options.code
         this._redirectUri =
-            options.redirectUri ??
-            process.env.PULSE_REDIRECT_URI ??
-            'http://localhost:3000/callback'
+            options.redirectUri ?? process.env[ENV_VAR.REDIRECT_URI] ?? DEFAULTS.REDIRECT_URI
         this._codeVerifier = options.codeVerifier
-        this._scope =
-            options.scope ?? process.env.PULSE_SCOPE ?? 'openid profile email offline_access'
-        this._audience =
-            options.audience ??
-            process.env.PULSE_AUDIENCE ??
-            'https://core.researchwiseai.com/pulse/v1'
+        this._scope = options.scope ?? process.env[ENV_VAR.SCOPE] ?? DEFAULTS.SCOPE
+        this._audience = options.audience ?? process.env[ENV_VAR.AUDIENCE] ?? DEFAULTS.AUDIENCE
 
-        const clientId = options.clientId ?? process.env.PULSE_CLIENT_ID
+        const clientId = options.clientId ?? process.env[ENV_VAR.CLIENT_ID]
 
         if (!clientId) {
             throw new Error('Client ID is required for Authorization Code PKCE authentication')
@@ -107,7 +99,7 @@ export class AuthorizationCodePKCEAuth {
         // Open browser if possible, otherwise instruct user
         let opened = false
         try {
-            const openMod: any = await import('open')
+            const openMod: { default?: unknown } = await import('open')
             const opener = typeof openMod === 'function' ? openMod : openMod.default
             if (typeof opener === 'function') {
                 await opener(authUrl.toString())
@@ -117,7 +109,6 @@ export class AuthorizationCodePKCEAuth {
             // ignore if open is not available
         }
         if (!opened) {
-            // eslint-disable-next-line no-console
             console.log(`Open this URL in your browser:
 ${authUrl}`)
         }
@@ -187,30 +178,16 @@ ${authUrl}`)
         this._expiresAt = nowSec + json.expires_in - 60
     }
 
-    async *authFlow(req: Request): AsyncGenerator<Request> {
-        const url = new URL(req.url)
-        if (this._audience && url.host !== new URL(this._audience).host) {
-            yield req
-            return
-        }
-        if (!this._accessToken || !this._expiresAt || Date.now() / 1000 >= this._expiresAt) {
-            await this._refreshToken()
-        }
-        const headers = new Headers(req.headers)
-        headers.set('Authorization', `Bearer ${this._accessToken}`)
-        yield new Request(req, { headers })
-    }
-
     /**
      * Check whether the required environment variables are set for Authorization Code PKCE authentication flow.
      */
     static isAvailable(): boolean {
         return Boolean(
-            process.env.PULSE_CLIENT_ID &&
-                process.env.PULSE_TOKEN_URL &&
-                process.env.PULSE_CODE &&
-                process.env.PULSE_REDIRECT_URI &&
-                process.env.PULSE_CODE_VERIFIER,
+            process.env[ENV_VAR.CLIENT_ID] &&
+                process.env[ENV_VAR.TOKEN_URL] &&
+                process.env[ENV_VAR.CODE] &&
+                process.env[ENV_VAR.REDIRECT_URI] &&
+                process.env[ENV_VAR.CODE_VERIFIER],
         )
     }
 }

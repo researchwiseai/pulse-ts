@@ -24,7 +24,7 @@ function _getClusterMembersIndices(
 }
 
 if (import.meta.vitest) {
-    const { describe, it, expect } = import.meta.vitest
+    const { describe, expect, it } = import.meta.vitest
 
     describe('_getClusterMembersIndices', () => {
         it('should return indices of members belonging to the target cluster', () => {
@@ -122,7 +122,7 @@ function _calculateAverageDissimilarityToMembers(
 }
 
 if (import.meta.vitest) {
-    const { describe, it, expect } = import.meta.vitest
+    const { describe, expect, it } = import.meta.vitest
 
     describe('_calculateAverageDissimilarityToMembers', () => {
         it('should return Infinity for empty memberIndices', () => {
@@ -227,7 +227,7 @@ function _calculateAi(
 }
 
 if (import.meta.vitest) {
-    const { describe, it, expect } = import.meta.vitest
+    const { describe, expect, it } = import.meta.vitest
     describe('_calculateAi', () => {
         it('should return Infinity for a singleton cluster', () => {
             const distanceMatrix = [
@@ -334,7 +334,7 @@ function _calculateBi(
 }
 
 if (import.meta.vitest) {
-    const { describe, it, expect } = import.meta.vitest
+    const { describe, expect, it } = import.meta.vitest
 
     describe('_calculateBi', () => {
         it('should return Infinity when there are no other clusters', () => {
