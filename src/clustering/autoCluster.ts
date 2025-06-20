@@ -89,8 +89,8 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
             const result = cluster(distMatrix, finalConfig)
 
             const k = new Set(result.assignments.filter(c => c !== -1)).size
-            const cost = calculateClusteringCost(similarityMatrix, result)
-            const silhouette = calculateSilhouetteScore(similarityMatrix, result)
+            const cost = calculateClusteringCost(distMatrix, result)
+            const silhouette = calculateSilhouetteScore(distMatrix, result)
             const withMetrics: ClusteringResultWithMetrics<ResultMap['dbscan']> = {
                 ...result,
                 k,
@@ -104,9 +104,9 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
         case 'medoid':
         case 'mean': {
             if (config.k) {
-                const result = cluster(similarityMatrix, config as KModesConfig | HACConfig)
-                const cost = calculateClusteringCost(similarityMatrix, result)
-                const silhouette = calculateSilhouetteScore(similarityMatrix, result)
+                const result = cluster(distMatrix, config as KModesConfig | HACConfig)
+                const cost = calculateClusteringCost(distMatrix, result)
+                const silhouette = calculateSilhouetteScore(distMatrix, result)
                 const withMetrics: ClusteringResultWithMetrics<ResultMap[typeof config.mode]> = {
                     ...result,
                     k: config.k,
@@ -122,9 +122,9 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
 
                 const resultsWithMetrics = kRange.map(k => {
                     const finalConfig = { ...config, k } as KModesConfig | HACConfig
-                    const result = cluster(similarityMatrix, finalConfig)
-                    const cost = calculateClusteringCost(similarityMatrix, result)
-                    const silhouette = calculateSilhouetteScore(similarityMatrix, result)
+                    const result = cluster(distMatrix, finalConfig)
+                    const cost = calculateClusteringCost(distMatrix, result)
+                    const silhouette = calculateSilhouetteScore(distMatrix, result)
                     console.log(`  k=${k}, Silhouette=${silhouette.toFixed(4)}`)
                     return {
                         ...result,

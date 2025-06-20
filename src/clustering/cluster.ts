@@ -4,7 +4,7 @@ import { kModesFromDistance } from './kModesFromDistance'
 import type { Mode, ConfigMap, ResultMap } from './types'
 
 export function cluster<M extends Mode>(
-    similarityMatrix: number[][],
+    distanceMatrix: number[][],
     config: ConfigMap[M],
 ): ResultMap[M]
 /**
