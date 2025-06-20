@@ -1,6 +1,7 @@
 import { ClientCredentialsAuth } from './ClientCredentialsAuth'
 import { AuthorizationCodePKCEAuth } from './AuthorizationCodePKCEAuth'
 import type { Auth } from './types'
+import type { CoreClient } from '../core/clients/CoreClient'
 
 /**
  * AutoAuth selects an authentication flow based on environment variables.
@@ -45,8 +46,8 @@ export class AutoAuth implements Auth {
         return this.authImpl._refreshToken()
     }
 
-    async *authFlow(req: Request): AsyncGenerator<Request, Request> {
-        yield* this.authImpl.authFlow(req)
+    async *authFlow(req: Request, client: CoreClient | boolean): AsyncGenerator<Request, Request> {
+        yield* this.authImpl.authFlow(req, client)
         return req
     }
 }

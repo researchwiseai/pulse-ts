@@ -62,7 +62,7 @@ export class Job<T, After = T> {
         while (true) {
             const url = `${this.baseUrl}/jobs?jobId=${encodeURIComponent(this.jobId)}`
             const req0 = new Request(url, { method: 'GET' })
-            const { value: authedReq } = await this.auth.authFlow(req0).next()
+            const { value: authedReq } = await this.auth.authFlow(req0, true).next()
             const res = await fetchWithRetry(authedReq, {} as FetchOptions)
             const info = await res.json()
             if (!res.ok) {

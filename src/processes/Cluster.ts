@@ -1,4 +1,4 @@
-import { ClusterResult } from '../results'
+import { ClusterResult } from '../results/ClusterResult'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 
 // Internal helper type for DSL inputs metadata
@@ -45,8 +45,11 @@ export class Cluster<Name extends string = 'cluster'> implements Process<Name, C
         const arr = ctx.datasets[inp]
         const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast
-        await ctx.client.compareSimilarity({ set: texts }, { fast: fastFlag, awaitJobResult: true })
-
-        return new ClusterResult([], texts)
+        const resp = await ctx.client.compareSimilarity(
+            { set: texts },
+            { fast: fastFlag, awaitJobResult: true },
+        )
+        const matrix: number[][] = resp.matrix
+        return new ClusterResult(matrix, texts)
     }
 }

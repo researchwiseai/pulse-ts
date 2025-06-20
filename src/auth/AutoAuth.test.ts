@@ -13,7 +13,7 @@ describe('AutoAuth', () => {
     let mockCCAuthInstance: ClientCredentialsAuth
 
     async function testAuthFlow(auth: AutoAuth, mockRequest: Request, chosenAuthImpl: Auth) {
-        const generator = auth.authFlow(mockRequest)
+        const generator = auth.authFlow(mockRequest, true)
         let result = await generator.next()
         expect(result.value).toBe(mockRequest)
         expect(result.done).toBe(false)
@@ -21,7 +21,7 @@ describe('AutoAuth', () => {
         expect(result.value).toBe(mockRequest)
         expect(result.done).toBe(true)
 
-        expect(chosenAuthImpl.authFlow).toHaveBeenCalledWith(mockRequest)
+        expect(chosenAuthImpl.authFlow).toHaveBeenCalledWith(mockRequest, true)
     }
 
     beforeEach(() => {

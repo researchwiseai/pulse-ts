@@ -1,4 +1,4 @@
-import { ThemeExtractionResult } from '../results'
+import { ThemeExtractionResult } from '../results/ThemeExtractionResult'
 import { ThemeGenerationDependent } from './ThemeGeneration'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 

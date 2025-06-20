@@ -56,7 +56,7 @@ export async function extractElements<
         body: JSON.stringify(payload),
     }
     const request = new Request(path, init)
-    const { value: authedRequest } = await client.auth.authFlow(request).next()
+    const { value: authedRequest } = await client.auth.authFlow(request, client).next()
     const response = await fetchWithRetry(authedRequest, init)
     const json = await response.json()
     if (!response.ok) {

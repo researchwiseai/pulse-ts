@@ -1,7 +1,9 @@
-if (typeof window === 'undefined' && process.env.DEBUG_PROXY) {
+import { ENV_VAR, DEFAULTS } from './config'
+
+if (typeof window === 'undefined' && process.env[ENV_VAR.DEBUG_PROXY]) {
     import('undici').then(({ ProxyAgent, setGlobalDispatcher }) => {
         // Point to the Postman proxy you started on port 5555
-        const dispatcher = new ProxyAgent(process.env.DEBUG_PROXY!) // e.g. 'http://127.0.0.1:5555'
+        const dispatcher = new ProxyAgent(process.env[ENV_VAR.DEBUG_PROXY]!) // e.g. 'http://127.0.0.1:5555'
         setGlobalDispatcher(dispatcher) // affect **all** subsequent fetch() calls
     })
 }
@@ -79,10 +81,23 @@ export async function fetchWithRetry(
     input: Request,
     options: Omit<FetchOptions, 'headers'> = {},
 ): Promise<Response> {
-    const { retries = 1, timeout = 30000, ...init } = options
+    const { retries = DEFAULTS.RETRIES, timeout = DEFAULTS.TIMEOUT, ...init } = options
     let attempt = 0
+    if (process.env[ENV_VAR.DEBUG_LOGGING]) {
+        console.log(`Starting fetch with retries=${retries}, timeout=${timeout}ms`)
+        console.log(`Request URL: ${input.url}`)
+        console.log(`Request Method: ${input.method || 'GET'}`)
+        console.log(`Request Body: ${input.body ? JSON.stringify(input.body) : 'No body'}`)
+        input.headers.forEach((value, key) => {
+            console.log(`Header: ${key} = ${value}`)
+        })
+    }
     while (true) {
         attempt++
+
+        if (process.env[ENV_VAR.DEBUG_LOGGING]) {
+            console.log(`Attempt ${attempt} of ${retries + 1}`)
+        }
         try {
             const response = await attemptFetch(
                 input,
@@ -92,9 +107,27 @@ export async function fetchWithRetry(
                 },
                 timeout,
             )
-            if (!response.ok && attempt <= retries) continue
+            if (!response.ok && attempt <= retries) {
+                if (process.env[ENV_VAR.DEBUG_LOGGING]) {
+                    console.warn(`Response not OK: ${response.status} ${response.statusText}`)
+                }
+                continue
+            }
+
+            if (process.env[ENV_VAR.DEBUG_LOGGING]) {
+                console.log(`Fetch successful on attempt ${attempt}`)
+                console.log('Response Headers:')
+                response.headers.forEach((value, key) => {
+                    console.log(`  ${key}: ${value}`)
+                })
+                console.log(`Response Status: ${response.status} ${response.statusText}`)
+            }
+
             return response
         } catch (err) {
+            if (process.env[ENV_VAR.DEBUG_LOGGING]) {
+                console.error(`Fetch attempt ${attempt} failed:`, err)
+            }
             if (attempt <= retries) continue
             handleFetchError(err, input.url, timeout)
         }

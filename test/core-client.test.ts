@@ -214,6 +214,7 @@ describe('CoreClient', () => {
                     status: 400,
                     statusText: 'Bad Request',
                     json: async () => errBody,
+                    text: async () => JSON.stringify(errBody),
                 } as any)
                 await expect(client.createEmbeddings(['x'])).rejects.toBeInstanceOf(PulseAPIError)
             })

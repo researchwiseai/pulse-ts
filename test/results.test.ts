@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { ClusterResult, ThemeExtractionResult } from '../src/results'
+import { ThemeExtractionResult } from '../src/results/ThemeExtractionResult'
+import { ClusterResult } from '../src/results/ClusterResult'
 import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
 import { SentimentResult } from '../src/results/SentimentResult'
 import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
@@ -86,6 +87,85 @@ describe('ClusterResult', () => {
         const texts = ['a', 'b']
         const r = new ClusterResult(matrix, texts)
         expect(r.similarityMatrix).toEqual(matrix)
+    })
+
+    it('manual DBSCAN via cluster()', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const raw = r.cluster({ mode: 'dbscan', eps: 1, minPts: 1 })
+        expect(raw.assignments).toEqual([0, 0])
+    })
+
+    it('manual K-Means via cluster()', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const raw = r.cluster({ mode: 'mean', k: 1 })
+        expect(raw.assignments).toEqual([0, 0])
+    })
+
+    it('manual K-Medoids via cluster()', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const raw = r.cluster({ mode: 'medoid', k: 1 })
+        expect(raw.assignments).toEqual([0, 0])
+    })
+
+    it('manual HAC via cluster()', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const raw = r.cluster({ mode: 'hac', k: 1 })
+        expect(raw.assignments).toEqual([0, 0])
+    })
+
+    it('kMeans(k=1) returns metrics', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const res = r.kMeans({ k: 1 })
+        expect(res.assignments).toEqual([0, 0])
+        expect(res.k).toBe(1)
+        expect(typeof res.cost).toBe('number')
+        expect(typeof res.silhouetteScore).toBe('number')
+    })
+
+    it('kMedoids(k=1) returns metrics', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const res = r.kMedoids({ k: 1 })
+        expect(res.assignments).toEqual([0, 0])
+        expect(res.k).toBe(1)
+        expect(typeof res.cost).toBe('number')
+        expect(typeof res.silhouetteScore).toBe('number')
+    })
+
+    it('hac(k=1) returns metrics', () => {
+        const matrix = [
+            [1, 1],
+            [1, 1],
+        ]
+        const r = new ClusterResult(matrix, ['a', 'b'])
+        const res = r.hac({ k: 1 })
+        expect(res.assignments).toEqual([0, 0])
+        expect(res.k).toBe(1)
+        expect(typeof res.cost).toBe('number')
+        expect(typeof res.silhouetteScore).toBe('number')
     })
 })
 

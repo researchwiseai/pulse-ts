@@ -3,15 +3,14 @@
  */
 
 import type { Auth, ClientCredentialsOptions } from './types'
+import { ENV_VAR, DEFAULTS } from '../config'
+import { BaseAuth } from './BaseAuth'
 
-export class ClientCredentialsAuth implements Auth {
+export class ClientCredentialsAuth extends BaseAuth implements Auth {
     private readonly tokenUrl: string
     private readonly clientId: string
     private readonly clientSecret: string
     private readonly audience?: string
-
-    private _accessToken?: string
-    private _expiresAt?: number
 
     get accessToken(): string | undefined {
         return this._accessToken
@@ -31,16 +30,11 @@ export class ClientCredentialsAuth implements Auth {
      * @param options - Configuration for the client credentials flow.
      */
     constructor(options: Partial<ClientCredentialsOptions> = {}) {
-        this.tokenUrl =
-            options.tokenUrl ??
-            process.env.PULSE_TOKEN_URL ??
-            'https://research-wise-ai-eu.eu.auth0.com/oauth/token'
-        this.audience =
-            options.audience ??
-            process.env.PULSE_AUDIENCE ??
-            'https://core.researchwiseai.com/pulse/v1'
-        const clientId = options.clientId ?? process.env.PULSE_CLIENT_ID
-        const clientSecret = options.clientSecret ?? process.env.PULSE_CLIENT_SECRET
+        super()
+        this.tokenUrl = options.tokenUrl ?? process.env[ENV_VAR.TOKEN_URL] ?? DEFAULTS.TOKEN_URL
+        this.audience = options.audience ?? process.env[ENV_VAR.AUDIENCE] ?? DEFAULTS.AUDIENCE
+        const clientId = options.clientId ?? process.env[ENV_VAR.CLIENT_ID]
+        const clientSecret = options.clientSecret ?? process.env[ENV_VAR.CLIENT_SECRET]
 
         if (!clientId || !clientSecret) {
             throw new Error(
@@ -74,28 +68,14 @@ export class ClientCredentialsAuth implements Auth {
         this._expiresAt = nowSec + json.expires_in - 60
     }
 
-    async *authFlow(req: Request): AsyncGenerator<Request> {
-        const url = new URL(req.url)
-        if (this.audience && url.host !== new URL(this.audience).host) {
-            yield req
-            return
-        }
-        if (!this._accessToken || !this._expiresAt || Date.now() / 1000 >= this._expiresAt) {
-            await this._refreshToken()
-        }
-        const headers = new Headers(req.headers)
-        headers.set('Authorization', `Bearer ${this._accessToken}`)
-        yield new Request(req, { headers })
-    }
-
     /**
      * Check whether the required environment variables are set for Client Credentials authentication flow.
      */
     static isAvailable(): boolean {
         return Boolean(
-            process.env.PULSE_CLIENT_ID &&
-                process.env.PULSE_CLIENT_SECRET &&
-                process.env.PULSE_TOKEN_URL,
+            process.env[ENV_VAR.CLIENT_ID] &&
+                process.env[ENV_VAR.CLIENT_SECRET] &&
+                process.env[ENV_VAR.TOKEN_URL],
         )
     }
 }

@@ -1,6 +1,4 @@
-import { calculateClusteringCost } from '.'
 import { findOptimalEps } from './helpers/findOptimalEps'
-import { calculateSilhouetteScore } from './helpers/calculateSilhouetteScore'
 import { cluster } from './cluster'
 import type {
     AutoConfigMap,
@@ -11,7 +9,11 @@ import type {
     KModesConfig,
     HACConfig,
 } from './types'
-import { normalizeSimilarityMatrix } from './helpers'
+import {
+    calculateSilhouetteScore,
+    calculateClusteringCost,
+    normalizeSimilarityMatrix,
+} from './helpers'
 
 /**
  * Performs automatic clustering on a similarity matrix using the specified mode and configuration.
@@ -90,7 +92,12 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
             const cost = calculateClusteringCost(similarityMatrix, result)
             const silhouette = calculateSilhouetteScore(similarityMatrix, result)
             // The return type is correctly inferred here without casting.
-            return { ...result, k, cost, silhouetteScore: silhouette } as any // Cast to any is a workaround for the complex return type
+            return {
+                ...result,
+                k,
+                cost,
+                silhouetteScore: silhouette,
+            } as ClusteringResultWithMetrics<ResultMap[TConfig['mode']]>
         }
 
         case 'hac':
@@ -100,7 +107,12 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
                 const result = cluster(similarityMatrix, config as KModesConfig | HACConfig) // This cast is now safe within this branch.
                 const cost = calculateClusteringCost(similarityMatrix, result)
                 const silhouette = calculateSilhouetteScore(similarityMatrix, result)
-                return { ...result, k: config.k, cost, silhouetteScore: silhouette } as any
+                return {
+                    ...result,
+                    k: config.k,
+                    cost,
+                    silhouetteScore: silhouette,
+                } as ClusteringResultWithMetrics<ResultMap[TConfig['mode']]>
             } else {
                 const kRange = Array.from({ length: Math.min(n - 2, 8) }, (_, i) => i + 2)
                 console.log(
@@ -118,7 +130,7 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
 
                 return resultsWithMetrics.reduce((best, current) =>
                     current.silhouetteScore > best.silhouetteScore ? current : best,
-                ) as any
+                ) as ClusteringResultWithMetrics<ResultMap[TConfig['mode']]>
             }
         }
         default:
