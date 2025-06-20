@@ -126,11 +126,11 @@ if (import.meta.vitest) {
 
     describe('_calculateAverageDissimilarityToMembers', () => {
         it('should return Infinity for empty memberIndices', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2],
                 [0.2, 0],
             ]
-            expect(_calculateAverageDissimilarityToMembers(0, [], similarityMatrix)).toBe(Infinity)
+            expect(_calculateAverageDissimilarityToMembers(0, [], distanceMatrix)).toBe(Infinity)
         })
 
         it('should calculate average dissimilarity correctly', () => {
@@ -144,56 +144,56 @@ if (import.meta.vitest) {
         })
 
         it('should handle a single member correctly', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2],
                 [0.2, 0],
             ]
-            const result = _calculateAverageDissimilarityToMembers(0, [1], similarityMatrix)
+            const result = _calculateAverageDissimilarityToMembers(0, [1], distanceMatrix)
             expect(result).toBe(0.2) // Should be 0.2
         })
         it('should handle a point with itself in memberIndices', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2],
                 [0.2, 0],
             ]
-            const result = _calculateAverageDissimilarityToMembers(0, [0], similarityMatrix)
+            const result = _calculateAverageDissimilarityToMembers(0, [0], distanceMatrix)
             expect(result).toBe(0) // Dissimilarity to itself should be 0
         })
         it('should handle a point with itself and another point in memberIndices', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2],
                 [0.2, 0],
             ]
-            const result = _calculateAverageDissimilarityToMembers(0, [0, 1], similarityMatrix)
+            const result = _calculateAverageDissimilarityToMembers(0, [0, 1], distanceMatrix)
             expect(result).toBe(0.1) // Should be (0 + 0.2) / 2 = 0.1
         })
         it('should handle a point with multiple members', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2, 0.5, 0.7],
                 [0.2, 0, 0.4, 0.6],
                 [0.5, 0.4, 0, 0.8],
                 [0.7, 0.6, 0.8, 0],
             ]
-            const result = _calculateAverageDissimilarityToMembers(0, [1, 2, 3], similarityMatrix)
+            const result = _calculateAverageDissimilarityToMembers(0, [1, 2, 3], distanceMatrix)
             expect(result).toBeCloseTo((1 - 0.8 + 1 - 0.5 + 1 - 0.3) / 3)
         })
         it('should handle a point with all members in a single cluster', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.1, 0.2],
                 [0.1, 0, 0.3],
                 [0.2, 0.3, 0],
             ]
-            const result = _calculateAverageDissimilarityToMembers(0, [1, 2], similarityMatrix)
+            const result = _calculateAverageDissimilarityToMembers(0, [1, 2], distanceMatrix)
             expect(result).toBeCloseTo((1 - 0.9 + 1 - 0.8) / 2)
         })
         it('should handle a point with itself and multiple members', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.1, 0.2, 0.3],
                 [0.1, 0, 0.4, 0.5],
                 [0.2, 0.4, 0, 0.6],
                 [0.3, 0.5, 0.6, 0],
             ]
-            const result = _calculateAverageDissimilarityToMembers(0, [0, 1, 2], similarityMatrix)
+            const result = _calculateAverageDissimilarityToMembers(0, [0, 1, 2], distanceMatrix)
             expect(result).toBeCloseTo((1 - 1 + 1 - 0.9 + 1 - 0.8) / 3)
         })
     })
@@ -249,44 +249,44 @@ if (import.meta.vitest) {
             expect(result).toBeCloseTo(0.2) // Average dissimilarity to other members in cluster 0
         })
         it('should handle a point with itself in its own cluster', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2, 0.5],
                 [0.2, 0, 0.4],
                 [0.5, 0.4, 0],
             ]
             const assignments = [0, 0, 1] // Points 0 and 1 in cluster 0, point 2 in cluster 1
-            const result = _calculateAi(0, 0, assignments, similarityMatrix)
+            const result = _calculateAi(0, 0, assignments, distanceMatrix)
             expect(result).toBeCloseTo(0.2) // Average dissimilarity excluding self in cluster 0
         })
         it('should return Infinity for a point in a cluster with no other members', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2],
                 [0.2, 0],
             ]
             const assignments = [0, 1] // Point 0 in cluster 0, point 1 in cluster 1
-            const result = _calculateAi(1, 1, assignments, similarityMatrix)
+            const result = _calculateAi(1, 1, assignments, distanceMatrix)
             expect(result).toBe(Infinity) // Point 1 is the only member of its cluster
         })
         it('should handle a point with multiple members in its cluster', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.1, 0.2, 0.3],
                 [0.1, 0, 0.4, 0.5],
                 [0.2, 0.4, 0, 0.6],
                 [0.3, 0.5, 0.6, 0],
             ]
             const assignments = [0, 0, 1, 1] // Points 0 and 1 in cluster 0, points 2 and 3 in cluster 1
-            const result = _calculateAi(0, 0, assignments, similarityMatrix)
+            const result = _calculateAi(0, 0, assignments, distanceMatrix)
             expect(result).toBeCloseTo(0.1) // Average dissimilarity to other members in cluster 0
         })
         it('should handle a point with itself and multiple members in its cluster', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.1, 0.2, 0.3],
                 [0.1, 0, 0.4, 0.5],
                 [0.2, 0.4, 0, 0.6],
                 [0.3, 0.5, 0.6, 0],
             ]
             const assignments = [0, 0, 1, 1] // Points 0 and 1 in cluster 0, points 2 and 3 in cluster 1
-            const result = _calculateAi(0, 0, assignments, similarityMatrix)
+            const result = _calculateAi(0, 0, assignments, distanceMatrix)
             expect(result).toBeCloseTo(0.1) // Average dissimilarity excluding self in cluster 0
         })
     })
@@ -338,34 +338,34 @@ if (import.meta.vitest) {
 
     describe('_calculateBi', () => {
         it('should return Infinity when there are no other clusters', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.2],
                 [0.2, 0],
             ]
             const assignments = [0, 0] // only cluster 0
-            expect(_calculateBi(0, 0, assignments, similarityMatrix)).toBe(Infinity)
+            expect(_calculateBi(0, 0, assignments, distanceMatrix)).toBe(Infinity)
         })
 
         it('should calculate minimum average dissimilarity to other clusters', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.1, 0.5],
                 [0.1, 0, 0.6],
                 [0.5, 0.6, 0],
             ]
             const assignments = [0, 1, 2] // point 0 in cluster 0, others in clusters 1 and 2
             // avg dissimilarity to cluster 1 = 1 - 0.9 = 0.1; to cluster 2 = 1 - 0.5 = 0.5
-            expect(_calculateBi(0, 0, assignments, similarityMatrix)).toBeCloseTo(0.1)
+            expect(_calculateBi(0, 0, assignments, distanceMatrix)).toBeCloseTo(0.1)
         })
 
         it('should ignore empty clusters and noise', () => {
-            const similarityMatrix = [
+            const distanceMatrix = [
                 [0, 0.3, 0.4],
                 [0.3, 0, 0.2],
                 [0.4, 0.2, 0],
             ]
             const assignments = [0, NOISE, 1] // point 0 in cluster 0, index 1 is noise, index 2 in cluster 1
             // only cluster 1 is other valid cluster: avg dissimilarity = 1 - 0.6 = 0.4
-            expect(_calculateBi(0, 0, assignments, similarityMatrix)).toBeCloseTo(0.4)
+            expect(_calculateBi(0, 0, assignments, distanceMatrix)).toBeCloseTo(0.4)
         })
     })
 
@@ -424,9 +424,8 @@ function _calculatePointSilhouetteScore(a_i: number, b_i: number): number | null
  * matched to neighboring clusters.
  *
  * @remarks
- * - This function assumes that `similarityMatrix[i][j]` represents the similarity
- *   between point `i` and point `j`. Dissimilarity (distance) is calculated as
- *   `1 - similarity`.
+ * - This function assumes that `distanceMatrix[i][j]` represents the distance
+ *   between point `i` and point `j`.
  * - Points assigned to a cluster identified by the `NOISE` constant (e.g., a conventionally
  *   negative number like -1, assumed to be defined elsewhere) are ignored in the calculation.
  * - Points in clusters with only one member are also ignored, as their intra-cluster
@@ -442,7 +441,7 @@ function _calculatePointSilhouetteScore(a_i: number, b_i: number): number | null
  * - If no points are valid for score calculation (e.g., all points are noise, all points
  *   form singleton clusters, or other conditions prevent calculation), the function returns 0.
  *
- * @param similarityMatrix - A square 2D array where `similarityMatrix[i][j]` is the
+ * @param distanceMatrix - A square 2D array where `similarityMatrix[i][j]` is the
  *                           similarity between data point `i` and data point `j`.
  *                           Values typically range from 0 (no similarity) to 1 (identical).
  * @param result - An object representing the clustering outcome. It must contain an
@@ -453,10 +452,10 @@ function _calculatePointSilhouetteScore(a_i: number, b_i: number): number | null
  *          Returns 0 if no silhouette scores could be calculated for any points.
  */
 export function calculateSilhouetteScore(
-    similarityMatrix: number[][],
+    distanceMatrix: number[][],
     result: ClusteringResult,
 ): number {
-    const n = similarityMatrix.length
+    const n = distanceMatrix.length
     if (n === 0) {
         return 0
     }
@@ -470,13 +469,13 @@ export function calculateSilhouetteScore(
             continue // Ignore noise points
         }
 
-        const a_i = _calculateAi(i, myClusterIndex, result.assignments, similarityMatrix)
+        const a_i = _calculateAi(i, myClusterIndex, result.assignments, distanceMatrix)
         if (!isFinite(a_i)) {
             // Point is in a singleton cluster or a(i) cannot be computed (e.g. cluster has no other members)
             continue
         }
 
-        const b_i = _calculateBi(i, myClusterIndex, result.assignments, similarityMatrix)
+        const b_i = _calculateBi(i, myClusterIndex, result.assignments, distanceMatrix)
         // If b_i is Infinity (no other clusters to compare to),
         // _calculatePointSilhouetteScore will return null.
 

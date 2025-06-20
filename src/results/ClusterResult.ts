@@ -12,6 +12,8 @@ import type {
     ResultMap,
     ClusteringResultWithMetrics,
 } from '../clustering/types'
+import { Matrix } from '../matrix'
+import type { Headers } from '../matrix/utils/matrix/headers'
 
 export class ClusterResult {
     /**
@@ -24,8 +26,11 @@ export class ClusterResult {
     ) {}
 
     /** Raw similarity matrix returned by the clustering process. */
-    get similarityMatrix(): number[][] {
-        return this.matrix
+    get similarityMatrix() {
+        const dimHeaders = this.texts.map(value => [
+            { key: 'label', value, type: 's' },
+        ]) as Headers[number]
+        return Matrix.from(this.matrix, [dimHeaders, dimHeaders])
     }
 
     /**

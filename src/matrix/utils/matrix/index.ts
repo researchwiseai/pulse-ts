@@ -591,44 +591,67 @@ export class Matrix<T> {
      * - For 2D matrices, prints a table with row and column headers.
      * - For higher dimensions, logs the nested array.
      */
-    public prettyPrint(): void {
-        const data = this.value()
-        const rank = this.rank
+    public prettyPrint(limit: number | readonly number[] = 5): void {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        let subMatrix: Matrix<T> = this
+        const limits = typeof limit === 'number' ? Array(this.rank).fill(limit) : limit
+
+        // Create a sliced view if any dimension exceeds its limit.
+        for (let i = 0; i < this.rank; i++) {
+            const dimLimit = limits[i]
+            if (dimLimit !== undefined && subMatrix.shape[i] > dimLimit) {
+                subMatrix = subMatrix.slice(i, 0, dimLimit)
+            }
+        }
+
+        const data = subMatrix.value()
+        const rank = subMatrix.rank
+
+        const format = (v: unknown) => (typeof v === 'number' ? Math.round(v * 100) / 100 : v)
+
         if (rank === 1) {
             const arr = data as T[]
-            const dims = this.headers?.[0]
+            const dims = subMatrix.headers?.[0]
             const rowLabels = dims
                 ? dims.map(group => group.map(r => String(r.value)).join(', '))
                 : undefined
-            const table: Record<string, T> = {}
+            const table: Record<string, unknown> = {}
             arr.forEach((val, i) => {
                 const key = rowLabels?.[i] ?? String(i)
-                table[key.slice(0, 40)] = val
+                table[key.slice(0, 40)] = format(val)
             })
             console.table(table)
         } else if (rank === 2) {
             const mat = data as T[][]
-            const rowDim = this.headers?.[0]
-            const colDim = this.headers?.[1]
+            const rowDim = subMatrix.headers?.[0]
+            const colDim = subMatrix.headers?.[1]
             const rowLabels = rowDim
                 ? rowDim.map(group => group.map(r => String(r.value)).join(', '))
                 : undefined
             const colLabels = colDim
                 ? colDim.map(group => group.map(r => String(r.value)).join(', '))
                 : undefined
-            const table: Record<string, Record<string, T>> = {}
+            const table: Record<string, Record<string, unknown>> = {}
             mat.forEach((row, i) => {
                 const rowKey = rowLabels?.[i] ?? String(i)
-                const rowObj: Record<string, T> = {}
+                const rowObj: Record<string, unknown> = {}
                 row.forEach((val, j) => {
                     const colKey = colLabels?.[j] ?? String(j)
-                    rowObj[colKey.slice(0, 30)] = val
+                    rowObj[colKey.slice(0, 30)] = format(val)
                 })
                 table[rowKey.slice(0, 30)] = rowObj
             })
             console.table(table)
         } else {
-            console.log(data)
+            const formatNested = (d: unknown): unknown =>
+                Array.isArray(d) ? d.map(formatNested) : format(d)
+            console.log(formatNested(data))
+        }
+
+        // Add a note if the matrix was truncated.
+        const wasTruncated = this.shape.some((s, i) => s !== subMatrix.shape[i])
+        if (wasTruncated) {
+            console.log(`... (showing [${subMatrix.shape.join('x')}] of [${this.shape.join('x')}])`)
         }
     }
 }
