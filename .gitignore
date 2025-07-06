@@ -136,6 +136,6 @@ dist
 .pnp.*
 
 dist/
-docs/
+docs/api/
 
 .env.test
