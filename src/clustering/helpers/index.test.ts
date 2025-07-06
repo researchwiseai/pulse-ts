@@ -311,7 +311,7 @@ describe('calculateSilhouetteScore', () => {
         // P0 is NOISE
         // P1 is in singleton cluster C0 (a_1 = Inf)
         // P2 is in cluster C1, but C1 is the only non-noise, non-singleton cluster (b_2 = Inf)
-        const result: ClusteringResult = { assignments: [NOISE, 0, 1] }
+        const _result: ClusteringResult = { assignments: [NOISE, 0, 1] }
         // P0: skipped (NOISE)
         // P1: a_1 = Infinity (singleton), skipped
         // P2: a_2 = Infinity (singleton), skipped
@@ -336,7 +336,7 @@ describe('findOptimalEps', () => {
             [0.9, 0.8, 0, 0.2],
             [0.85, 0.75, 0.2, 0],
         ]
-        const minPts = 3 // k = 2 (minPts - 1), index for k-distance is minPts - 2 = 1
+        const _minPts3 = 3 // k = 2 (minPts - 1), index for k-distance is minPts - 2 = 1
         // P0: dists [0.1, 0.9, 0.85], sorted [0.1, 0.85, 0.9]. kDist (idx 1) = 0.85
         // P1: dists [0.1, 0.8, 0.75], sorted [0.1, 0.75, 0.8]. kDist (idx 1) = 0.75
         // P2: dists [0.9, 0.8, 0.2], sorted [0.2, 0.8, 0.9]. kDist (idx 1) = 0.8
@@ -346,7 +346,7 @@ describe('findOptimalEps', () => {
         // Max diff is 0.05. First occurrence at index 2 (for kDistances[2] - kDistances[1]).
         // So elbowIndex = 2.
         // Expected: kDistances[2] = 0.8
-        expect(findOptimalEps(matrix, minPts)).toBe(0.8)
+        expect(findOptimalEps(matrix, _minPts3)).toBe(0.8)
     })
 
     it('should return 0.5 for an empty matrix', () => {
@@ -377,14 +377,14 @@ describe('findOptimalEps', () => {
             [0.5, 0, 0.5],
             [0.5, 0.5, 0],
         ]
-        const minPts = 2 // k=1, index=0
+        const _minPts = 2 // k=1, index=0
         // P0: dists [0.5, 0.5]. kDist = 0.5
         // P1: dists [0.5, 0.5]. kDist = 0.5
         // P2: dists [0.5, 0.5]. kDist = 0.5
         // kDistances = [0.5, 0.5, 0.5]. Sorted: [0.5, 0.5, 0.5]
         // Diffs: 0, 0. maxDiff = 0, elbowIndex = 0.
         // Result: kDistances[0] = 0.5
-        expect(findOptimalEps(matrix, minPts)).toBe(0.5)
+        expect(findOptimalEps(matrix, _minPts)).toBe(0.5)
     })
 
     it('should return 0.5 when minPts is 1, due to undefined k-distances', () => {
@@ -406,7 +406,7 @@ describe('findOptimalEps', () => {
             [0.2, 0.15, 0, 0.7],
             [0.8, 0.75, 0.7, 0],
         ]
-        const minPts = 2 // k=1, index=0
+        const _minPts = 2 // k=1, index=0
         // P0: dists [0.1, 0.2, 0.8]. kDist = 0.1
         // P1: dists [0.1, 0.15, 0.75]. kDist = 0.1
         // P2: dists [0.15, 0.2, 0.7]. kDist = 0.15
@@ -414,7 +414,7 @@ describe('findOptimalEps', () => {
         // kDistances = [0.1, 0.1, 0.15, 0.7]. Sorted: [0.1, 0.1, 0.15, 0.7]
         // Diffs: 0, 0.05, 0.55. maxDiff = 0.55, elbowIndex = 3.
         // Result: kDistances[3] = 0.7
-        expect(findOptimalEps(matrix, minPts)).toBe(0.7)
+        expect(findOptimalEps(matrix, _minPts)).toBe(0.7)
     })
 
     it('should handle similarities close to 0 and 1', () => {
@@ -423,14 +423,14 @@ describe('findOptimalEps', () => {
             [0.01, 0, 0.98],
             [0.99, 0.98, 0],
         ]
-        const minPts = 2 // k=1, index=0
+        const _minPts = 2 // k=1, index=0
         // P0: dists [0.01, 0.99]. kDist = 0.01
         // P1: dists [0.01, 0.98]. kDist = 0.01
         // P2: dists [0.98, 0.99]. kDist = 0.98
         // kDistances = [0.01, 0.01, 0.98]. Sorted: [0.01, 0.01, 0.98]
         // Diffs: 0, 0.97. maxDiff = 0.97, elbowIndex = 2.
         // Result: kDistances[2] = 0.98
-        expect(findOptimalEps(matrix, minPts)).toBe(0.98)
+        expect(findOptimalEps(matrix, _minPts)).toBe(0.98)
     })
 
     it('should return the first k-distance if all diffs are zero', () => {
@@ -439,7 +439,6 @@ describe('findOptimalEps', () => {
             [0.1, 0, 0.1],
             [0.1, 0.1, 0],
         ]
-        const minPts = 2 // k=1, index=0
         // P0: dists [0.1, 0.1]. kDist = 0.1
         // P1: dists [0.1, 0.1]. kDist = 0.1
         // P2: dists [0.1, 0.1]. kDist = 0.1
@@ -454,13 +453,13 @@ describe('findOptimalEps', () => {
             [0, 0.3],
             [0.3, 0],
         ]
-        const minPts = 2 // k=1, index=0
+        const _minPts2 = 2 // k=1, index=0
         // P0: dists [0.3]. kDist = 0.3
         // P1: dists [0.3]. kDist = 0.3
         // kDistances = [0.3, 0.3]. Sorted: [0.3, 0.3]
         // Diffs: 0. maxDiff = 0, elbowIndex = 0.
         // Result: kDistances[0] = 0.3
-        expect(findOptimalEps(matrix, minPts)).toBeCloseTo(0.3, 1e-6)
+        expect(findOptimalEps(matrix, _minPts2)).toBeCloseTo(0.3, 1e-6)
     })
 
     it('should pick the first elbow if multiple diffs are maximal', () => {

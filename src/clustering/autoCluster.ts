@@ -90,6 +90,7 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
             const cost = calculateClusteringCost(similarityMatrix, result)
             const silhouette = calculateSilhouetteScore(similarityMatrix, result)
             // The return type is correctly inferred here without casting.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return { ...result, k, cost, silhouetteScore: silhouette } as any // Cast to any is a workaround for the complex return type
         }
 
@@ -100,6 +101,7 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
                 const result = cluster(similarityMatrix, config as KModesConfig | HACConfig) // This cast is now safe within this branch.
                 const cost = calculateClusteringCost(similarityMatrix, result)
                 const silhouette = calculateSilhouetteScore(similarityMatrix, result)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 return { ...result, k: config.k, cost, silhouetteScore: silhouette } as any
             } else {
                 const kRange = Array.from({ length: Math.min(n - 2, 8) }, (_, i) => i + 2)
@@ -116,8 +118,10 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
                     return { ...result, k, cost, silhouetteScore: silhouette }
                 })
 
-                return resultsWithMetrics.reduce((best, current) =>
-                    current.silhouetteScore > best.silhouetteScore ? current : best,
+                return resultsWithMetrics.reduce(
+                    (best, current) =>
+                        current.silhouetteScore > best.silhouetteScore ? current : best,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ) as any
             }
         }

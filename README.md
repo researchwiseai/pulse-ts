@@ -140,6 +140,19 @@ bun run generate
 
 This will update `src/models.ts` with the latest types.
 
+## Releasing
+
+Create and push a signed tag to trigger the GitHub release workflow which builds the package,
+generates an SBOM, signs the tarball and publishes the package to npm.
+
+```bash
+VERSION=0.1.0
+git tag -s "v$VERSION" -m "v$VERSION"
+git push origin "v$VERSION"
+```
+
+Ensure `NPM_TOKEN` and `COSIGN_PRIVATE_KEY` secrets are configured.
+
 ## Downloading Release Artifacts
 
 Pre-built bundles are attached to each GitHub release along with a detached signature and SBOM. The
