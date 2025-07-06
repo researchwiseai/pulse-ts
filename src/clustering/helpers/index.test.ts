@@ -919,7 +919,7 @@ describe('calculateClusteringCost', () => {
         const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
         const kModesResultUndefinedCenter: KModesResult = {
             assignments: [0, 0, 1],
-            centers: [0, undefined as any], // Forcing an undefined center
+            centers: [0, undefined as unknown as number], // Forcing an undefined center
             iterations: 2,
         }
         // Point 0 to center 0 (distMatrix1[0][0]) = 0

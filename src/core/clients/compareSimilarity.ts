@@ -6,7 +6,7 @@ import type { Job } from '../job'
 import { requestFeature } from './requestFeature'
 import type { components } from '../../models'
 
-type SimilarityResponse = components['schemas']['SimilarityResponse']
+export type SimilarityResponse = components['schemas']['SimilarityResponse']
 
 /**
  * Input shape for self-comparison similarity where a single set is compared to itself.

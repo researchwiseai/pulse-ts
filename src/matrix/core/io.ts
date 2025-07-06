@@ -62,8 +62,7 @@ export function toArrayBuffer<T>(
 ): ArrayBuffer {
     const view =
         data instanceof NDView
-            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              data.contiguous(ctor[dtype] as any)
+            ? (data as NDView<number>).contiguous(ctor[dtype])
             : typeofCellsMatrix(data) === 'number'
               ? viewOf(data as NestedArray<number>, ctor[dtype])
               : viewOf(data)

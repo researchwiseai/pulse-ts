@@ -89,20 +89,29 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
             const k = new Set(result.assignments.filter(c => c !== -1)).size
             const cost = calculateClusteringCost(similarityMatrix, result)
             const silhouette = calculateSilhouetteScore(similarityMatrix, result)
-            // The return type is correctly inferred here without casting.
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return { ...result, k, cost, silhouetteScore: silhouette } as any // Cast to any is a workaround for the complex return type
+            const withMetrics: ClusteringResultWithMetrics<ResultMap['dbscan']> = {
+                ...result,
+                k,
+                cost,
+                silhouetteScore: silhouette,
+            }
+            return withMetrics as ClusteringResultWithMetrics<ResultMap[TConfig['mode']]>
         }
 
         case 'hac':
         case 'medoid':
         case 'mean': {
             if (config.k) {
-                const result = cluster(similarityMatrix, config as KModesConfig | HACConfig) // This cast is now safe within this branch.
+                const result = cluster(similarityMatrix, config as KModesConfig | HACConfig)
                 const cost = calculateClusteringCost(similarityMatrix, result)
                 const silhouette = calculateSilhouetteScore(similarityMatrix, result)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                return { ...result, k: config.k, cost, silhouetteScore: silhouette } as any
+                const withMetrics: ClusteringResultWithMetrics<ResultMap[typeof config.mode]> = {
+                    ...result,
+                    k: config.k,
+                    cost,
+                    silhouetteScore: silhouette,
+                }
+                return withMetrics as ClusteringResultWithMetrics<ResultMap[TConfig['mode']]>
             } else {
                 const kRange = Array.from({ length: Math.min(n - 2, 8) }, (_, i) => i + 2)
                 console.log(
@@ -110,19 +119,22 @@ export function autoCluster<TConfig extends AutoConfigMap[Mode]>(
                 )
 
                 const resultsWithMetrics = kRange.map(k => {
-                    const finalConfig = { ...config, k } as KModesConfig | HACConfig // Safe cast
+                    const finalConfig = { ...config, k } as KModesConfig | HACConfig
                     const result = cluster(similarityMatrix, finalConfig)
                     const cost = calculateClusteringCost(similarityMatrix, result)
                     const silhouette = calculateSilhouetteScore(similarityMatrix, result)
                     console.log(`  k=${k}, Silhouette=${silhouette.toFixed(4)}`)
-                    return { ...result, k, cost, silhouetteScore: silhouette }
+                    return {
+                        ...result,
+                        k,
+                        cost,
+                        silhouetteScore: silhouette,
+                    } as ClusteringResultWithMetrics<ResultMap[typeof config.mode]>
                 })
 
-                return resultsWithMetrics.reduce(
-                    (best, current) =>
-                        current.silhouetteScore > best.silhouetteScore ? current : best,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ) as any
+                return resultsWithMetrics.reduce((best, current) =>
+                    current.silhouetteScore > best.silhouetteScore ? current : best,
+                ) as ClusteringResultWithMetrics<ResultMap[TConfig['mode']]>
             }
         }
         default:

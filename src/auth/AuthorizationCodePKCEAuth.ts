@@ -107,8 +107,7 @@ export class AuthorizationCodePKCEAuth {
         // Open browser if possible, otherwise instruct user
         let opened = false
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const openMod: any = await import('open')
+            const openMod = (await import('open')) as typeof import('open')
             const opener = typeof openMod === 'function' ? openMod : openMod.default
             if (typeof opener === 'function') {
                 await opener(authUrl.toString())
@@ -128,14 +127,10 @@ ${authUrl}`)
         const host = redirectUrl.hostname
         // eslint-disable-next-line no-async-promise-executor
         await new Promise<void>(async (resolve, reject) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let server: any
+            let server: import('http').Server
             try {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const httpMod: any = await import('http')
-                const httpLib = httpMod.default ?? httpMod
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                server = httpLib.createServer((req: any, res: any) => {
+                const httpLib = (await import('http')) as typeof import('http')
+                server = httpLib.createServer((req: import('http').IncomingMessage, res: import('http').ServerResponse) => {
                     if (!req.url) return
                     const reqUrl = new URL(req.url, `${redirectUrl.protocol}//${redirectUrl.host}`)
                     if (reqUrl.pathname !== redirectUrl.pathname) return

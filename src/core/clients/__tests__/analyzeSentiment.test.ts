@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest'
 import { analyzeSentiment } from '../analyzeSentiment'
+import type { CoreClient } from '../CoreClient'
 import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
 import { fetchWithRetry } from '../../../http'
@@ -19,7 +20,7 @@ const mockAuthFlow = (authedRequest: Request) => ({
 
 const baseUrl = 'https://api.example.com'
 const mockAuth = { authFlow: vi.fn() }
-const client = { baseUrl, auth: mockAuth } as any
+const client = { baseUrl, auth: mockAuth } as unknown as CoreClient
 
 const inputs = ['I love this!', 'I hate that.']
 

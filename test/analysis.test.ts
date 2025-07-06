@@ -33,7 +33,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const az = new Analyzer({ datasets: { dataset: [] }, processes: [], client })
             const res = await az.run()
             expect(res).toBeInstanceOf(Object)
-            expect((res as any).themeGeneration).toBeUndefined()
+            expect((res as Record<string, unknown>).themeGeneration).toBeUndefined()
         })
     })
 
