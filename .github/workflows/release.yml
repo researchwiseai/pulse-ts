@@ -47,10 +47,12 @@ jobs:
 
             - name: Sign tarball
               run: |
-                  echo "$COSIGN_PRIVATE_KEY" > cosign.key
-                  cosign sign-blob --yes --key cosign.key \
+                  TEMP_KEY_FILE=$(mktemp)
+                  echo "$COSIGN_PRIVATE_KEY" > "$TEMP_KEY_FILE"
+                  cosign sign-blob --yes --key "$TEMP_KEY_FILE" \
                       --output-signature "${{ steps.pack.outputs.FILE }}.sig" \
                       "${{ steps.pack.outputs.FILE }}"
+                  rm -f "$TEMP_KEY_FILE"
               env:
                   COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
                   COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
