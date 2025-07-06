@@ -7,7 +7,7 @@ import { getNeighbors } from './helpers/getNeighbors'
 export function dbscanFromDistance(distMatrix: number[][], config: DBSCANConfig): DBSCANResult {
     const { eps, minPts } = config
     const n = distMatrix.length
-    let assignments = new Array(n).fill(UNCLASSIFIED)
+    const assignments = new Array(n).fill(UNCLASSIFIED)
     let clusterId = 0
     for (let i = 0; i < n; i++) {
         if (assignments[i] !== UNCLASSIFIED) continue
@@ -17,7 +17,7 @@ export function dbscanFromDistance(distMatrix: number[][], config: DBSCANConfig)
             continue
         }
         assignments[i] = clusterId
-        let seedSet = [...neighbors]
+        const seedSet = [...neighbors]
         for (let j = 0; j < seedSet.length; j++) {
             const pointIndex = seedSet[j]
             if (assignments[pointIndex] === NOISE) assignments[pointIndex] = clusterId
@@ -34,8 +34,8 @@ export function dbscanFromDistance(distMatrix: number[][], config: DBSCANConfig)
 }
 
 export function calculateClusteringCost(
-    similarityMatrix: number[][],
-    result: ClusteringResult,
+    _similarityMatrix: number[][],
+    _result: ClusteringResult,
 ): number {
     /* ... implementation ... */ return 0
 }

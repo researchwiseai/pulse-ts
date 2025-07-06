@@ -3,6 +3,7 @@ import { createEmbeddings } from '../createEmbeddings'
 import { fetchWithRetry } from '../../../http'
 import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
+import type { Auth as AuthType } from '../../../auth/types'
 import type { CoreClient } from '../CoreClient'
 import { setupPolly } from '../../../../test/setupPolly'
 import type { components } from '../../../models'
@@ -15,7 +16,10 @@ vi.mock('../../../http', () => ({
 vi.mock('../../job', async importOriginal => {
     return {
         ...(await importOriginal<typeof import('../../job')>()),
-        Job: vi.fn(function (this: any, options: any) {
+        Job: vi.fn(function (
+            this: Record<string, unknown>,
+            options: { jobId: string; baseUrl: string; auth: AuthType },
+        ) {
             this.jobId = options.jobId
             this.baseUrl = options.baseUrl
             this.auth = options.auth

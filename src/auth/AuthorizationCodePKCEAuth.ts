@@ -107,7 +107,7 @@ export class AuthorizationCodePKCEAuth {
         // Open browser if possible, otherwise instruct user
         let opened = false
         try {
-            const openMod: any = await import('open')
+            const openMod = (await import('open')) as typeof import('open')
             const opener = typeof openMod === 'function' ? openMod : openMod.default
             if (typeof opener === 'function') {
                 await opener(authUrl.toString())
@@ -117,7 +117,6 @@ export class AuthorizationCodePKCEAuth {
             // ignore if open is not available
         }
         if (!opened) {
-            // eslint-disable-next-line no-console
             console.log(`Open this URL in your browser:
 ${authUrl}`)
         }
@@ -126,12 +125,12 @@ ${authUrl}`)
         const redirectUrl = new URL(this._redirectUri)
         const port = redirectUrl.port ? Number(redirectUrl.port) : undefined
         const host = redirectUrl.hostname
+        // eslint-disable-next-line no-async-promise-executor
         await new Promise<void>(async (resolve, reject) => {
-            let server: any
+            let server: import('http').Server
             try {
-                const httpMod: any = await import('http')
-                const httpLib = httpMod.default ?? httpMod
-                server = httpLib.createServer((req: any, res: any) => {
+                const httpLib = (await import('http')) as typeof import('http')
+                server = httpLib.createServer((req: import('http').IncomingMessage, res: import('http').ServerResponse) => {
                     if (!req.url) return
                     const reqUrl = new URL(req.url, `${redirectUrl.protocol}//${redirectUrl.host}`)
                     if (reqUrl.pathname !== redirectUrl.pathname) return

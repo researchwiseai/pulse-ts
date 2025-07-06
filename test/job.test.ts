@@ -17,9 +17,9 @@ describe('Job.result', () => {
 
     it('resolves with result when job completes immediately', async () => {
         const info = { status: 'completed', resultUrl: 'http://result' }
-        const infoRes = { ok: true, status: 200, json: async () => info } as any
+        const infoRes = { ok: true, status: 200, json: async () => info } as unknown as Response
         const resultBody = { foo: 'bar' }
-        const resultRes = { ok: true, status: 200, json: async () => resultBody } as any
+        const resultRes = { ok: true, status: 200, json: async () => resultBody } as unknown as Response
         const spy = vi.spyOn(http, 'fetchWithRetry')
         spy.mockResolvedValueOnce(infoRes).mockResolvedValueOnce(resultRes)
         const job = new Job({
@@ -34,7 +34,7 @@ describe('Job.result', () => {
     })
 
     it('throws when job fails', async () => {
-        const infoRes = { ok: true, status: 200, json: async () => ({ status: 'failed' }) } as any
+        const infoRes = { ok: true, status: 200, json: async () => ({ status: 'failed' }) } as unknown as Response
         vi.spyOn(http, 'fetchWithRetry').mockResolvedValueOnce(infoRes)
         const job = new Job({
             jobId: 'failId',
