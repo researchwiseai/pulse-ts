@@ -19,6 +19,9 @@ permissions:
 jobs:
     bump:
         runs-on: ubuntu-latest
+        concurrency:
+            group: 'bump-tag-${{ github.ref }}'
+            cancel-in-progress: true
         steps:
             - uses: actions/checkout@v4
 
