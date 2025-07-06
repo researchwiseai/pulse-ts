@@ -151,9 +151,10 @@ git tag -s "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 ```
 
-Ensure `NPM_TOKEN` is configured and set the `COSIGN_PRIVATE_KEY` secret to the contents of your
-cosign private key. The release workflow writes this secret to a temporary file before signing the
-tarball.
+Ensure an `NPM_TOKEN` secret is configured. The release workflow exposes this as `NPM_CONFIG_TOKEN`
+so `bun publish` can authenticate with the npm registry. Also set the `COSIGN_PRIVATE_KEY` secret to
+the contents of your cosign private key. The workflow writes this secret to a temporary file before
+signing the tarball.
 
 ## Downloading Release Artifacts
 
