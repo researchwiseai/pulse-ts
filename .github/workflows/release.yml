@@ -46,9 +46,11 @@ jobs:
               uses: sigstore/cosign-installer@v3
 
             - name: Sign tarball
-              run:
-                  cosign sign-blob --yes --key "$COSIGN_PRIVATE_KEY" --output-signature "${{
-                  steps.pack.outputs.FILE }}.sig" "${{ steps.pack.outputs.FILE }}"
+              run: |
+                  echo "$COSIGN_PRIVATE_KEY" > cosign.key
+                  cosign sign-blob --yes --key cosign.key \
+                      --output-signature "${{ steps.pack.outputs.FILE }}.sig" \
+                      "${{ steps.pack.outputs.FILE }}"
               env:
                   COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
                   COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
