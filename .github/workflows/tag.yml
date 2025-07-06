@@ -1,0 +1,34 @@
+name: Bump and Tag
+
+on:
+    workflow_dispatch:
+        inputs:
+            level:
+                description: 'Version bump type'
+                required: true
+                type: choice
+                default: patch
+                options:
+                    - patch
+                    - minor
+                    - major
+
+permissions:
+    contents: write
+
+jobs:
+    bump:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Configure Git
+              run: |
+                  git config user.name "${{ github.actor }}"
+                  git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+            - name: Bump package version
+              run: npm version ${{ github.event.inputs.level }} -m "v%s"
+
+            - name: Push changes and tag
+              run: git push origin HEAD --follow-tags
