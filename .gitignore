@@ -139,3 +139,6 @@ dist/
 docs/
 
 .env.test
+
+# Python virtual environments
+venv/
