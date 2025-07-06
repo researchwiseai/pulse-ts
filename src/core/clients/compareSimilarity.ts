@@ -1,12 +1,15 @@
-import { unflatten } from '../../matrix'
+import { unflatten, unflattenSelfMatrix } from '../../matrix'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
-import type { Optional } from 'utility-types'
 import type { Job } from '../job'
 import { requestFeature } from './requestFeature'
 import type { components } from '../../models'
 
 export type SimilarityResponse = components['schemas']['SimilarityResponse']
+type ReconstructedSimilarityResponse = Omit<SimilarityResponse, 'matrix'> & {
+    /** Reconstructed similarity matrix from flattened data. */
+    matrix: number[][]
+}
 
 /**
  * Input shape for self-comparison similarity where a single set is compared to itself.
@@ -64,7 +67,11 @@ export async function compareSimilarity<
     client: CoreClient,
     inputs: CompareSimilarityInputs,
     options: CompareSimilarityOptions<Fast, AwaitJobResult> = {},
-): Promise<AwaitJobResult extends false ? Job<SimilarityResponse> : SimilarityResponse> {
+): Promise<
+    AwaitJobResult extends false
+        ? Job<ReconstructedSimilarityResponse>
+        : ReconstructedSimilarityResponse
+> {
     let body: CompareSimilarityRequest
     if ('set' in inputs) {
         body = { flatten: false, set: inputs.set }
@@ -73,17 +80,20 @@ export async function compareSimilarity<
     }
     return requestFeature<
         CompareSimilarityRequest,
-        Optional<SimilarityResponse, 'matrix'>,
+        SimilarityResponse,
         Fast,
         AwaitJobResult,
-        SimilarityResponse
-    >(client, '/similarity', body, options, (resp): SimilarityResponse => {
-        if (!resp.matrix && resp.scenario === 'cross') {
+        ReconstructedSimilarityResponse
+    >(client, '/similarity', body, options, (resp): ReconstructedSimilarityResponse => {
+        if (!resp.matrix) {
             return {
                 ...resp,
-                matrix: unflatten(resp.flattened, [resp.n]) as number[][],
+                matrix:
+                    resp.scenario === 'self'
+                        ? unflattenSelfMatrix(resp.flattened, resp.n)
+                        : (unflatten(resp.flattened, [resp.n]) as number[][]),
             }
         }
-        return resp as SimilarityResponse
+        return resp as ReconstructedSimilarityResponse
     })
 }

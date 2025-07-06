@@ -58,6 +58,7 @@ describe('analyzeSentiment', () => {
             ok: false,
             status: 400,
             json: vi.fn().mockResolvedValue(errorJson),
+            text: vi.fn().mockResolvedValue(JSON.stringify(errorJson)),
         }
         fetchWithRetryMock.mockResolvedValue(fakeResponse as unknown as Response)
         mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))

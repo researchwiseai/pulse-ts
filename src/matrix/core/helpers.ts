@@ -92,6 +92,36 @@ export function unflatten<T>(flat: readonly T[], dims: readonly number[]): Neste
 }
 
 /**
+ * Given a flattened upper-triangle (excluding diagonal) similarity array
+ * of length n*(n-1)/2, reconstruct the full symmetric matrix
+ * with 1s on the diagonal.
+ *
+ * @param flattened - array of length n*(n-1)/2 holding sim(i,j) for i<j
+ * @param n - dimension of the square matrix
+ * @returns n×n symmetric matrix with 1s on diagonal
+ */
+export function unflattenSelfMatrix(flattened: number[], n: number): number[][] {
+    if (flattened.length !== (n * (n - 1)) / 2) {
+        throw new Error(`Expected flattened length ${(n * (n - 1)) / 2}, got ${flattened.length}`)
+    }
+
+    // initialize n×n matrix of zeros
+    const M: number[][] = Array.from({ length: n }, () => Array(n).fill(0))
+    let idx = 0
+
+    for (let i = 0; i < n; i++) {
+        M[i][i] = 1 // self-similarity
+        for (let j = i + 1; j < n; j++) {
+            const sim = flattened[idx++]
+            M[i][j] = sim // upper triangle
+            M[j][i] = sim // mirror into lower triangle
+        }
+    }
+
+    return M
+}
+
+/**
  * Computes the shape (dimensions) of a nested array.
  *
  * Iteratively traverses the array levels, recording the length at each depth

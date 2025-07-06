@@ -51,7 +51,7 @@ describe('createEmbeddings', () => {
         ;(fetchWithRetry as Mock).mockResolvedValueOnce({
             ok: false,
             status: 400,
-            json: async () => ({ error: 'bad' }),
+            text: async () => JSON.stringify({ error: 'bad' }),
         })
         await expect(createEmbeddings(client, ['input'])).rejects.toBeInstanceOf(PulseAPIError)
     })

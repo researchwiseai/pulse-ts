@@ -1,3 +1,5 @@
+import type { CoreClient } from '../core/clients/CoreClient'
+
 /**
  * Options for the OAuth2 Authorization Code PKCE authentication flow.
  *
@@ -48,7 +50,7 @@ export interface Auth {
      * @param req - Original Request object.
      * @returns An AsyncGenerator yielding an authenticated Request.
      */
-    authFlow(req: Request): AsyncGenerator<Request, Request>
+    authFlow(req: Request, client: CoreClient | boolean): AsyncGenerator<Request, Request>
     /** Perform token refresh and update internal token state. */
     _refreshToken(): Promise<void>
 
