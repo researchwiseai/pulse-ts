@@ -9,9 +9,8 @@ export default defineConfig({
     minify: false,
     treeshake: true,
     outDir: 'dist',
-    swc: {
-        swcrc: true,
-    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    swc: { swcrc: true } as any,
     tsconfig: 'tsconfig.build.json',
     define: {
         'import.meta.vitest': 'undefined',

@@ -75,11 +75,6 @@ export class ClientCredentialsAuth implements Auth {
     }
 
     async *authFlow(req: Request): AsyncGenerator<Request> {
-        const url = new URL(req.url)
-        if (this.audience && url.host !== new URL(this.audience).host) {
-            yield req
-            return
-        }
         if (!this._accessToken || !this._expiresAt || Date.now() / 1000 >= this._expiresAt) {
             await this._refreshToken()
         }
