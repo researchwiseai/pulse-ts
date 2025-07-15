@@ -7,6 +7,7 @@ export interface JobInfo<T, After = T> {
     readonly jobId: string
     readonly baseUrl: string
     readonly auth: Auth.Auth
+    readonly debug?: boolean
     readonly pollIntervalMs?: number
     after?: (result: T) => Promise<After> | After
 }
@@ -22,6 +23,7 @@ export class Job<T, After = T> {
     private readonly baseUrl: string
     /** Authenticator to sign requests. */
     private readonly auth: Auth.Auth
+    private readonly debug: boolean
     /** Poll interval in milliseconds (default: 1000ms). */
     private readonly pollIntervalMs: number
     /** Function to process the result after job completion. */
@@ -41,12 +43,14 @@ export class Job<T, After = T> {
         after = resp => resp as unknown as After,
         auth,
         baseUrl,
+        debug = false,
         jobId,
         pollIntervalMs = 1000,
     }: JobInfo<T, After>) {
         this.jobId = jobId
         this.baseUrl = baseUrl.replace(/\/{1,100}$/, '') // Ensure no trailing slash
         this.auth = auth
+        this.debug = debug
         this.pollIntervalMs = pollIntervalMs
         this.after = after
     }
@@ -61,7 +65,10 @@ export class Job<T, After = T> {
     async result(): Promise<After> {
         while (true) {
             const url = `${this.baseUrl}/jobs?jobId=${encodeURIComponent(this.jobId)}`
-            const req0 = new Request(url, { method: 'GET' })
+            const req0 = new Request(url, {
+                method: 'GET',
+                headers: this.debug ? { 'x-pulse-debug': 'true' } : undefined,
+            })
             const { value: authedReq } = await this.auth.authFlow(req0).next()
             const res = await fetchWithRetry(authedReq, {} as FetchOptions)
             const info = await res.json()
@@ -70,7 +77,10 @@ export class Job<T, After = T> {
             }
             if (info.status === 'completed') {
                 const resultUrl: string = info.resultUrl
-                const resultReq = new Request(resultUrl, { method: 'GET' })
+                const resultReq = new Request(resultUrl, {
+                    method: 'GET',
+                    headers: this.debug ? { 'x-pulse-debug': 'true' } : undefined,
+                })
                 const resultRes = await fetchWithRetry(resultReq, {} as FetchOptions)
                 if (!resultRes.ok) {
                     const errorBody = await resultRes.text()
