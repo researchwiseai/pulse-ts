@@ -99,7 +99,7 @@ describe('AuthorizationCodePKCEAuth', () => {
         expect(params.get('code_verifier')).toBe('ver')
     })
 
-    it('authFlow sets header only for matching audience host', async () => {
+    it('authFlow always sets Authorization header', async () => {
         const fakeResp = {
             ok: true,
             status: 200,
@@ -119,6 +119,6 @@ describe('AuthorizationCodePKCEAuth', () => {
         expect(out1.headers.get('Authorization')).toBe('Bearer tok')
         const req2 = new Request('http://other/x')
         const { value: out2 } = await auth.authFlow(req2).next()
-        expect(out2).toBe(req2)
+        expect(out2.headers.get('Authorization')).toBe('Bearer tok')
     })
 })

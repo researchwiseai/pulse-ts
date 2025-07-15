@@ -187,11 +187,6 @@ ${authUrl}`)
     }
 
     async *authFlow(req: Request): AsyncGenerator<Request> {
-        const url = new URL(req.url)
-        if (this._audience && url.host !== new URL(this._audience).host) {
-            yield req
-            return
-        }
         if (!this._accessToken || !this._expiresAt || Date.now() / 1000 >= this._expiresAt) {
             await this._refreshToken()
         }
