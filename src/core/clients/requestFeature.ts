@@ -42,7 +42,10 @@ export async function requestFeature<
 
     const init: FetchOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            ...(client.debug ? { 'x-pulse-debug': 'true' } : {}),
+        },
         body: JSON.stringify(payload),
     }
 
@@ -61,6 +64,7 @@ export async function requestFeature<
             jobId,
             baseUrl: client.baseUrl,
             auth: client.auth,
+            debug: client.debug,
             after,
         })
         // If awaitJobResult is explicitly false

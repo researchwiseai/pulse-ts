@@ -19,7 +19,11 @@ describe('Job.result', () => {
         const info = { status: 'completed', resultUrl: 'http://result' }
         const infoRes = { ok: true, status: 200, json: async () => info } as unknown as Response
         const resultBody = { foo: 'bar' }
-        const resultRes = { ok: true, status: 200, json: async () => resultBody } as unknown as Response
+        const resultRes = {
+            ok: true,
+            status: 200,
+            json: async () => resultBody,
+        } as unknown as Response
         const spy = vi.spyOn(http, 'fetchWithRetry')
         spy.mockResolvedValueOnce(infoRes).mockResolvedValueOnce(resultRes)
         const job = new Job({
@@ -34,7 +38,11 @@ describe('Job.result', () => {
     })
 
     it('throws when job fails', async () => {
-        const infoRes = { ok: true, status: 200, json: async () => ({ status: 'failed' }) } as unknown as Response
+        const infoRes = {
+            ok: true,
+            status: 200,
+            json: async () => ({ status: 'failed' }),
+        } as unknown as Response
         vi.spyOn(http, 'fetchWithRetry').mockResolvedValueOnce(infoRes)
         const job = new Job({
             jobId: 'failId',
@@ -43,5 +51,29 @@ describe('Job.result', () => {
             pollIntervalMs: 0,
         })
         await expect(job.result()).rejects.toThrow('Job failId failed')
+    })
+
+    it('sends x-pulse-debug header when debug enabled', async () => {
+        const info = { status: 'completed', resultUrl: 'http://result' }
+        const infoRes = { ok: true, status: 200, json: async () => info } as Response
+        const resultBody = { foo: 'bar' }
+        const resultRes = {
+            ok: true,
+            status: 200,
+            json: async () => resultBody,
+        } as Response
+        const spy = vi.spyOn(http, 'fetchWithRetry')
+        spy.mockResolvedValueOnce(infoRes).mockResolvedValueOnce(resultRes)
+        const job = new Job({
+            jobId: 'debug',
+            baseUrl: 'http://base',
+            auth: dummyAuth,
+            pollIntervalMs: 0,
+            debug: true,
+        })
+        await job.result()
+        expect(spy).toHaveBeenCalled()
+        const req0 = spy.mock.calls[0][0] as Request
+        expect(req0.headers.get('x-pulse-debug')).toBe('true')
     })
 })

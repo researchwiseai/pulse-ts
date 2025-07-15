@@ -70,6 +70,18 @@ describe('createEmbeddings', () => {
         expect(res).toEqual(responseBody)
     })
 
+    it('sends x-pulse-debug header when client.debug is true', async () => {
+        ;(fetchWithRetry as Mock).mockResolvedValueOnce({
+            ok: true,
+            status: 200,
+            json: async () => ({ requestId: 'r', embeddings: [] }),
+        })
+        const clientWithDebug = { ...client, debug: true } as unknown as CoreClient
+        await createEmbeddings(clientWithDebug, ['a'])
+        const req = (fetchWithRetry as Mock).mock.calls[0][0] as Request
+        expect(req.headers.get('x-pulse-debug')).toBe('true')
+    })
+
     it('returns awaited job result on 202 when awaitJobResult is not false', async () => {
         const jobId = 'job-123'
         ;(fetchWithRetry as Mock)

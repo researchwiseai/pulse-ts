@@ -22,6 +22,8 @@ import { generateThemes, type GenerateThemeOptions } from './generateThemes'
 export class CoreClient {
     private readonly _baseUrl: string
     private readonly _auth: Auth.Auth
+    /** When true, include the `x-pulse-debug` header on requests. */
+    private readonly _debug: boolean
 
     /**
      * Construct a new CoreClient.
@@ -34,6 +36,7 @@ export class CoreClient {
             process.env.PULSE_BASE_URL ??
             'https://core.researchwiseai.com/pulse/v1'
         this._auth = options.auth ?? new Auth.AutoAuth()
+        this._debug = options.debug ?? false
     }
 
     /** The normalized base URL used for API requests. */
@@ -44,6 +47,11 @@ export class CoreClient {
     /** The authenticator instance used to sign requests. */
     get auth(): Auth.Auth {
         return this._auth
+    }
+
+    /** Whether debug mode is enabled. */
+    get debug(): boolean {
+        return this._debug
     }
 
     /**

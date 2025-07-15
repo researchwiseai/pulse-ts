@@ -58,6 +58,8 @@ const auth = new ClientCredentialsAuth(
 const client = new CoreClient({
     baseUrl: 'https://api.rwai.com/pulse',
     auth,
+    // Include this flag to enable request debugging
+    debug: true,
 })
 ```
 
