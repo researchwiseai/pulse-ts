@@ -1,7 +1,6 @@
 {
     "name": "@rwai/pulse",
-    "version": "0.1.4",
-    "module": "dist/index.mjs",
+    "version": "0.1.5",
     "type": "module",
     "files": [
         "dist/**",
@@ -46,8 +45,16 @@
     "peerDependencies": {
         "typescript": "^5"
     },
-    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "main": "dist/index.cjs",
     "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        },
+        "./package.json": "./package.json"
+    },
     "dependencies": {
         "zod": "^3.25.64"
     }
