@@ -9,6 +9,9 @@ export default defineConfig({
     minify: false,
     treeshake: true,
     outDir: 'dist',
+    swc: {
+        swcrc: true,
+    },
     tsconfig: 'tsconfig.build.json',
     define: {
         'import.meta.vitest': 'undefined',

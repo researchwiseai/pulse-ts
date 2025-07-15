@@ -1,6 +1,6 @@
 {
     "name": "@rwai/pulse",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "type": "module",
     "files": [
         "dist/**",
@@ -27,6 +27,7 @@
         "@pollyjs/adapter-node-http": "latest",
         "@pollyjs/core": "latest",
         "@pollyjs/persister-fs": "latest",
+        "@swc/core": "^1.12.14",
         "@types/bun": "latest",
         "@vitest/coverage-v8": "^3.2.3",
         "eslint": "^9.28.0",
