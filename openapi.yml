@@ -390,7 +390,7 @@ paths:
             description: |
                 Retrieves the status of a previously submitted long-running job.
                 Returns `pending`, `completed`, or `failed`. When `completed`, includes
-                a `resultUrl` to download results.
+                either `result_url` (snake_case) or `resultUrl` (camelCase) to download results.
             tags: [jobs]
             parameters:
                 - in: query
@@ -775,6 +775,8 @@ components:
                 status:
                     type: string
                     enum: [pending, completed, failed]
+                result_url:
+                    type: string
                 resultUrl:
                     type: string
             required: [status]

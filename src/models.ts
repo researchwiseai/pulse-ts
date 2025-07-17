@@ -148,7 +148,7 @@ export interface paths {
          * Retrieve status of an asynchronous job.
          * @description Retrieves the status of a previously submitted long-running job.
          *     Returns `pending`, `completed`, or `failed`. When `completed`, includes
-         *     a `resultUrl` to download results.
+         *     either `result_url` (snake_case) or `resultUrl` (camelCase) to download results.
          *
          */
         get: operations["getJobStatus"];
@@ -261,6 +261,7 @@ export interface components {
             jobId?: string;
             /** @enum {string} */
             status: "pending" | "completed" | "failed";
+            result_url?: string;
             resultUrl?: string;
         };
     };

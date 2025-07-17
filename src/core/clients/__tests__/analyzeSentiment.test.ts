@@ -80,6 +80,21 @@ describe('analyzeSentiment', () => {
         expect(result.jobId).toBe(jobId)
     })
 
+    it('accepts snake_case job_id in 202 response', async () => {
+        const jobId = 'job-snake'
+        const fakeResponse = {
+            ok: true,
+            status: 202,
+            json: vi.fn().mockResolvedValue({ job_id: jobId }),
+        }
+        fetchWithRetryMock.mockResolvedValue(fakeResponse as unknown as Response)
+        mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))
+
+        const result = await analyzeSentiment(client, inputs, { awaitJobResult: false })
+        expect(result).toBeInstanceOf(Job)
+        expect(result.jobId).toBe(jobId)
+    })
+
     it('awaits job.result() if status is 202 and awaitJobResult is true', async () => {
         const jobId = 'job-456'
         const fakeResponse = {

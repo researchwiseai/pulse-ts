@@ -130,25 +130,30 @@ ${authUrl}`)
             let server: import('http').Server
             try {
                 const httpLib = (await import('http')) as typeof import('http')
-                server = httpLib.createServer((req: import('http').IncomingMessage, res: import('http').ServerResponse) => {
-                    if (!req.url) return
-                    const reqUrl = new URL(req.url, `${redirectUrl.protocol}//${redirectUrl.host}`)
-                    if (reqUrl.pathname !== redirectUrl.pathname) return
-                    const returnedState = reqUrl.searchParams.get('state')
-                    const code = reqUrl.searchParams.get('code')
-                    if (returnedState !== state || !code) {
-                        res.writeHead(400, { 'Content-Type': 'text/plain' })
-                        res.end('Invalid authentication response')
-                        reject(new Error('Invalid state or missing code in callback'))
+                server = httpLib.createServer(
+                    (req: import('http').IncomingMessage, res: import('http').ServerResponse) => {
+                        if (!req.url) return
+                        const reqUrl = new URL(
+                            req.url,
+                            `${redirectUrl.protocol}//${redirectUrl.host}`,
+                        )
+                        if (reqUrl.pathname !== redirectUrl.pathname) return
+                        const returnedState = reqUrl.searchParams.get('state')
+                        const code = reqUrl.searchParams.get('code')
+                        if (returnedState !== state || !code) {
+                            res.writeHead(400, { 'Content-Type': 'text/plain' })
+                            res.end('Invalid authentication response')
+                            reject(new Error('Invalid state or missing code in callback'))
+                            server.close()
+                            return
+                        }
+                        res.writeHead(200, { 'Content-Type': 'text/plain' })
+                        res.end('Authentication complete; you may now close this window.')
+                        this._code = code
+                        resolve()
                         server.close()
-                        return
-                    }
-                    res.writeHead(200, { 'Content-Type': 'text/plain' })
-                    res.end('Authentication complete; you may now close this window.')
-                    this._code = code
-                    resolve()
-                    server.close()
-                })
+                    },
+                )
                 server.listen(port, host)
             } catch (err) {
                 reject(err)

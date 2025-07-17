@@ -132,6 +132,12 @@ your shell) providing:
 
 See `.env.example` for a template.
 
+## JSON field name compatibility
+
+The Pulse API is transitioning its JSON bodies to use `snake_case` field names (for example,
+`job_id` instead of `jobId`). Our client includes a helper that normalizes both forms, so you can
+continue using the `jobId` property in your code without changes.
+
 ## Generating models
 
 Generate TypeScript models from the OpenAPI schema:

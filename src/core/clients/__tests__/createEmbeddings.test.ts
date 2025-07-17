@@ -128,4 +128,16 @@ describe('createEmbeddings', () => {
             auth: client.auth,
         })
     })
+
+    it('accepts snake_case job_id in 202 response', async () => {
+        const jobId = 'job-snake'
+        ;(fetchWithRetry as Mock).mockResolvedValueOnce({
+            ok: true,
+            status: 202,
+            json: async () => ({ job_id: jobId }),
+        })
+        const res = await createEmbeddings(client, ['x'], { awaitJobResult: false, fast: false })
+        expect(res).toHaveProperty('jobId', jobId)
+        expect(Job).toHaveBeenCalledWith(expect.objectContaining({ jobId }))
+    })
 })

@@ -2,6 +2,7 @@ import { PulseAPIError } from '../../errors'
 import { fetchWithRetry, type FetchOptions } from '../../http'
 import { Job } from '../job'
 import { debugLog } from '../log'
+import { normalizeJobId } from './utils'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 
@@ -63,7 +64,9 @@ export async function requestFeature<
     }
 
     if (response.status === 202) {
-        const { jobId } = json as { jobId: string }
+        // accept either snake_case or camelCase
+        const rawJson = json as { job_id: string } | { jobId: string }
+        const jobId = normalizeJobId(rawJson)
         debugLog(client.debug, `Received job ${jobId}`)
         const job = new Job<TRaw, TAfter>({
             jobId,

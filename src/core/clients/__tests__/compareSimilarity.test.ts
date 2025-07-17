@@ -123,6 +123,18 @@ describe('compareSimilarity', () => {
         expect(result.jobId).toBe(jobId)
     })
 
+    it('accepts snake_case job_id in 202 response', async () => {
+        const inputs: CompareSimilarityInputs = { set: ['a'] }
+        const jobId = 'job-snake'
+        fetchWithRetryMock.mockResolvedValue(mockResponse({ job_id: jobId }, true, 202))
+        const result = await compareSimilarity(client, inputs, {
+            awaitJobResult: false,
+            fast: false,
+        })
+        expect(result).toBeInstanceOf(Job)
+        expect(result.jobId).toBe(jobId)
+    })
+
     it('awaits Job result if response is 202 and awaitJobResult is true', async () => {
         const inputs: CompareSimilarityInputs = { set: ['a'] }
         const jobId = 'job-456'
@@ -160,7 +172,9 @@ describe('compareSimilarity', () => {
         const jobResp = { scenario: 'cross', flattened: [0.2], n: 1 }
         vi.spyOn(Job.prototype, 'result').mockImplementation(function (this: unknown) {
             // Simulate after hook
-            return Promise.resolve((this as { after(r: typeof jobResp): SimilarityResponse }).after(jobResp))
+            return Promise.resolve(
+                (this as { after(r: typeof jobResp): SimilarityResponse }).after(jobResp),
+            )
         })
 
         const result = await compareSimilarity(client, inputs, {

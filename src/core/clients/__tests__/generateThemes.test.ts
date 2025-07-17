@@ -102,6 +102,20 @@ describe('generateThemes', () => {
         })
     })
 
+    it('accepts snake_case job_id in 202 response', async () => {
+        const fakeJobInstance = {}
+        ;(fetchWithRetry as Mock).mockResolvedValue({
+            ok: true,
+            status: 202,
+            json: vi.fn().mockResolvedValue({ job_id: 'job-snake' }),
+        })
+        ;(Job as unknown as Mock).mockImplementation(() => fakeJobInstance)
+
+        const result = await generateThemes(baseClient, ['input'], { awaitJobResult: false })
+        expect(result).toBe(fakeJobInstance)
+        expect(Job).toHaveBeenCalledWith(expect.objectContaining({ jobId: 'job-snake' }))
+    })
+
     it('awaits job.result() when awaitJobResult is true', async () => {
         const fakeResult = { themes: ['x'] }
         const fakeJob = { result: vi.fn().mockResolvedValue(fakeResult) }

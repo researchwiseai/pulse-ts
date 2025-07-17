@@ -6,7 +6,9 @@ import { CoreClient } from '../src/core/clients/CoreClient'
 describe('DSL id uniqueness and naming', () => {
     it('assigns unique ids for duplicate processes', () => {
         const wf = new Workflow().themeGeneration().themeGeneration()
-        const ids = (wf as unknown as { processes: Array<{ id: string }> }).processes.map((p: { id: string }) => p.id)
+        const ids = (wf as unknown as { processes: Array<{ id: string }> }).processes.map(
+            (p: { id: string }) => p.id,
+        )
         expect(ids).toEqual(['themeGeneration', 'themeGeneration_2'])
     })
     it('throws when using duplicate custom name', () => {

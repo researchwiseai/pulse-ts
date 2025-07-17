@@ -48,8 +48,12 @@ describe('NDView', () => {
         })
         it('throws on coords length mismatch', () => {
             const v = new NDView([1, 2, 3], [3])
-            expect(() => (v as unknown as { get: (...args: unknown[]) => unknown }).get()).toThrow(/coords length mismatch/)
-            expect(() => (v as unknown as { get: (...args: unknown[]) => unknown }).get(0, 1)).toThrow(/coords length mismatch/)
+            expect(() => (v as unknown as { get: (...args: unknown[]) => unknown }).get()).toThrow(
+                /coords length mismatch/,
+            )
+            expect(() =>
+                (v as unknown as { get: (...args: unknown[]) => unknown }).get(0, 1),
+            ).toThrow(/coords length mismatch/)
         })
         it('retrieves sub-array with wildcard in second dim', () => {
             const raw = new Float32Array([1, 2, 3, 4, 5, 6])

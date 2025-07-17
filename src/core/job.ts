@@ -81,7 +81,8 @@ export class Job<T, After = T> {
             }
             if (info.status === 'completed') {
                 debugLog(this.debug, `[Job ${this.jobId}] completed; fetching result`)
-                const resultUrl: string = info.resultUrl
+                // accept either snake_case or camelCase for download URL
+                const resultUrl: string = info.result_url ?? info.resultUrl!
                 const resultReq = new Request(resultUrl, {
                     method: 'GET',
                     headers: this.debug ? { 'x-pulse-debug': 'true' } : undefined,

@@ -37,6 +37,28 @@ describe('Job.result', () => {
         expect(spy).toHaveBeenCalledTimes(2)
     })
 
+    it('accepts snake_case result_url when job completes immediately', async () => {
+        const info = { status: 'completed', result_url: 'http://snake-result' }
+        const infoRes = { ok: true, status: 200, json: async () => info } as unknown as Response
+        const resultBody = { foo: 'baz' }
+        const resultRes = {
+            ok: true,
+            status: 200,
+            json: async () => resultBody,
+        } as unknown as Response
+        const spy = vi.spyOn(http, 'fetchWithRetry')
+        spy.mockResolvedValueOnce(infoRes).mockResolvedValueOnce(resultRes)
+        const job = new Job({
+            jobId: 'id',
+            baseUrl: 'http://base',
+            auth: dummyAuth,
+            pollIntervalMs: 0,
+        })
+        const result = await job.result()
+        expect(result).toEqual(resultBody)
+        expect(spy).toHaveBeenCalledTimes(2)
+    })
+
     it('throws when job fails', async () => {
         const infoRes = {
             ok: true,
