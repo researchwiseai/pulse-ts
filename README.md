@@ -35,6 +35,9 @@ import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse
 
 const sentiments = await sentimentAnalysis(['text1', 'text2'])
 const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'])
+
+// Themes are optional in the themeAllocation function
+const allocationWithoutThemes = await themeAllocation(['text1', 'text2'])
 const clusters = await clusterAnalysis(['text1', 'text2'])
 ```
 
