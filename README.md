@@ -1,6 +1,6 @@
 # pulse-ts
 
-The TypeScript client for using the RWAI Pulse API
+TypeScript client for the RWAI Pulse API.
 
 ## Requirements
 
@@ -25,25 +25,20 @@ npm install @rwai/pulse
 yarn add @rwai/pulse
 ```
 
-## Getting Started
+## Quick Start
 
-We have organized into several distinct units to make it both easy to get up and running quickly and
-to provide a solid foundation for building more complex applications.
-
-### Starters
-
-For a quick introduction to using the starter helpers, see the
-[Starter Helpers guide](docs/starters.md).
+Pulse provides helpers and a workflow DSL to make analysis easy. For an overview of the helper
+functions see the [Starter Helpers guide](docs/starters.md).
 
 ```ts
 import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse'
+
 const sentiments = await sentimentAnalysis(['text1', 'text2'])
 const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'])
-const allocationWithAutoThemes = await themeAllocation(['text1', 'text2'])
-const clusterCreator = await clusterAnalysis(['text1', 'text2'])
+const clusters = await clusterAnalysis(['text1', 'text2'])
 ```
 
-## Authentication
+### Authentication
 
 Configure OAuth2 credentials and create a client:
 
@@ -58,14 +53,14 @@ const auth = new ClientCredentialsAuth(
 const client = new CoreClient({
     baseUrl: 'https://api.rwai.com/pulse',
     auth,
-    // Include this flag to enable request debugging
+    // Enable request debugging if needed
     debug: true,
 })
 ```
 
-## Workflow DSL
+### Workflow DSL
 
-Use the `Workflow` class to compose processing steps:
+Compose analysis steps using `Workflow`:
 
 ```ts
 import { Workflow } from '@rwai/pulse'
@@ -80,49 +75,48 @@ const results = await wf.run({ client })
 console.log(results.sentiment.summary())
 ```
 
-## Starter Helpers
+### JSON field name compatibility
 
-Convenience helpers cover common tasks:
+The API is transitioning to `snake_case` JSON fields (e.g., `job_id`). The client normalizes both
+formats so you can continue using camelCase names in your code.
 
-```ts
-import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse'
+## Security
 
-const sentiments = await sentimentAnalysis(['text1', 'text2'], client)
-const allocation = await themeAllocation(['text1', 'text2'], client, ['theme1', 'theme2'])
-const clusters = await clusterAnalysis(['text1', 'text2'], client)
-```
+For information on how to report security vulnerabilities see [SECURITY.md](./SECURITY.md).
 
-## Generating API docs
+## Development
 
-Generate the Typedoc API reference:
+The remainder of this document is aimed at contributors.
+
+### Generating API docs
+
+Generate the Typedoc reference:
 
 ```bash
 bun run docs
 ```
 
-The docs will be output to `docs/api`.
+The documentation will be written to `docs/api`.
 
-## Building
+### Building
 
-To create the distributable files run:
+Produce the distributable files:
 
 ```bash
 bun run build
 ```
 
-This generates `dist/index.js`, `dist/index.mjs` and the type declarations in `dist/index.d.ts`.
-IDEs will automatically pick up these types for improved editor support.
+This creates `dist/index.js`, `dist/index.mjs` and type declarations in `dist/index.d.ts`.
 
-## Testing
+### Testing
 
-Run the unit tests with Bun:
+Run unit tests:
 
 ```bash
 bun run test
 ```
 
-Integration tests require several environment variables. Create a `.env` file (or export them in
-your shell) providing:
+Integration tests rely on the following environment variables:
 
 - `PULSE_CLIENT_ID`
 - `PULSE_CLIENT_SECRET`
@@ -132,26 +126,17 @@ your shell) providing:
 
 See `.env.example` for a template.
 
-## JSON field name compatibility
+### Generating models
 
-The Pulse API is transitioning its JSON bodies to use `snake_case` field names (for example,
-`job_id` instead of `jobId`). Our client includes a helper that normalizes both forms, so you can
-continue using the `jobId` property in your code without changes.
-
-## Generating models
-
-Generate TypeScript models from the OpenAPI schema:
+Update `src/models.ts` from the OpenAPI schema:
 
 ```bash
 bun run generate
 ```
 
-This will update `src/models.ts` with the latest types.
+### Releasing
 
-## Releasing
-
-Create and push a signed tag to trigger the GitHub release workflow which builds the package,
-generates an SBOM, signs the tarball and publishes the package to npm.
+Tag the repository to trigger the release workflow:
 
 ```bash
 VERSION=0.1.0
@@ -159,17 +144,12 @@ git tag -s "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 ```
 
-Ensure an `NPM_TOKEN` secret is configured. The release workflow exposes this as `NPM_CONFIG_TOKEN`
-so `bun publish` can authenticate with the npm registry. Also set the `COSIGN_PRIVATE_KEY` secret to
-the contents of your cosign private key. The workflow writes this secret to a temporary file before
-signing the tarball.
+Ensure `NPM_TOKEN` and `COSIGN_PRIVATE_KEY` secrets are configured so the workflow can publish the
+package and sign the tarball.
 
-## Downloading Release Artifacts
+### Downloading Release Artifacts
 
-Pre-built bundles are attached to each GitHub release along with a detached signature and SBOM. The
-`sbom.xml` file lists all dependencies used to produce the package.
-
-Download and verify the tarball for a specific tag:
+Pre-built bundles, signatures and SBOM files are attached to each GitHub release.
 
 ```bash
 VERSION=<tag>
@@ -180,10 +160,4 @@ cosign verify-blob --key cosign.pub \
     pulse-ts-$VERSION.tgz
 ```
 
-If verification succeeds you can unpack the archive and inspect `sbom.xml` for its dependency
-metadata.
-
-## Security
-
-For information on how to report security vulnerabilities, see [SECURITY.md](./SECURITY.md). We aim
-to acknowledge reports within 2 business days.
+If verification succeeds, unpack the archive and inspect `sbom.xml` for dependency metadata.
