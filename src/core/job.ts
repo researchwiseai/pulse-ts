@@ -1,6 +1,7 @@
 import { fetchWithRetry, type FetchOptions } from '../http'
 import { PulseAPIError } from '../errors'
 import type { Auth } from '../auth'
+import { debugLog } from './log'
 
 /** @internal */
 export interface JobInfo<T, After = T> {
@@ -63,8 +64,10 @@ export class Job<T, After = T> {
      * @throws {Error} If fetching the job result fails or the job status is 'failed'.
      */
     async result(): Promise<After> {
+        debugLog(this.debug, `[Job ${this.jobId}] starting result polling`)
         while (true) {
             const url = `${this.baseUrl}/jobs?jobId=${encodeURIComponent(this.jobId)}`
+            debugLog(this.debug, `[Job ${this.jobId}] polling status ${url}`)
             const req0 = new Request(url, {
                 method: 'GET',
                 headers: this.debug ? { 'x-pulse-debug': 'true' } : undefined,
@@ -72,10 +75,12 @@ export class Job<T, After = T> {
             const { value: authedReq } = await this.auth.authFlow(req0).next()
             const res = await fetchWithRetry(authedReq, {} as FetchOptions)
             const info = await res.json()
+            debugLog(this.debug, `[Job ${this.jobId}] status`, info)
             if (!res.ok) {
                 throw new PulseAPIError(res, info)
             }
             if (info.status === 'completed') {
+                debugLog(this.debug, `[Job ${this.jobId}] completed; fetching result`)
                 const resultUrl: string = info.resultUrl
                 const resultReq = new Request(resultUrl, {
                     method: 'GET',
@@ -88,11 +93,18 @@ export class Job<T, After = T> {
                         `Error fetching job result from ${resultUrl}: ${resultRes.status} ${errorBody}`,
                     )
                 }
-                return await this.after(await resultRes.json())
+                const finalRes = await resultRes.json()
+                debugLog(this.debug, `[Job ${this.jobId}] result fetched`, finalRes)
+                return await this.after(finalRes)
             }
             if (info.status === 'failed') {
+                debugLog(this.debug, `[Job ${this.jobId}] failed`)
                 throw new Error(`Job ${this.jobId} failed`)
             }
+            debugLog(
+                this.debug,
+                `[Job ${this.jobId}] pending; waiting ${this.pollIntervalMs}ms before retry`,
+            )
             await new Promise(resolve => setTimeout(resolve, this.pollIntervalMs))
         }
     }

@@ -1,6 +1,7 @@
 import { PulseAPIError } from '../../errors'
 import { fetchWithRetry, type FetchOptions } from '../../http'
 import { Job } from '../job'
+import { debugLog } from '../log'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 
@@ -39,6 +40,7 @@ export async function requestFeature<
     const { awaitJobResult, fast } = options
     const url = `${client.baseUrl}${endpoint}`
     const payload = { ...body, fast }
+    debugLog(client.debug, `Requesting ${url}`, payload)
 
     const init: FetchOptions = {
         method: 'POST',
@@ -52,7 +54,9 @@ export async function requestFeature<
     const request = new Request(url, init)
     const { value: authedRequest } = await client.auth.authFlow(request).next()
     const response = await fetchWithRetry(authedRequest, init)
+    debugLog(client.debug, `Response ${response.status} for ${endpoint}`)
     const json = await response.json()
+    debugLog(client.debug, `Response body`, json)
 
     if (!response.ok) {
         throw new PulseAPIError(response, json)
@@ -60,6 +64,7 @@ export async function requestFeature<
 
     if (response.status === 202) {
         const { jobId } = json as { jobId: string }
+        debugLog(client.debug, `Received job ${jobId}`)
         const job = new Job<TRaw, TAfter>({
             jobId,
             baseUrl: client.baseUrl,
