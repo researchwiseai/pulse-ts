@@ -164,3 +164,7 @@ cosign verify-blob --key cosign.pub \
 ```
 
 If verification succeeds, unpack the archive and inspect `sbom.xml` for dependency metadata.
+
+## Security
+
+If you discover a security vulnerability, please report it to us. We will acknowledge receipt of your report within 2 business days and work to address the issue promptly.
