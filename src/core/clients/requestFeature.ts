@@ -54,6 +54,7 @@ export async function requestFeature<
 
     const request = new Request(url, init)
     const { value: authedRequest } = await client.auth.authFlow(request).next()
+
     const response = await fetchWithRetry(authedRequest, init)
     debugLog(client.debug, `Response ${response.status} for ${endpoint}`)
     const json = await response.json()

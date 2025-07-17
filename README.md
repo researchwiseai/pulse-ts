@@ -113,13 +113,15 @@ This creates `dist/index.js`, `dist/index.mjs` and type declarations in `dist/in
 
 ### Testing
 
-Run unit tests:
+Run the unit tests with Bun. If you have a `.env.test` file in your project root, it will be loaded
+automatically prior to running tests:
 
 ```bash
 bun run test
 ```
 
-Integration tests rely on the following environment variables:
+Integration tests require several environment variables. Create a `.env.test` or `.env` file (or
+export them in your shell) providing:
 
 - `PULSE_CLIENT_ID`
 - `PULSE_CLIENT_SECRET`
@@ -167,4 +169,5 @@ If verification succeeds, unpack the archive and inspect `sbom.xml` for dependen
 
 ## Security
 
-If you discover a security vulnerability, please report it to us. We will acknowledge receipt of your report within 2 business days and work to address the issue promptly.
+If you discover a security vulnerability, please report it to us. We will acknowledge receipt of
+your report within 2 business days and work to address the issue promptly.

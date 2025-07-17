@@ -353,7 +353,7 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
         expect(resp.matrix!.length).toBe(2)
         expect(resp.flattened.length).toBe(4)
     })
-    it('generateThemes returns data', async () => {
+    it('generateThemes returns data', { timeout: 10000 }, async () => {
         const resp = await client.generateThemes(
             ['apple', 'orange', 'banana', 'gold', 'silver', 'bronze'],
             {
