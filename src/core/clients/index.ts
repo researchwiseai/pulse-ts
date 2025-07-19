@@ -15,6 +15,7 @@ export type {
 export type { CreateEmbeddingsOptions } from './createEmbeddings'
 export type { ExtractElementsInputs, ExtractElementsOptions } from './extractElements'
 export type { GenerateThemeOptions } from './generateThemes'
+export type { GenerateSummaryOptions } from './generateSummary'
 export type { UniversalFeatureOptions } from './types'
 export { clusterTexts } from './clusterTexts'
 export type { ClusterTextsInputs, ClusterTextsOptions } from './clusterTexts'
