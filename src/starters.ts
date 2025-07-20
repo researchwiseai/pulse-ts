@@ -208,3 +208,27 @@ export async function clusterAnalysis(
     const res = await analyzer.run()
     return res.cluster
 }
+
+interface SummarizeOptions {
+    client?: CoreClient
+    length?: components['schemas']['SummariesRequest']['length']
+    preset?: components['schemas']['SummariesRequest']['preset']
+}
+
+/**
+ * Generate a summary for the given texts using the provided question.
+ */
+export async function summarize(
+    inputData: string[] | string,
+    question: string,
+    options: SummarizeOptions = {},
+): Promise<components['schemas']['SummariesResponse']> {
+    const texts = getStrings(inputData)
+    const fast = texts.length <= 200
+    const client = options.client ?? new CoreClient()
+    return client.generateSummary(texts, question, {
+        fast,
+        length: options.length,
+        preset: options.preset,
+    })
+}

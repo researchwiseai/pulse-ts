@@ -14,6 +14,7 @@ import {
 } from './extractElements'
 import { generateThemes, type GenerateThemeOptions } from './generateThemes'
 import { clusterTexts, type ClusterTextsInputs, type ClusterTextsOptions } from './clusterTexts'
+import { generateSummary, type GenerateSummaryOptions } from './generateSummary'
 
 /**
  * Core client for interacting with the Pulse API operations.
@@ -35,7 +36,7 @@ export class CoreClient {
         this._baseUrl =
             options?.baseUrl?.replace(/\/{1,100}$/g, '') ??
             process.env.PULSE_BASE_URL ??
-            'https://core.researchwiseai.com/pulse/v1'
+            'https://pulse.researchwiseai.com/v1'
         this._auth = options.auth ?? new Auth.AutoAuth()
         this._debug = options.debug ?? false
     }
@@ -133,6 +134,23 @@ export class CoreClient {
         AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: ExtractElementsInputs, opts: ExtractElementsOptions<Fast, AwaitJobResult> = {}) {
         return extractElements(this, inputs, opts)
+    }
+
+    /**
+     * Generate a summary for the provided texts and question.
+     *
+     * @typeParam Fast - Flag to enable synchronous processing.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param inputs - Array of text inputs to summarize.
+     * @param question - The question guiding the summary.
+     * @param opts - Options controlling summary generation.
+     * @returns SummariesResponse or Job handle, based on options.
+     */
+    async generateSummary<
+        Fast extends boolean | undefined = undefined,
+        AwaitJobResult extends boolean | undefined = undefined,
+    >(inputs: string[], question: string, opts: GenerateSummaryOptions<Fast, AwaitJobResult> = {}) {
+        return generateSummary(this, inputs, question, opts)
     }
 
     /**

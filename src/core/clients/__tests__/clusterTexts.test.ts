@@ -15,7 +15,10 @@ vi.mock('../../../http', () => ({
 vi.mock('../../job', async importOriginal => {
     return {
         ...(await importOriginal<typeof import('../../job')>()),
-        Job: vi.fn(function (this: Record<string, unknown>, options: { jobId: string; baseUrl: string; auth: unknown }) {
+        Job: vi.fn(function (
+            this: Record<string, unknown>,
+            options: { jobId: string; baseUrl: string; auth: unknown },
+        ) {
             this.jobId = options.jobId
             this.baseUrl = options.baseUrl
             this.auth = options.auth

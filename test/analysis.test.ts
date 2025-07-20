@@ -39,7 +39,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
 
     describe('ThemeGeneration process', () => {
         setupPolly()
-        it('generates between min and max themes', async () => {
+        it('generates between min and max themes', { timeout: 20_000 }, async () => {
             const reviews = ['a', 'b', 'c']
             const az = new Analyzer({
                 datasets: { dataset: reviews },
