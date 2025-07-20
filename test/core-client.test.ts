@@ -321,7 +321,7 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
 
     beforeAll(() => {
         client = new CoreClient({
-            baseUrl: process.env.PULSE_BASE_URL ?? 'https://dev.core.researchwiseai.com/pulse/v1',
+            baseUrl: process.env.PULSE_BASE_URL ?? 'https://staging.pulse.researchwiseai.com/v1',
             auth: new Auth.ClientCredentialsAuth({
                 clientId: process.env.PULSE_CLIENT_ID ?? '',
                 clientSecret: process.env.PULSE_CLIENT_SECRET ?? '',
