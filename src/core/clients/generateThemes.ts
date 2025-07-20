@@ -17,6 +17,8 @@ export interface GenerateThemeOptions<
     minThemes?: number
     maxThemes?: number
     context?: string
+    version?: string
+    prune?: number
 }
 
 /**
@@ -26,7 +28,7 @@ export interface GenerateThemeOptions<
  * @typeParam AwaitJobResult - If false and fast=false, return a Job handle.
  * @param client - CoreClient instance for API calls.
  * @param inputs - Array of input texts to analyze for themes.
- * @param options - Theme generation options (minThemes, maxThemes, fast, awaitJobResult).
+ * @param options - Theme generation options (minThemes, maxThemes, context, version, prune, fast, awaitJobResult).
  * @returns ThemesResponse or Job<ThemesResponse> based on options.
  */
 export async function generateThemes<
@@ -49,6 +51,8 @@ export async function generateThemes<
             context: options.context,
             maxThemes: options.maxThemes,
             minThemes: options.minThemes,
+            version: options.version,
+            prune: options.prune,
         },
         options,
     )
