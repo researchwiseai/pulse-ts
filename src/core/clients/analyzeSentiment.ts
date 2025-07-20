@@ -10,10 +10,12 @@ import type { components } from '../../models'
  * @property fast - If true, performs a quicker analysis with potentially reduced accuracy. Defaults to false.
  * @property awaitJobResult - If true, waits for the sentiment analysis job to complete before returning the result. Defaults to false.
  */
-export type AnalyzeSentimentOptions<
+export interface AnalyzeSentimentOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-> = UniversalFeatureOptions<Fast, AwaitJobResult>
+> extends UniversalFeatureOptions<Fast, AwaitJobResult> {
+    version?: string
+}
 /**
  * Analyzes the sentiment of the provided inputs using the CoreClient.
  *
@@ -39,5 +41,13 @@ export async function analyzeSentiment<
         ? Job<components['schemas']['SentimentResponse']>
         : components['schemas']['SentimentResponse']
 > {
-    return requestFeature(client, '/sentiment', { inputs }, options)
+    return requestFeature(
+        client,
+        '/sentiment',
+        {
+            inputs,
+            version: options.version,
+        },
+        options,
+    )
 }
