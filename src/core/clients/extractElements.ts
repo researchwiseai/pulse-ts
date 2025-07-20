@@ -2,6 +2,7 @@ import { PulseAPIError } from '../../errors'
 import { fetchWithRetry, type FetchOptions } from '../../http'
 import type { components } from '../../models'
 import { Job } from '../job'
+import { normalizeJobId } from './utils'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
 
@@ -63,7 +64,9 @@ export async function extractElements<
         throw new PulseAPIError(response, json)
     }
     if (response.status === 202) {
-        const { jobId } = json as { jobId: string }
+        // accept either snake_case or camelCase
+        const rawJson = json as { job_id: string } | { jobId: string }
+        const jobId = normalizeJobId(rawJson)
         const job = new Job<components['schemas']['ExtractionsResponse']>({
             jobId,
             baseUrl: client.baseUrl,

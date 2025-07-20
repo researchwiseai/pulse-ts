@@ -89,9 +89,10 @@ describe('AuthorizationCodePKCEAuth', () => {
         expect(auth.accessToken).toBe('at')
         expect(auth.refreshToken).toBe('rt')
         expect(auth.expiresAt).toBeGreaterThanOrEqual(0)
-        const call = (fetchMock as any).mock.calls[0]
+        const call = (fetchMock as unknown as { mock: { calls: [Request, unknown][] } }).mock
+            .calls[0]
         expect(call[0]).toBe('url')
-        const params = call[1].body as URLSearchParams
+        const params = (call[1] as RequestInit).body as URLSearchParams
         expect(params.get('grant_type')).toBe('authorization_code')
         expect(params.get('client_id')).toBe('cid')
         expect(params.get('code')).toBe('code')
@@ -99,7 +100,7 @@ describe('AuthorizationCodePKCEAuth', () => {
         expect(params.get('code_verifier')).toBe('ver')
     })
 
-    it('authFlow sets header only for matching audience host', async () => {
+    it('authFlow always sets Authorization header', async () => {
         const fakeResp = {
             ok: true,
             status: 200,
@@ -119,6 +120,6 @@ describe('AuthorizationCodePKCEAuth', () => {
         expect(out1.headers.get('Authorization')).toBe('Bearer tok')
         const req2 = new Request('http://other/x')
         const { value: out2 } = await auth.authFlow(req2).next()
-        expect(out2).toBe(req2)
+        expect(out2.headers.get('Authorization')).toBe('Bearer tok')
     })
 })

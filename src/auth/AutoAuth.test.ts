@@ -93,7 +93,7 @@ describe('AutoAuth', () => {
             const auth = new AutoAuth()
             expect(AuthorizationCodePKCEAuth).toHaveBeenCalledTimes(1)
             expect(ClientCredentialsAuth).not.toHaveBeenCalled()
-            expect((auth as any).authImpl).toBe(mockPKCEAuthInstance)
+            expect((auth as unknown as { authImpl: Auth }).authImpl).toBe(mockPKCEAuthInstance)
         })
 
         it('should use ClientCredentialsAuth if AuthorizationCodePKCEAuth is not available but ClientCredentialsAuth is', () => {
@@ -102,7 +102,7 @@ describe('AutoAuth', () => {
             const auth = new AutoAuth()
             expect(ClientCredentialsAuth).toHaveBeenCalledTimes(1)
             expect(AuthorizationCodePKCEAuth).not.toHaveBeenCalled()
-            expect((auth as any).authImpl).toBe(mockCCAuthInstance)
+            expect((auth as unknown as { authImpl: Auth }).authImpl).toBe(mockCCAuthInstance)
         })
 
         it('should prioritize AuthorizationCodePKCEAuth if both are available', () => {
@@ -111,7 +111,7 @@ describe('AutoAuth', () => {
             const auth = new AutoAuth()
             expect(AuthorizationCodePKCEAuth).toHaveBeenCalledTimes(1)
             expect(ClientCredentialsAuth).not.toHaveBeenCalled()
-            expect((auth as any).authImpl).toBe(mockPKCEAuthInstance)
+            expect((auth as unknown as { authImpl: Auth }).authImpl).toBe(mockPKCEAuthInstance)
         })
 
         it('should throw an error if no authentication method is available', () => {

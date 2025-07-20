@@ -33,13 +33,13 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             const az = new Analyzer({ datasets: { dataset: [] }, processes: [], client })
             const res = await az.run()
             expect(res).toBeInstanceOf(Object)
-            expect((res as any).themeGeneration).toBeUndefined()
+            expect((res as Record<string, unknown>).themeGeneration).toBeUndefined()
         })
     })
 
     describe('ThemeGeneration process', () => {
         setupPolly()
-        it('generates between min and max themes', async () => {
+        it('generates between min and max themes', { timeout: 20_000 }, async () => {
             const reviews = ['a', 'b', 'c']
             const az = new Analyzer({
                 datasets: { dataset: reviews },

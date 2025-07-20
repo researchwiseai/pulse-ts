@@ -28,7 +28,7 @@ export function findOptimalEps(distMatrix: number[][], minPts: number): number {
         const dists = distMatrix[i].filter((_, j) => i !== j).sort((a, b) => a - b)
 
         if (dists.length >= minPts - 1) {
-            kDistances.push(dists[minPts - 2]) // k = minPts − 1
+            kDistances.push(dists[minPts - 2]) // k = minPts - 1
         }
     }
 

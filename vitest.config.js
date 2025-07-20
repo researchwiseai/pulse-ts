@@ -4,6 +4,8 @@ export default defineConfig({
     test: {
         globals: true,
         environment: 'node',
+        // Load test environment variables from .env.test if present
+        setupFiles: './test/setupEnv.js',
         include: ['src/**/*.test.ts', 'test/**/*.test.ts'],
         reporters: ['default'],
         coverage: {

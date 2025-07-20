@@ -23,6 +23,10 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false,
         "noPropertyAccessFromIndexSignature": false,
-        "types": ["vitest/importMeta"]
+        "types": ["vitest/importMeta"],
+
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "forceConsistentCasingInFileNames": true
     }
 }

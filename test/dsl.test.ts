@@ -6,7 +6,9 @@ import { CoreClient } from '../src/core/clients/CoreClient'
 describe('DSL id uniqueness and naming', () => {
     it('assigns unique ids for duplicate processes', () => {
         const wf = new Workflow().themeGeneration().themeGeneration()
-        const ids = (wf as any).processes.map((p: any) => p.id)
+        const ids = (wf as unknown as { processes: Array<{ id: string }> }).processes.map(
+            (p: { id: string }) => p.id,
+        )
         expect(ids).toEqual(['themeGeneration', 'themeGeneration_2'])
     })
     it('throws when using duplicate custom name', () => {
@@ -55,11 +57,11 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
             expect(results).toHaveProperty('themeAllocation')
             const ta = results.themeAllocation
             expect(ta).not.toBeInstanceOf(Job)
-            if ((ta as any).themes) {
-                expect(Array.isArray((ta as any).themes)).toBe(true)
+            if ((ta as Record<string, unknown>).themes) {
+                expect(Array.isArray((ta as Record<string, unknown>).themes)).toBe(true)
             }
-            if ((ta as any).sentiments) {
-                expect(Array.isArray((ta as any).sentiments)).toBe(true)
+            if ((ta as Record<string, unknown>).sentiments) {
+                expect(Array.isArray((ta as Record<string, unknown>).sentiments)).toBe(true)
             }
         })
     })

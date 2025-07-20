@@ -6,6 +6,32 @@ import FetchAdapter from '@pollyjs/adapter-fetch'
 import FSPersister from '@pollyjs/persister-fs'
 import { beforeEach, afterEach } from 'vitest'
 
+function scrubTokens(obj: unknown): void {
+    if (Array.isArray(obj)) {
+        obj.forEach(scrubTokens)
+        return
+    }
+    if (obj && typeof obj === 'object') {
+        for (const [key, value] of Object.entries(obj)) {
+            if (typeof value === 'string') {
+                if (/token$/i.test(key) || key === 'authorization') {
+                    ;(obj as Record<string, unknown>)[key] = '<redacted>'
+                } else {
+                    try {
+                        const parsed = JSON.parse(value)
+                        scrubTokens(parsed)
+                        ;(obj as Record<string, unknown>)[key] = JSON.stringify(parsed)
+                    } catch {
+                        // ignore
+                    }
+                }
+            } else {
+                scrubTokens(value)
+            }
+        }
+    }
+}
+
 // Register Polly adapters and persisters
 Polly.register(NodeHttpAdapter)
 Polly.register(FetchAdapter)
@@ -56,24 +82,8 @@ export function setupPolly(options?: Record<string, unknown>) {
                 },
             }
 
-            if (recording.request?.response?.body) {
-                try {
-                    const raw = recording.request.response.body
-                    const body = typeof raw === 'string' ? JSON.parse(raw) : raw
-                    if ('access_token' in body) body.access_token = '<redacted>'
-                    if ('refresh_token' in body) body.refresh_token = '<redacted>'
-                    recording.request.response.body = JSON.stringify(body)
-                } catch {}
-            }
-
-            if (recording.response?.content?.text) {
-                try {
-                    const body = JSON.parse(recording.response.content.text as string)
-                    if ('access_token' in body) body.access_token = '<redacted>'
-                    if ('refresh_token' in body) body.refresh_token = '<redacted>'
-                    recording.response.content.text = JSON.stringify(body)
-                } catch {}
-            }
+            scrubTokens(recording.request)
+            scrubTokens(recording.response)
         })
     })
 

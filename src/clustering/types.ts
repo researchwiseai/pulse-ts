@@ -7,9 +7,9 @@ export interface KModesResult extends ClusteringResult {
     iterations: number
 }
 
-export interface HACResult extends ClusteringResult {}
+export type HACResult = ClusteringResult
 
-export interface DBSCANResult extends ClusteringResult {}
+export type DBSCANResult = ClusteringResult
 
 export interface ResultMap {
     medoid: KModesResult

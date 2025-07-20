@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
-import { getStrings, themeAllocation, clusterAnalysis } from '../src/starters'
+import { getStrings, themeAllocation, clusterAnalysis, summarize } from '../src/starters'
 import { ClusterResult } from '../src/results'
 import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
 
@@ -50,6 +50,15 @@ describe('starters', { skip }, () => {
             const reviews = ['x', 'y']
             const res = await clusterAnalysis(reviews)
             expect(res).toBeInstanceOf(ClusterResult)
+        })
+    })
+
+    describe('summarize starter', () => {
+        setupPolly()
+        it('returns a summary', async () => {
+            const reviews = ['this is great']
+            const res = await summarize(reviews, 'what?')
+            expect(res.summary).toBeTypeOf('string')
         })
     })
 })

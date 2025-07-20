@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest'
 import { analyzeSentiment } from '../analyzeSentiment'
+import type { CoreClient } from '../CoreClient'
 import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
 import { fetchWithRetry } from '../../../http'
@@ -19,7 +20,7 @@ const mockAuthFlow = (authedRequest: Request) => ({
 
 const baseUrl = 'https://api.example.com'
 const mockAuth = { authFlow: vi.fn() }
-const client = { baseUrl, auth: mockAuth } as any
+const client = { baseUrl, auth: mockAuth } as unknown as CoreClient
 
 const inputs = ['I love this!', 'I hate that.']
 
@@ -70,6 +71,21 @@ describe('analyzeSentiment', () => {
             ok: true,
             status: 202,
             json: vi.fn().mockResolvedValue({ jobId }),
+        }
+        fetchWithRetryMock.mockResolvedValue(fakeResponse as unknown as Response)
+        mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))
+
+        const result = await analyzeSentiment(client, inputs, { awaitJobResult: false })
+        expect(result).toBeInstanceOf(Job)
+        expect(result.jobId).toBe(jobId)
+    })
+
+    it('accepts snake_case job_id in 202 response', async () => {
+        const jobId = 'job-snake'
+        const fakeResponse = {
+            ok: true,
+            status: 202,
+            json: vi.fn().mockResolvedValue({ job_id: jobId }),
         }
         fetchWithRetryMock.mockResolvedValue(fakeResponse as unknown as Response)
         mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))

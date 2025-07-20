@@ -4,6 +4,7 @@ import type { CoreClient } from '../CoreClient'
 import { PulseAPIError } from '../../../errors'
 import { fetchWithRetry } from '../../../http'
 import { Job } from '../../job'
+import type { Auth as AuthType } from '../../../auth/types'
 import { setupPolly } from '../../../../test/setupPolly'
 import type { components } from '../../../models'
 
@@ -18,7 +19,10 @@ vi.mock('../../job', () => ({
 vi.mock('../../job', async importOriginal => {
     return {
         ...(await importOriginal<typeof import('../../job')>()),
-        Job: vi.fn(function (this: any, options: any) {
+        Job: vi.fn(function (
+            this: Record<string, unknown>,
+            options: { jobId: string; baseUrl: string; auth: AuthType },
+        ) {
             this.jobId = options.jobId
             this.baseUrl = options.baseUrl
             this.auth = options.auth
@@ -46,7 +50,7 @@ describe('generateThemes', () => {
         auth: {
             authFlow: fakeAuthFlow,
         },
-    } as any
+    } as unknown as CoreClient
 
     beforeEach(() => {
         vi.clearAllMocks()
@@ -96,6 +100,20 @@ describe('generateThemes', () => {
             baseUrl: baseClient.baseUrl,
             auth: baseClient.auth,
         })
+    })
+
+    it('accepts snake_case job_id in 202 response', async () => {
+        const fakeJobInstance = {}
+        ;(fetchWithRetry as Mock).mockResolvedValue({
+            ok: true,
+            status: 202,
+            json: vi.fn().mockResolvedValue({ job_id: 'job-snake' }),
+        })
+        ;(Job as unknown as Mock).mockImplementation(() => fakeJobInstance)
+
+        const result = await generateThemes(baseClient, ['input'], { awaitJobResult: false })
+        expect(result).toBe(fakeJobInstance)
+        expect(Job).toHaveBeenCalledWith(expect.objectContaining({ jobId: 'job-snake' }))
     })
 
     it('awaits job.result() when awaitJobResult is true', async () => {

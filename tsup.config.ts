@@ -9,6 +9,7 @@ export default defineConfig({
     minify: false,
     treeshake: true,
     outDir: 'dist',
+    swc: { swcrc: true } as import('tsup').Options['swc'],
     tsconfig: 'tsconfig.build.json',
     define: {
         'import.meta.vitest': 'undefined',

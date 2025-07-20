@@ -37,12 +37,5 @@ export default defineConfig(
             language: 'markdown/gfm',
             extends: ['markdown/recommended'],
         },
-        {
-            // Allow the use of "any" in test files with more relaxed rules.
-            files: ['**/*.test.ts'],
-            rules: {
-                '@typescript-eslint/no-explicit-any': 'off',
-            },
-        },
     ],
 )

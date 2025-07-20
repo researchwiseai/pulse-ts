@@ -35,7 +35,7 @@ import type { HACConfig, HACResult } from './types'
 export function hacFromDistance(distMatrix: number[][], config: HACConfig): HACResult {
     const { k, linkage = 'average' } = config
     const n = distMatrix.length
-    let clusters: number[][] = Array.from({ length: n }, (_, i) => [i])
+    const clusters: number[][] = Array.from({ length: n }, (_, i) => [i])
     while (clusters.length > k) {
         let closestA = -1,
             closestB = -1,

@@ -3,6 +3,7 @@ import { createEmbeddings } from '../createEmbeddings'
 import { fetchWithRetry } from '../../../http'
 import { PulseAPIError } from '../../../errors'
 import { Job } from '../../job'
+import type { Auth as AuthType } from '../../../auth/types'
 import type { CoreClient } from '../CoreClient'
 import { setupPolly } from '../../../../test/setupPolly'
 import type { components } from '../../../models'
@@ -15,7 +16,10 @@ vi.mock('../../../http', () => ({
 vi.mock('../../job', async importOriginal => {
     return {
         ...(await importOriginal<typeof import('../../job')>()),
-        Job: vi.fn(function (this: any, options: any) {
+        Job: vi.fn(function (
+            this: Record<string, unknown>,
+            options: { jobId: string; baseUrl: string; auth: AuthType },
+        ) {
             this.jobId = options.jobId
             this.baseUrl = options.baseUrl
             this.auth = options.auth
@@ -66,6 +70,18 @@ describe('createEmbeddings', () => {
         expect(res).toEqual(responseBody)
     })
 
+    it('sends x-pulse-debug header when client.debug is true', async () => {
+        ;(fetchWithRetry as Mock).mockResolvedValueOnce({
+            ok: true,
+            status: 200,
+            json: async () => ({ requestId: 'r', embeddings: [] }),
+        })
+        const clientWithDebug = { ...client, debug: true } as unknown as CoreClient
+        await createEmbeddings(clientWithDebug, ['a'])
+        const req = (fetchWithRetry as Mock).mock.calls[0][0] as Request
+        expect(req.headers.get('x-pulse-debug')).toBe('true')
+    })
+
     it('returns awaited job result on 202 when awaitJobResult is not false', async () => {
         const jobId = 'job-123'
         ;(fetchWithRetry as Mock)
@@ -111,5 +127,17 @@ describe('createEmbeddings', () => {
             baseUrl: client.baseUrl,
             auth: client.auth,
         })
+    })
+
+    it('accepts snake_case job_id in 202 response', async () => {
+        const jobId = 'job-snake'
+        ;(fetchWithRetry as Mock).mockResolvedValueOnce({
+            ok: true,
+            status: 202,
+            json: async () => ({ job_id: jobId }),
+        })
+        const res = await createEmbeddings(client, ['x'], { awaitJobResult: false, fast: false })
+        expect(res).toHaveProperty('jobId', jobId)
+        expect(Job).toHaveBeenCalledWith(expect.objectContaining({ jobId }))
     })
 })

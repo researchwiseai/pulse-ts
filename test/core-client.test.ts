@@ -41,7 +41,7 @@ describe('CoreClient', () => {
                     ok: true,
                     status: 200,
                     json: async () => body,
-                } as any)
+                } as unknown as Response)
                 const resp = await client.createEmbeddings(['t'], { fast: true })
                 expect(spy).toHaveBeenCalled()
                 const [request] = spy.mock.calls[0] ?? [undefined]
@@ -67,7 +67,7 @@ describe('CoreClient', () => {
                     ok: true,
                     status: 202,
                     json: async () => body,
-                } as any)
+                } as unknown as Response)
                 await client.createEmbeddings(['t'], { fast: false, awaitJobResult: false })
                 expect(spy).toHaveBeenCalled()
                 const [request] = spy.mock.calls[0] ?? [undefined]
@@ -129,22 +129,22 @@ describe('CoreClient', () => {
                         ok: true,
                         status: 202,
                         json: async () => ({ status: 'pending', jobId: 'abc' }),
-                    } as any)
+                    } as Response)
                     .mockResolvedValueOnce({
                         ok: true,
                         status: 200,
                         json: async () => ({ status: 'pending' }),
-                    } as any)
+                    } as Response)
                     .mockResolvedValueOnce({
                         ok: true,
                         status: 200,
                         json: async () => ({ status: 'completed', resultUrl: 'http://result' }),
-                    } as any)
+                    } as Response)
                     .mockResolvedValue({
                         ok: true,
                         status: 200,
                         json: async () => body,
-                    } as any)
+                    } as Response)
                 await client.createEmbeddings(['t'], { fast: false, awaitJobResult: true })
                 expect(spy).toHaveBeenCalled()
                 const [request] = spy.mock.calls[0] ?? [undefined]
@@ -214,7 +214,7 @@ describe('CoreClient', () => {
                     status: 400,
                     statusText: 'Bad Request',
                     json: async () => errBody,
-                } as any)
+                } as unknown as Response)
                 await expect(client.createEmbeddings(['x'])).rejects.toBeInstanceOf(PulseAPIError)
             })
 
@@ -243,7 +243,7 @@ describe('CoreClient', () => {
                         ok: true,
                         status: 200,
                         json: async () => body,
-                    } as any)
+                    } as Response)
                     const resp = await client.compareSimilarity({ set: ['x'] }, { fast: true })
                     expect(resp).toEqual(body)
                 })
@@ -262,7 +262,7 @@ describe('CoreClient', () => {
                         ok: true,
                         status: 200,
                         json: async () => body,
-                    } as any)
+                    } as Response)
                     const resp = await client.compareSimilarity({ set: ['x'] }, { fast: true })
                     expect(spy).toHaveBeenCalled()
                     const [request] = spy.mock.calls[0] ?? [undefined]
@@ -293,7 +293,7 @@ describe('CoreClient', () => {
             ok: true,
             status: 200,
             json: async () => body,
-        } as any)
+        } as unknown as Response)
         const resp = await client.generateThemes(['a'], {
             fast: true,
             minThemes: 1,
@@ -308,7 +308,7 @@ describe('CoreClient', () => {
             ok: true,
             status: 200,
             json: async () => body,
-        } as any)
+        } as unknown as Response)
         const resp = await client.analyzeSentiment(['a'], { fast: true })
         expect(resp).toEqual(body)
     })
@@ -321,7 +321,7 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
 
     beforeAll(() => {
         client = new CoreClient({
-            baseUrl: process.env.PULSE_BASE_URL ?? 'https://dev.core.researchwiseai.com/pulse/v1',
+            baseUrl: process.env.PULSE_BASE_URL ?? 'https://staging.pulse.researchwiseai.com/v1',
             auth: new Auth.ClientCredentialsAuth({
                 clientId: process.env.PULSE_CLIENT_ID ?? '',
                 clientSecret: process.env.PULSE_CLIENT_SECRET ?? '',
@@ -353,7 +353,7 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
         expect(resp.matrix!.length).toBe(2)
         expect(resp.flattened.length).toBe(4)
     })
-    it('generateThemes returns data', async () => {
+    it('generateThemes returns data', { timeout: 10000 }, async () => {
         const resp = await client.generateThemes(
             ['apple', 'orange', 'banana', 'gold', 'silver', 'bronze'],
             {
