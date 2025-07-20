@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/mini'
 
 // export type SupportedType<T> = T extends [] ? T | Array<T> : Array<T>[];
 
@@ -50,12 +50,10 @@ export type QInt = number & { readonly __QInt: unique symbol }
  *
  * Upon successful validation, the value is narrowed to the `QInt` type.
  */
-export const QInt = z
-    .number()
-    .int()
-    .min(-127)
-    .max(127)
-    .transform(n => n as QInt)
+export const QInt = z.pipe(
+    z.int().check(z.gte(-127)).check(z.lte(127)),
+    z.transform((n: number) => n as QInt),
+)
 
 /**
  * Converts a JavaScript number into a QInt instance.
@@ -84,12 +82,10 @@ export type UQInt = number & { readonly __UQInt: unique symbol }
  *
  * Upon successful validation, the value is narrowed to the `UQInt` type.
  */
-export const UQInt = z
-    .number()
-    .int()
-    .min(0)
-    .max(255)
-    .transform(n => n as UQInt)
+export const UQInt = z.pipe(
+    z.int().check(z.gte(0)).check(z.lte(255)),
+    z.transform((n: number) => n as UQInt),
+)
 /**
  * Converts a JavaScript number into a UQInt instance.
  *
