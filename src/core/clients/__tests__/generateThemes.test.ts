@@ -68,6 +68,8 @@ describe('generateThemes', () => {
             fast: true,
             minThemes: 1,
             maxThemes: 5,
+            version: 'v2',
+            prune: 3,
         })
 
         expect(result).toEqual(mockJson)
@@ -78,6 +80,8 @@ describe('generateThemes', () => {
             fast: true,
             minThemes: 1,
             maxThemes: 5,
+            version: 'v2',
+            prune: 3,
         })
         expect(initArg.method).toBe('POST')
         expect(initArg.headers).toEqual({ 'Content-Type': 'application/json' })
