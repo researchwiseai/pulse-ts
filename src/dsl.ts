@@ -2,7 +2,7 @@
  * DSL builder for composing sequences of Processes.
  */
 import fs from 'fs'
-import { z } from 'zod'
+import { z } from 'zod/mini'
 import { CoreClient } from './core/clients/CoreClient'
 import { Cluster } from './processes/Cluster'
 import { ThemeExtraction } from './processes/ThemeExtraction'
@@ -280,7 +280,9 @@ export class Workflow {
     static fromFile(filePath: string): Workflow {
         const wf = new Workflow()
         const raw = fs.readFileSync(filePath, 'utf-8')
-        const schema = z.object({ pipeline: z.array(z.record(z.unknown())).optional() })
+        const schema = z.object({
+            pipeline: z.optional(z.array(z.record(z.string(), z.unknown()))),
+        })
         const { pipeline } = schema.parse(JSON.parse(raw))
         for (const step of pipeline ?? []) {
             if (

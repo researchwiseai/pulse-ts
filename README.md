@@ -8,6 +8,7 @@ TypeScript client for the RWAI Pulse API.
 - TypeScript 5.0 or higher
 - Bun 1.0 or higher
 - Qlty CLI
+- Zod 4 or higher (tree-shakeable via `zod/mini`)
 
 ## Installation
 
