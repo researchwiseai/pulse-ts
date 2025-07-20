@@ -14,6 +14,8 @@ export interface ExtractElementsInputs {
     inputs: string[]
     /** Array of theme labels to guide the extraction. */
     themes: string[]
+    /** Optional model version to use for extraction. */
+    version?: string
 }
 
 /**
@@ -48,7 +50,7 @@ export async function extractElements<
     inputs: ExtractElementsInputs,
     { awaitJobResult, fast }: ExtractElementsOptions<Fast, AwaitJobResult> = {},
 ) {
-    const path = `${client.baseUrl}/themes`
+    const path = `${client.baseUrl}/extractions`
     const payload: Record<string, unknown> = { ...inputs, fast }
 
     const init: FetchOptions = {

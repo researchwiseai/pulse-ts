@@ -56,7 +56,11 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast
         const response = await ctx.client.extractElements(
-            { inputs: texts, themes: this.themeRepresentatives(ctx) },
+            {
+                inputs: texts,
+                themes: this.themeRepresentatives(ctx),
+                version: this.version,
+            },
             { fast: fastFlag },
         )
         return new ThemeExtractionResult(response, texts, this.themeLabels(ctx))
