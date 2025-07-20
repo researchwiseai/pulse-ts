@@ -80,7 +80,31 @@ describe('compareSimilarity', () => {
         expect(req.url).toBe('https://api.test/similarity')
         expect(JSON.parse(opts?.body as string)).toMatchObject({
             set: ['a', 'b'],
-            flatten: false,
+        })
+        expect(result).toEqual(responseJson)
+    })
+
+    it('includes version and split options for self-comparison', async () => {
+        const inputs: CompareSimilarityInputs = { set: ['a', 'b'] }
+        const responseJson = {
+            scenario: 'self',
+            mode: 'flattened',
+            n: 2,
+            flattened: [1, 0.5, 0.5, 1],
+            requestId: 'req-1',
+        }
+        fetchWithRetryMock.mockResolvedValue(mockResponse(responseJson))
+
+        const result = await compareSimilarity(client, inputs, {
+            version: 'v2',
+            split: 'sentence',
+        })
+
+        const opts = fetchWithRetryMock.mock.calls[0][1]
+        expect(JSON.parse(opts?.body as string)).toMatchObject({
+            set: ['a', 'b'],
+            version: 'v2',
+            split: 'sentence',
         })
         expect(result).toEqual(responseJson)
     })
@@ -97,8 +121,36 @@ describe('compareSimilarity', () => {
         expect(JSON.parse(opts?.body as string)).toMatchObject({
             set_a: ['a'],
             set_b: ['b'],
-            flatten: false,
         })
+        expect(result).toEqual(responseJson)
+    })
+
+    it('handles flatten option for cross-comparison', async () => {
+        const inputs: CompareSimilarityInputs = { setA: ['a'], setB: ['b'] }
+        const responseJson = {
+            scenario: 'cross',
+            mode: 'flattened',
+            n: 1,
+            flattened: [0.9],
+            requestId: 'req-2',
+        }
+        fetchWithRetryMock.mockResolvedValue(mockResponse(responseJson))
+
+        const result = await compareSimilarity(client, inputs, {
+            flatten: true,
+            version: 'v3',
+            split: { set_a: 'newline', set_b: { unit: 'sentence', agg: 'max' } },
+        })
+
+        const opts = fetchWithRetryMock.mock.calls[0][1]
+        expect(JSON.parse(opts?.body as string)).toMatchObject({
+            set_a: ['a'],
+            set_b: ['b'],
+            flatten: true,
+            version: 'v3',
+            split: { set_a: 'newline', set_b: { unit: 'sentence', agg: 'max' } },
+        })
+        expect(unflatten).not.toHaveBeenCalled()
         expect(result).toEqual(responseJson)
     })
 
@@ -154,7 +206,7 @@ describe('compareSimilarity', () => {
 
     it('unflattens matrix if not present and scenario is cross', async () => {
         const inputs: CompareSimilarityInputs = { setA: ['a'], setB: ['b'] }
-        const responseJson = { scenario: 'cross', flattened: [0.1], n: 1 }
+        const responseJson = { scenario: 'cross', mode: 'matrix', flattened: [0.1], n: 1 }
         fetchWithRetryMock.mockResolvedValue(mockResponse(responseJson))
 
         const result = await compareSimilarity(client, inputs)
@@ -169,7 +221,7 @@ describe('compareSimilarity', () => {
         fetchWithRetryMock.mockResolvedValue(mockResponse({ jobId }, true, 202))
 
         // Patch Job.prototype.result to call after hook
-        const jobResp = { scenario: 'cross', flattened: [0.2], n: 1 }
+        const jobResp = { scenario: 'cross', mode: 'matrix', flattened: [0.2], n: 1 }
         vi.spyOn(Job.prototype, 'result').mockImplementation(function (this: unknown) {
             // Simulate after hook
             return Promise.resolve(
