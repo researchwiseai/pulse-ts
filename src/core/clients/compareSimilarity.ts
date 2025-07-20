@@ -40,11 +40,21 @@ export type CompareSimilarityInputs = CompareSimilaritySelf | CompareSimilarityC
 export type CompareSimilarityOptions<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
-> = UniversalFeatureOptions<Fast, AwaitJobResult>
+> = UniversalFeatureOptions<Fast, AwaitJobResult> & {
+    version?: string
+    flatten?: boolean
+    split?: components['schemas']['Split']
+}
 
 // Request payload shapes for the similarity endpoint
-type CompareSimilarityRequestSelf = { flatten: false; set: string[] }
-type CompareSimilarityRequestCross = { flatten: false; set_a: string[]; set_b: string[] }
+interface CompareSimilarityBaseRequest {
+    version?: string
+    flatten?: boolean
+    split?: components['schemas']['Split']
+}
+type CompareSimilarityRequestSelf = CompareSimilarityBaseRequest & { set: string[] }
+type CompareSimilarityRequestCross =
+    CompareSimilarityBaseRequest & { set_a: string[]; set_b: string[] }
 type CompareSimilarityRequest = CompareSimilarityRequestSelf | CompareSimilarityRequestCross
 
 /**
@@ -67,9 +77,20 @@ export async function compareSimilarity<
 ): Promise<AwaitJobResult extends false ? Job<SimilarityResponse> : SimilarityResponse> {
     let body: CompareSimilarityRequest
     if ('set' in inputs) {
-        body = { flatten: false, set: inputs.set }
+        body = {
+            set: inputs.set,
+            version: options.version,
+            split: options.split,
+            flatten: options.flatten,
+        }
     } else {
-        body = { flatten: false, set_a: inputs.setA, set_b: inputs.setB }
+        body = {
+            set_a: inputs.setA,
+            set_b: inputs.setB,
+            version: options.version,
+            split: options.split,
+            flatten: options.flatten,
+        }
     }
     return requestFeature<
         CompareSimilarityRequest,
@@ -78,7 +99,7 @@ export async function compareSimilarity<
         AwaitJobResult,
         SimilarityResponse
     >(client, '/similarity', body, options, (resp): SimilarityResponse => {
-        if (!resp.matrix && resp.scenario === 'cross') {
+        if (!resp.matrix && resp.scenario === 'cross' && resp.mode === 'matrix') {
             return {
                 ...resp,
                 matrix: unflatten(resp.flattened, [resp.n]) as number[][],

@@ -274,7 +274,6 @@ describe('CoreClient', () => {
                         expect(requestBody).toStrictEqual({
                             set: ['x'],
                             fast: true,
-                            flatten: false,
                         })
 
                         const requestHeaders = outbound.headers
