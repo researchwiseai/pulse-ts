@@ -36,7 +36,7 @@ export class CoreClient {
         this._baseUrl =
             options?.baseUrl?.replace(/\/{1,100}$/g, '') ??
             process.env.PULSE_BASE_URL ??
-            'https://core.researchwiseai.com/pulse/v1'
+            'https://pulse.researchwiseai.com/v1'
         this._auth = options.auth ?? new Auth.AutoAuth()
         this._debug = options.debug ?? false
     }
