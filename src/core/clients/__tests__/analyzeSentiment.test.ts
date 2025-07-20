@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest'
+import { describe, it, expect, vi, beforeEach, type MockedFunction, type Mock } from 'vitest'
 import { analyzeSentiment } from '../analyzeSentiment'
 import type { CoreClient } from '../CoreClient'
 import { PulseAPIError } from '../../../errors'
@@ -50,6 +50,25 @@ describe('analyzeSentiment', () => {
         const result = await analyzeSentiment(client, inputs, {})
         expect(result).toEqual(responseJson)
         expect(fetchWithRetry).toHaveBeenCalled()
+    })
+
+    it('sends version in the request body when provided', async () => {
+        const fakeResponse = {
+            ok: true,
+            status: 200,
+            json: vi.fn().mockResolvedValue({ requestId: 'r', results: [] }),
+        }
+        fetchWithRetryMock.mockResolvedValue(fakeResponse as unknown as Response)
+        mockAuth.authFlow.mockImplementation((req: Request) => mockAuthFlow(req))
+
+        await analyzeSentiment(client, inputs, { fast: true, version: 'v1' })
+
+        const init = (fetchWithRetry as unknown as Mock).mock.calls[0][1]
+        expect(JSON.parse(init.body as string)).toEqual({
+            inputs,
+            fast: true,
+            version: 'v1',
+        })
     })
 
     it('throws PulseAPIError on non-2xx response', async () => {
