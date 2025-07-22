@@ -1,5 +1,3 @@
-import type { components } from '../models'
-
 /**
  * Results of clustering with helper methods.
  */
@@ -23,23 +21,34 @@ export class ClusterResult {
  * Results of theme extraction with helper methods.
  */
 export class ThemeExtractionResult {
+    private data: { columns: string[]; matrix: number[][]; requestId: string }
+
     /**
-     * @param response - The API response containing extraction data.
+     * @param data - Extraction results containing the category matrix.
      * @param texts - Original array of texts processed.
      */
     constructor(
-        private response: components['schemas']['ExtractionsResponse'],
+        data: { columns: string[]; matrix: number[][]; requestId: string },
         private texts: string[],
-    ) {}
+    ) {
+        this.data = data
+    }
 
     /** Category columns returned by the API. */
     get columns(): string[] {
-        return this.response.columns
+        return this.data.columns
     }
 
     /** Matrix of category scores per input text. */
     get matrix(): number[][] {
-        return this.response.matrix
+        return this.data.matrix
+    }
+
+    /**
+     * Request identifier returned by the API.
+     */
+    get requestId(): string {
+        return this.data.requestId
     }
 
     /**
