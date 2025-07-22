@@ -22,7 +22,7 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
 
     version?: string
     fast?: boolean
-    threshold: number
+    threshold?: number
 
     /**
      * Create a new ThemeExtraction process instance.
