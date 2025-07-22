@@ -1,14 +1,15 @@
-import { PulseAPIError } from '../../errors'
-import { fetchWithRetry, type FetchOptions } from '../../http'
 import type { components } from '../../models'
-import { Job } from '../job'
-import { normalizeJobId } from './utils'
+import { requestFeature } from './requestFeature'
 import type { CoreClient } from './CoreClient'
 import type { UniversalFeatureOptions } from './types'
+import type { Job } from '../job'
 
 /**
  * Input parameters for element extraction requests.
  */
+export type ExtractionsRequest = components['schemas']['ExtractionsRequest']
+export type ExtractionsResponse = components['schemas']['ExtractionsResponse']
+
 export interface ExtractElementsInputs {
     /** Array of text strings to extract elements from. */
     texts: string[]
@@ -47,47 +48,41 @@ export type ExtractElementsOptions<
  * @param client - CoreClient instance for API calls.
  * @param inputs - Inputs including texts and theme labels.
  * @param options - Extraction options (fast, awaitJobResult).
- * @returns ExtractionsResponse or Job<ExtractionsResponse> based on options.
+ * @returns ExtractionsResponse or JobResponse based on options.
  */
 export async function extractElements<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
     Result = AwaitJobResult extends false
-        ? Job<components['schemas']['ExtractionsResponse']>
+        ? components['schemas']['JobResponse']
         : components['schemas']['ExtractionsResponse'],
 >(
     client: CoreClient,
     inputs: ExtractElementsInputs,
     { awaitJobResult, fast }: ExtractElementsOptions<Fast, AwaitJobResult> = {},
 ) {
-    const path = `${client.baseUrl}/extractions`
-    const payload: Record<string, unknown> = { ...inputs, fast }
+    const body: Omit<ExtractionsRequest, 'fast'> = {
+        texts: inputs.texts,
+        categories: inputs.categories,
+        dictionary: inputs.dictionary,
+        expand_dictionary: inputs.expand_dictionary ?? true,
+        use_ner: inputs.use_ner ?? true,
+        use_llm: inputs.use_llm ?? true,
+        threshold: inputs.threshold ?? 0.5,
+        version: inputs.version,
+    }
 
-    const init: FetchOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+    const res = await requestFeature<
+        Omit<ExtractionsRequest, 'fast'>,
+        ExtractionsResponse,
+        Fast,
+        AwaitJobResult
+    >(client, '/extractions', body, { awaitJobResult, fast })
+
+    if (awaitJobResult === false) {
+        const job = res as unknown as Job<ExtractionsResponse>
+        return { job_id: job.jobId } as Result
     }
-    const request = new Request(path, init)
-    const { value: authedRequest } = await client.auth.authFlow(request).next()
-    const response = await fetchWithRetry(authedRequest, init)
-    const json = await response.json()
-    if (!response.ok) {
-        throw new PulseAPIError(response, json)
-    }
-    if (response.status === 202) {
-        // accept either snake_case or camelCase
-        const rawJson = json as { job_id: string } | { jobId: string }
-        const jobId = normalizeJobId(rawJson)
-        const job = new Job<components['schemas']['ExtractionsResponse']>({
-            jobId,
-            baseUrl: client.baseUrl,
-            auth: client.auth,
-        })
-        if (awaitJobResult) {
-            return (await job.result()) as Result
-        }
-        return job as Result
-    }
-    return json as components['schemas']['ExtractionsResponse'] as Result
+
+    return res as Result
 }
