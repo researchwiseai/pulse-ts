@@ -22,6 +22,7 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
 
     version?: string
     fast?: boolean
+    threshold: number
 
     /**
      * Create a new ThemeExtraction process instance.
@@ -32,11 +33,18 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
      * @param options.name - Optional custom name for this process instance.
      */
     constructor(
-        options: { themes?: string[]; version?: string; fast?: boolean; name?: Name } = {},
+        options: {
+            themes?: string[]
+            version?: string
+            fast?: boolean
+            threshold?: number
+            name?: Name
+        } = {},
     ) {
         super(options)
         this.version = options.version
         this.fast = options.fast
+        this.threshold = options.threshold ?? 0.5
         this.name = options.name ?? (ThemeExtraction.id as Name)
     }
 
@@ -55,10 +63,18 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         const arr = ctx.datasets[inp]
         const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast
+        const categories = this.themeLabels(ctx)
+        const reps = this.themeRepresentatives(ctx)
+        const dictionary: Record<string, string[]> = {}
+        reps.forEach((rep, i) => {
+            dictionary[categories[i] as string] = rep.split('\n')
+        })
         const response = await ctx.client.extractElements(
             {
                 texts,
-                categories: this.themeRepresentatives(ctx),
+                categories,
+                dictionary,
+                threshold: this.threshold,
                 version: this.version,
             },
             { fast: fastFlag },
