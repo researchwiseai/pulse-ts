@@ -57,12 +57,12 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         const fastFlag = this.fast ?? ctx.fast
         const response = await ctx.client.extractElements(
             {
-                inputs: texts,
-                themes: this.themeRepresentatives(ctx),
+                texts,
+                categories: this.themeRepresentatives(ctx),
                 version: this.version,
             },
             { fast: fastFlag },
         )
-        return new ThemeExtractionResult(response, texts, this.themeLabels(ctx))
+        return new ThemeExtractionResult(response, texts)
     }
 }

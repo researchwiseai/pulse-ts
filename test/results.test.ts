@@ -93,19 +93,20 @@ describe('ThemeExtractionResult', () => {
     it('toArray returns expected extraction rows', () => {
         const response: components['schemas']['ExtractionsResponse'] = {
             requestId: 'id',
-            extractions: [
-                [['A1', 'A2'], []],
-                [[], ['B1']],
+            columns: ['A', 'B'],
+            matrix: [
+                [1, 0],
+                [0, 1],
             ],
         }
         const texts = ['A1 A2', 'B1']
-        const themes = ['A', 'B']
-        const r = new ThemeExtractionResult(response, texts, themes)
+        const r = new ThemeExtractionResult(response, texts)
         const arr = r.toArray()
         expect(arr).toEqual([
-            { text: 'A1 A2', theme: 'A', extraction: 'A1' },
-            { text: 'A1 A2', theme: 'A', extraction: 'A2' },
-            { text: 'B1', theme: 'B', extraction: 'B1' },
+            { text: 'A1 A2', category: 'A', score: 1 },
+            { text: 'A1 A2', category: 'B', score: 0 },
+            { text: 'B1', category: 'A', score: 0 },
+            { text: 'B1', category: 'B', score: 1 },
         ])
     })
 })

@@ -421,7 +421,7 @@ paths:
                  - Synchronous mode returns extraction results immediately (HTTP 200).
                  - Asynchronous mode returns a job_id (HTTP 202) to poll via the /jobs endpoint.
 
-                Returns a 3-dimensional array where `extractions[i][j]` contains matching elements for input `i` and theme `j`.
+                Returns a matrix where `matrix[i][j]` indicates how strongly input `i` matches category `columns[j]`.
             tags: [extractions]
             requestBody:
                 required: true
@@ -433,8 +433,8 @@ paths:
                             Default:
                                 summary: Basic extractions request
                                 value:
-                                    inputs: ['The food was great and the service was slow.']
-                                    themes: ['food', 'service']
+                                    texts: ['The food was great and the service was slow.']
+                                    categories: ['food', 'service']
             responses:
                 '200':
                     description: Extraction results returned successfully.
@@ -446,10 +446,16 @@ paths:
                                 ExtractionsResponseExample:
                                     summary: Sample extractions response
                                     value:
-                                        extractions:
-                                            - - ['food was great']
-                                              - ['service was slow']
+                                        columns: ['food', 'service']
+                                        matrix:
+                                            - [1, 1]
                                         requestId: 'example-request-id'
+                '202':
+                    description: Extraction job accepted for asynchronous processing.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/JobResponse'
                 '400':
                     description: Bad request - validation error.
                     content:
@@ -461,8 +467,8 @@ paths:
                                     summary: Sample validation error response
                                     value:
                                         message:
-                                            'Validation error: inputs must be an array of 1 to 200
-                                            strings and themes must be an array of 1 to 50 strings.'
+                                            'Validation error: texts must be an array of 1 to 200
+                                            strings and categories must be an array of 1 to 50 strings.'
 
     /summaries:
         post:
@@ -921,18 +927,34 @@ components:
         ExtractionsRequest:
             type: object
             properties:
-                inputs:
+                texts:
                     type: array
                     minItems: 1
                     maxItems: 200
                     items:
                         type: string
-                themes:
+                categories:
                     type: array
                     minItems: 1
                     maxItems: 50
                     items:
                         type: string
+                dictionary:
+                    type: object
+                    additionalProperties:
+                        type: array
+                        items:
+                            type: string
+                expand_dictionary:
+                    type: boolean
+                use_ner:
+                    type: boolean
+                use_llm:
+                    type: boolean
+                threshold:
+                    type: number
+                    minimum: 0
+                    maximum: 1
                 version:
                     type: string
                 fast:
@@ -940,28 +962,26 @@ components:
                     description:
                         Flag indicating synchronous (true) or asynchronous (false) processing.
                         Default false.
-            required: [inputs, themes]
+            required: [texts]
             additionalProperties: false
 
         ExtractionsResponse:
             type: object
             properties:
-                extractions:
+                columns:
                     type: array
-                    description:
-                        3D array of extracted elements, shape [inputs.length][themes.length][K]
-                    maxItems: 1000
+                    items:
+                        type: string
+                matrix:
+                    type: array
                     items:
                         type: array
-                        maxItems: 1000
                         items:
-                            type: array
-                            maxItems: 1000
-                            items:
-                                type: string
+                            type: number
+                            format: float
                 requestId:
                     type: string
-            required: [extractions, requestId]
+            required: [columns, matrix, requestId]
             additionalProperties: false
 
         SummariesRequest:
@@ -1007,6 +1027,14 @@ components:
                 requestId:
                     type: string
             required: [summary, requestId]
+            additionalProperties: false
+
+        JobResponse:
+            type: object
+            properties:
+                job_id:
+                    type: string
+            required: [job_id]
             additionalProperties: false
 
         JobStatusResponse:

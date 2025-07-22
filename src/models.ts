@@ -4,15 +4,15 @@
  */
 
 export interface paths {
-    '/embeddings': {
+    "/embeddings": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Generate dense vector embeddings for input strings (synchronous or asynchronous).
          * @description Generates dense vector embeddings for input strings in a single batch.
@@ -22,22 +22,22 @@ export interface paths {
          *     • Asynchronous mode accepts up to 2,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['createEmbeddings']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/similarity': {
+        post: operations["createEmbeddings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/similarity": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Compute cosine similarity between strings (self or cross).
          * @description Computes pairwise cosine similarity between input strings.
@@ -47,22 +47,22 @@ export interface paths {
          *     • In asynchronous mode, supports larger inputs (self up to 44,721 items; cross with |set_a|×|set_b| ≤ 2,000,000,000) and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['compareSimilarity']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/themes': {
+        post: operations["compareSimilarity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/themes": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Cluster open-ended text responses into thematic groups.
          * @description Groups input strings into latent themes using LLM-based clustering.
@@ -75,22 +75,22 @@ export interface paths {
          *     Optionally control theme count with `minThemes`, `maxThemes`, and steer focus via `context`.
          *
          */
-        post: operations['generateThemes']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/clustering': {
+        post: operations["generateThemes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clustering": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Cluster texts using vector embeddings.
          * @description Performs server-side clustering of input strings using algorithms that operate on full embeddings.
@@ -100,22 +100,22 @@ export interface paths {
          *      - In asynchronous mode, accepts up to 500 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['clusterTexts']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/sentiment': {
+        post: operations["clusterTexts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sentiment": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Classify sentiment of each input string.
          * @description Classifies the sentiment of each input string as positive, negative, neutral, or mixed, with confidence scores ∈ [0,1].
@@ -127,22 +127,22 @@ export interface paths {
          *     Optionally supply `version` for reproducible outputs.
          *
          */
-        post: operations['analyzeSentiment']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/extractions': {
+        post: operations["analyzeSentiment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/extractions": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Extract elements matching themes from input strings.
          * @description Extracts substrings from inputs that match the provided themes.
@@ -152,25 +152,25 @@ export interface paths {
          *      - Synchronous mode returns extraction results immediately (HTTP 200).
          *      - Asynchronous mode returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
-         *     Returns a 3-dimensional array where `extractions[i][j]` contains matching elements for input `i` and theme `j`.
+         *     Returns a matrix where `matrix[i][j]` indicates how strongly input `i` matches category `columns[j]`.
          *
          */
-        post: operations['extractElements']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/summaries': {
+        post: operations["extractElements"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/summaries": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Summarize text according to a question.
          * @description Generates a short summary from the provided inputs.
@@ -180,20 +180,20 @@ export interface paths {
          *      - Asynchronous mode accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['generateSummary']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/jobs': {
+        post: operations["generateSummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/jobs": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Retrieve status of an asynchronous job.
          * @description Retrieves the status of a previously submitted long-running job.
@@ -201,465 +201,472 @@ export interface paths {
          *     a `result_url` to download results.
          *
          */
-        get: operations['getJobStatus']
-        put?: never
-        post?: never
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
+        get: operations["getJobStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         ErrorResponse: {
-            message: string
+            message: string;
             /** @description Optional array of error detail messages */
-            details?: string[]
-        }
+            details?: string[];
+        };
         EmbeddingsRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 2000. */
-            inputs: string[]
+            inputs: string[];
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         EmbeddingDocument: {
-            id?: string
-            text: string
-            vector: number[]
-        }
+            id?: string;
+            text: string;
+            vector: number[];
+        };
         EmbeddingsResponse: {
-            embeddings: components['schemas']['EmbeddingDocument'][]
-            requestId: string
-        }
-        UnitAgg:
-            | ('sentence' | 'newline')
-            | {
-                  /** @enum {string} */
-                  unit: 'sentence' | 'newline'
-                  /**
-                   * @default mean
-                   * @enum {string}
-                   */
-                  agg: 'mean' | 'max'
-              }
-        Split:
-            | components['schemas']['UnitAgg']
-            | {
-                  set_a?: components['schemas']['UnitAgg']
-                  set_b?: components['schemas']['UnitAgg']
-              }
+            embeddings: components["schemas"]["EmbeddingDocument"][];
+            requestId: string;
+        };
+        UnitAgg: ("sentence" | "newline") | {
+            /** @enum {string} */
+            unit: "sentence" | "newline";
+            /**
+             * @default mean
+             * @enum {string}
+             */
+            agg: "mean" | "max";
+        };
+        Split: components["schemas"]["UnitAgg"] | {
+            set_a?: components["schemas"]["UnitAgg"];
+            set_b?: components["schemas"]["UnitAgg"];
+        };
         SimilarityRequest: {
             /** @description Array of strings for self-similarity. For synchronous (fast=true), max 500; for asynchronous (fast=false or omitted), max 44,721. */
-            set?: string[]
+            set?: string[];
             /** @description Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 20,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
-            set_a?: string[]
+            set_a?: string[];
             /** @description Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 20,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
-            set_b?: string[]
-            version?: string
+            set_b?: string[];
+            version?: string;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
+            fast?: boolean;
             /** @description For cross-similarity, flatten the matrix into a 1-D array. Ignored for self-similarity. Default false. */
-            flatten?: boolean
-            split?: components['schemas']['Split']
-        } & (unknown | unknown)
+            flatten?: boolean;
+            split?: components["schemas"]["Split"];
+        } & (unknown | unknown);
         SimilarityResponse: {
             /** @enum {string} */
-            scenario: 'self' | 'cross'
+            scenario: "self" | "cross";
             /** @enum {string} */
-            mode: 'matrix' | 'flattened'
-            n: number
-            flattened: number[]
-            matrix?: number[][]
-            requestId: string
-        }
+            mode: "matrix" | "flattened";
+            n: number;
+            flattened: number[];
+            matrix?: number[][];
+            requestId: string;
+        };
         ThemesRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 500. */
-            inputs: string[]
-            minThemes?: number
-            maxThemes?: number
-            context?: string
-            version?: string
-            prune?: number
+            inputs: string[];
+            minThemes?: number;
+            maxThemes?: number;
+            context?: string;
+            version?: string;
+            prune?: number;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         Theme: {
-            shortLabel: string
-            label: string
-            description: string
+            shortLabel: string;
+            label: string;
+            description: string;
             /** @description Two representative input strings for the theme. */
-            representatives: string[]
-        }
+            representatives: string[];
+        };
         ThemesResponse: {
-            themes: components['schemas']['Theme'][]
-            requestId: string
-        }
+            themes: components["schemas"]["Theme"][];
+            requestId: string;
+        };
         ClusteringRequest: {
             /** @description List of input strings to cluster. For synchronous (fast=true) mode, max 200; asynchronous max 500.
              *      */
-            inputs: string[]
-            k: number
+            inputs: string[];
+            k: number;
             /** @enum {string} */
-            algorithm?: 'kmeans' | 'skmeans' | 'agglomerative' | 'hdbscan'
+            algorithm?: "kmeans" | "skmeans" | "agglomerative" | "hdbscan";
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         Cluster: {
-            clusterId: number
-            items: string[]
-        }
+            clusterId: number;
+            items: string[];
+        };
         ClusteringResponse: {
-            algorithm: string
-            clusters: components['schemas']['Cluster'][]
-            requestId: string
-        }
+            algorithm: string;
+            clusters: components["schemas"]["Cluster"][];
+            requestId: string;
+        };
         SentimentRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 10,000. */
-            inputs: string[]
-            version?: string
+            inputs: string[];
+            version?: string;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         SentimentResult: {
             /** @enum {string} */
-            sentiment: 'positive' | 'negative' | 'neutral' | 'mixed'
-            confidence: number
-        }
+            sentiment: "positive" | "negative" | "neutral" | "mixed";
+            confidence: number;
+        };
         SentimentResponse: {
-            results: components['schemas']['SentimentResult'][]
-            requestId: string
-        }
+            results: components["schemas"]["SentimentResult"][];
+            requestId: string;
+        };
         ExtractionsRequest: {
-            inputs: string[]
-            themes: string[]
-            version?: string
+            texts: string[];
+            categories?: string[];
+            dictionary?: {
+                [key: string]: string[];
+            };
+            expand_dictionary?: boolean;
+            use_ner?: boolean;
+            use_llm?: boolean;
+            threshold?: number;
+            version?: string;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         ExtractionsResponse: {
-            /** @description 3D array of extracted elements, shape [inputs.length][themes.length][K] */
-            extractions: string[][][]
-            requestId: string
-        }
+            columns: string[];
+            matrix: number[][];
+            requestId: string;
+        };
         SummariesRequest: {
-            inputs: string[]
-            question: string
+            inputs: string[];
+            question: string;
             /** @enum {string} */
-            length?: 'bullet-points' | 'short' | 'medium' | 'long'
+            length?: "bullet-points" | "short" | "medium" | "long";
             /** @enum {string} */
-            preset?:
-                | 'five-point'
-                | 'ten-point'
-                | 'one-tweet'
-                | 'three-tweets'
-                | 'one-para'
-                | 'exec'
-                | 'two-pager'
-                | 'one-pager'
+            preset?: "five-point" | "ten-point" | "one-tweet" | "three-tweets" | "one-para" | "exec" | "two-pager" | "one-pager";
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         SummariesResponse: {
-            summary: string
-            requestId: string
-        }
+            summary: string;
+            requestId: string;
+        };
+        JobResponse: {
+            job_id: string;
+        };
         JobStatusResponse: {
-            job_id?: string
+            job_id?: string;
             /** @enum {string} */
-            status: 'pending' | 'completed' | 'failed'
-            result_url?: string
-        }
-    }
-    responses: never
-    parameters: never
-    requestBodies: never
-    headers: never
-    pathItems: never
+            status: "pending" | "completed" | "failed";
+            result_url?: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
+export type $defs = Record<string, never>;
 export interface operations {
     createEmbeddings: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['EmbeddingsRequest']
-            }
-        }
+                "application/json": components["schemas"]["EmbeddingsRequest"];
+            };
+        };
         responses: {
             /** @description Embeddings successfully created. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['EmbeddingsResponse']
-                }
-            }
+                    "application/json": components["schemas"]["EmbeddingsResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., >200 strings). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     compareSimilarity: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['SimilarityRequest']
-            }
-        }
+                "application/json": components["schemas"]["SimilarityRequest"];
+            };
+        };
         responses: {
             /** @description Similarity values returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SimilarityResponse']
-                }
-            }
+                    "application/json": components["schemas"]["SimilarityResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., invalid input). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     generateThemes: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['ThemesRequest']
-            }
-        }
+                "application/json": components["schemas"]["ThemesRequest"];
+            };
+        };
         responses: {
             /** @description Thematic clustering completed successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ThemesResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ThemesResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., inputs >200 strings). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     clusterTexts: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['ClusteringRequest']
-            }
-        }
+                "application/json": components["schemas"]["ClusteringRequest"];
+            };
+        };
         responses: {
             /** @description Clustering completed successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ClusteringResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ClusteringResponse"];
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     analyzeSentiment: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['SentimentRequest']
-            }
-        }
+                "application/json": components["schemas"]["SentimentRequest"];
+            };
+        };
         responses: {
             /** @description Sentiment analysis results. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SentimentResponse']
-                }
-            }
+                    "application/json": components["schemas"]["SentimentResponse"];
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     extractElements: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['ExtractionsRequest']
-            }
-        }
+                "application/json": components["schemas"]["ExtractionsRequest"];
+            };
+        };
         responses: {
             /** @description Extraction results returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ExtractionsResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ExtractionsResponse"];
+                };
+            };
+            /** @description Extraction job accepted for asynchronous processing. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponse"];
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     generateSummary: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['SummariesRequest']
-            }
-        }
+                "application/json": components["schemas"]["SummariesRequest"];
+            };
+        };
         responses: {
             /** @description Summary returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SummariesResponse']
-                }
-            }
+                    "application/json": components["schemas"]["SummariesResponse"];
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getJobStatus: {
         parameters: {
             query: {
                 /** @description Unique identifier for the job. */
-                jobId: string
-            }
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        requestBody?: never
+                jobId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Job status returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['JobStatusResponse']
-                }
-            }
+                    "application/json": components["schemas"]["JobStatusResponse"];
+                };
+            };
             /** @description Missing or invalid jobId query parameter. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Job not found. */
             404: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Internal server error. */
             500: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }

@@ -125,7 +125,7 @@ export class CoreClient {
      *
      * @typeParam Fast - Flag to enable synchronous processing.
      * @typeParam AwaitJobResult - Flag to await background job result.
-     * @param inputs - Elements extraction inputs (texts and theme list).
+     * @param inputs - Elements extraction inputs including texts and optional categories.
      * @param opts - Extraction options (fast, awaitJobResult).
      * @returns ExtractionsResponse or Job handle, based on options.
      */
