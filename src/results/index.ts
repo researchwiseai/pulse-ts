@@ -45,7 +45,7 @@ export class ThemeExtractionResult {
     /**
      * Convert extraction results to a flat array of objects.
      *
-     * @returns Array of entries each containing text, theme, and extracted element.
+     * @returns Array of entries each containing text, category, and score.
      */
     toArray(): Array<{ text: string; category: string; score: number }> {
         const rows: Array<{ text: string; category: string; score: number }> = []
