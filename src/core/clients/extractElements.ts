@@ -11,9 +11,19 @@ import type { UniversalFeatureOptions } from './types'
  */
 export interface ExtractElementsInputs {
     /** Array of text strings to extract elements from. */
-    inputs: string[]
-    /** Array of theme labels to guide the extraction. */
-    themes: string[]
+    texts: string[]
+    /** Optional category labels to guide the extraction. */
+    categories?: string[]
+    /** Optional custom dictionary mapping categories to keywords. */
+    dictionary?: Record<string, string[]>
+    /** Expand the dictionary with related terms. */
+    expand_dictionary?: boolean
+    /** Use named-entity recognition for extraction. */
+    use_ner?: boolean
+    /** Use a language model to assist extraction. */
+    use_llm?: boolean
+    /** Confidence threshold for matches. */
+    threshold?: number
     /** Optional model version to use for extraction. */
     version?: string
 }
