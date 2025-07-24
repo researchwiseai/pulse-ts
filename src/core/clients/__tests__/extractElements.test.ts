@@ -73,7 +73,12 @@ describe('extractElements', () => {
             status: 202,
             json: vi.fn().mockResolvedValue({ jobId: 'job123' }),
         })
-        const fakeJob = {}
+        const fakeJob = {
+            jobId: 'job123',
+            baseUrl: client.baseUrl,
+            auth: client.auth,
+            result: vi.fn(),
+        }
         ;(Job as unknown as Mock).mockImplementation(() => fakeJob)
 
         const result = await extractElements(
