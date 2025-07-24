@@ -48,13 +48,13 @@ export type ExtractElementsOptions<
  * @param client - CoreClient instance for API calls.
  * @param inputs - Inputs including texts and theme labels.
  * @param options - Extraction options (fast, awaitJobResult).
- * @returns ExtractionsResponse or JobResponse based on options.
+ * @returns ExtractionsResponse or Job handle based on options.
  */
 export async function extractElements<
     Fast extends boolean | undefined,
     AwaitJobResult extends boolean | undefined,
     Result = AwaitJobResult extends false
-        ? components['schemas']['JobResponse']
+        ? Job<components['schemas']['ExtractionsResponse']>
         : components['schemas']['ExtractionsResponse'],
 >(
     client: CoreClient,
@@ -72,17 +72,10 @@ export async function extractElements<
         version: inputs.version,
     }
 
-    const res = await requestFeature<
+    return requestFeature<
         Omit<ExtractionsRequest, 'fast'>,
         ExtractionsResponse,
         Fast,
         AwaitJobResult
-    >(client, '/extractions', body, { awaitJobResult, fast })
-
-    if (awaitJobResult === false) {
-        const job = res as unknown as Job<ExtractionsResponse>
-        return { job_id: job.jobId } as Result
-    }
-
-    return res as Result
+    >(client, '/extractions', body, { awaitJobResult, fast }) as Promise<Result>
 }

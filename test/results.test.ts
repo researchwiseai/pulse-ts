@@ -109,4 +109,19 @@ describe('ThemeExtractionResult', () => {
             { text: 'B1', category: 'B', score: 1 },
         ])
     })
+
+    it('exposes columns and matrix from the response', () => {
+        const resp: components['schemas']['ExtractionsResponse'] = {
+            requestId: 'r',
+            columns: ['X', 'Y'],
+            matrix: [
+                [0.1, 0.9],
+                [0.4, 0.6],
+            ],
+        }
+        const r = new ThemeExtractionResult(resp, ['x', 'y'])
+        expect(r.columns).toEqual(resp.columns)
+        expect(r.matrix).toEqual(resp.matrix)
+        expect(r.requestId).toBe('r')
+    })
 })
