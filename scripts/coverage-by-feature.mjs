@@ -3,10 +3,10 @@ import fs from 'fs'
 let lcov
 try {
     lcov = fs.readFileSync('coverage/lcov.info', 'utf8')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
 } catch (err) {
     console.error(
         "Error: Unable to read 'coverage/lcov.info'. Please ensure the file exists and is accessible.",
+        err,
     )
     process.exit(1)
 }
