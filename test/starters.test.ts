@@ -80,10 +80,10 @@ describe('starters', { skip }, () => {
 
     describe('compareSimilarity starter', () => {
         setupPolly()
-        it('returns similarity matrix', async () => {
+        it('returns flattened similarity matrix', async () => {
             const reviews = ['a', 'b']
             const res = await compareSimilarity(reviews)
-            expect(Array.isArray(res.matrix)).toBe(true)
+            expect(Array.isArray(res.flattened)).toBe(true)
         })
     })
 })
