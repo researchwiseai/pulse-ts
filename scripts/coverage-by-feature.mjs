@@ -30,6 +30,7 @@ for (const sec of sections) {
         if (patterns.some(p => p.test(file))) {
             totals[group].lines += lf
             totals[group].hits += lh
+            break
         }
     }
 }
