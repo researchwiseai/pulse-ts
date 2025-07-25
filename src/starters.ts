@@ -232,3 +232,29 @@ export async function summarize(
         preset: options.preset,
     })
 }
+
+/**
+ * Create embeddings for the given texts.
+ */
+export async function createEmbeddings(
+    inputData: string[] | string,
+    options: { client?: CoreClient } = {},
+): Promise<components['schemas']['EmbeddingsResponse']> {
+    const texts = getStrings(inputData)
+    const fast = texts.length <= 200
+    const client = options.client ?? new CoreClient()
+    return client.createEmbeddings(texts, { fast })
+}
+
+/**
+ * Compute similarity for the given texts.
+ */
+export async function compareSimilarity(
+    inputData: string[] | string,
+    options: { client?: CoreClient } = {},
+): Promise<components['schemas']['SimilarityResponse']> {
+    const texts = getStrings(inputData)
+    const fast = texts.length <= 200
+    const client = options.client ?? new CoreClient()
+    return client.compareSimilarity({ set: texts }, { fast })
+}
