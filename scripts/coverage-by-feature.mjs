@@ -1,13 +1,16 @@
 import fs from 'fs'
 
-let lcov;
+let lcov
 try {
-    lcov = fs.readFileSync('coverage/lcov.info', 'utf8');
+    lcov = fs.readFileSync('coverage/lcov.info', 'utf8')
 } catch (err) {
-    console.error("Error: Unable to read 'coverage/lcov.info'. Please ensure the file exists and is accessible.");
-    process.exit(1);
+    console.error(
+        "Error: Unable to read 'coverage/lcov.info'. Please ensure the file exists and is accessible.",
+        err,
+    )
+    process.exit(1)
 }
-const sections = lcov.split('end_of_record');
+const sections = lcov.split('end_of_record')
 const groups = {
     starters: [/src\/starters\.ts$/],
     dsl: [/src\/dsl\.ts$/],
