@@ -1,7 +1,7 @@
 import type { components } from '../models'
 import { staticImplements, type ContextBase, type Process, type ProcessStatic } from './types'
 
-// Internal helper for DSL-provided inputs metadata
+// DSL inputs metadata
 type ProcWithInputs = { _inputs?: string[] }
 
 /**
