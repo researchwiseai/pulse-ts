@@ -32,7 +32,7 @@ Pulse provides helpers and a workflow DSL to make analysis easy. For an overview
 functions see the [Starter Helpers guide](docs/starters.md).
 
 ```ts
-import { sentimentAnalysis, themeAllocation, clusterAnalysis } from '@rwai/pulse'
+import { sentimentAnalysis, themeAllocation, clusterAnalysis, summarize } from '@rwai/pulse'
 
 const sentiments = await sentimentAnalysis(['text1', 'text2'])
 const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'])
@@ -40,6 +40,7 @@ const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'
 // Themes are optional in the themeAllocation function
 const allocationWithoutThemes = await themeAllocation(['text1', 'text2'])
 const clusters = await clusterAnalysis(['text1', 'text2'])
+const summary = await summarize(['text1', 'text2'], 'What is the gist?')
 ```
 
 ### Authentication
