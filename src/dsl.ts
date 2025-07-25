@@ -9,6 +9,10 @@ import { ThemeExtraction } from './processes/ThemeExtraction'
 import { ThemeAllocation } from './processes/ThemeAllocation'
 import { Sentiment } from './processes/Sentiment'
 import { ThemeGeneration } from './processes/ThemeGeneration'
+import type { components } from './models'
+import { CreateEmbeddings } from './processes/CreateEmbeddings'
+import { CompareSimilarity } from './processes/CompareSimilarity'
+import { GenerateSummary } from './processes/GenerateSummary'
 import { Analyzer } from './analyzer'
 import type { Processes } from '.'
 import type { ContextBase } from './processes'
@@ -255,6 +259,70 @@ export class Workflow {
             !this.processes.some(p => p.id === alias)
         ) {
             throw new Error(`Unknown source for cluster: '${alias}'`)
+        }
+        proc._inputs = [alias]
+        return this
+    }
+
+    /**
+     * Add an embeddings creation step to the workflow.
+     */
+    createEmbeddings(options: { fast?: boolean; source?: string; name?: string } = {}): this {
+        const { fast, name, source } = options
+        const proc = new CreateEmbeddings({ fast }) as DSLProcess
+        this.addProcess(proc, name)
+        const alias = source ?? 'dataset'
+        if (
+            alias !== 'dataset' &&
+            !this.datasets[alias] &&
+            !this.processes.some(p => p.id === alias)
+        ) {
+            throw new Error(`Unknown source for createEmbeddings: '${alias}'`)
+        }
+        proc._inputs = [alias]
+        return this
+    }
+
+    /**
+     * Add a similarity comparison step to the workflow.
+     */
+    compareSimilarity(options: { fast?: boolean; source?: string; name?: string } = {}): this {
+        const { fast, name, source } = options
+        const proc = new CompareSimilarity({ fast }) as DSLProcess
+        this.addProcess(proc, name)
+        const alias = source ?? 'dataset'
+        if (
+            alias !== 'dataset' &&
+            !this.datasets[alias] &&
+            !this.processes.some(p => p.id === alias)
+        ) {
+            throw new Error(`Unknown source for compareSimilarity: '${alias}'`)
+        }
+        proc._inputs = [alias]
+        return this
+    }
+
+    /**
+     * Add a summary generation step to the workflow.
+     */
+    generateSummary(options: {
+        question: string
+        fast?: boolean
+        length?: components['schemas']['SummariesRequest']['length']
+        preset?: components['schemas']['SummariesRequest']['preset']
+        source?: string
+        name?: string
+    }): this {
+        const { fast, length, name, preset, question, source } = options
+        const proc = new GenerateSummary({ question, fast, length, preset }) as DSLProcess
+        this.addProcess(proc, name)
+        const alias = source ?? 'dataset'
+        if (
+            alias !== 'dataset' &&
+            !this.datasets[alias] &&
+            !this.processes.some(p => p.id === alias)
+        ) {
+            throw new Error(`Unknown source for generateSummary: '${alias}'`)
         }
         proc._inputs = [alias]
         return this

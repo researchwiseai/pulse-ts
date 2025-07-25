@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { setupPolly } from './setupPolly'
-import { getStrings, themeAllocation, clusterAnalysis, summarize } from '../src/starters'
+import {
+    getStrings,
+    themeAllocation,
+    clusterAnalysis,
+    summarize,
+    createEmbeddings,
+    compareSimilarity,
+} from '../src/starters'
 import { ClusterResult } from '../src/results'
 import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
 
@@ -59,6 +66,24 @@ describe('starters', { skip }, () => {
             const reviews = ['this is great']
             const res = await summarize(reviews, 'what?')
             expect(res.summary).toBeTypeOf('string')
+        })
+    })
+
+    describe('createEmbeddings starter', () => {
+        setupPolly()
+        it('returns embeddings', async () => {
+            const reviews = ['hello world']
+            const res = await createEmbeddings(reviews)
+            expect(Array.isArray(res.embeddings)).toBe(true)
+        })
+    })
+
+    describe('compareSimilarity starter', () => {
+        setupPolly()
+        it('returns similarity matrix', async () => {
+            const reviews = ['a', 'b']
+            const res = await compareSimilarity(reviews)
+            expect(Array.isArray(res.matrix)).toBe(true)
         })
     })
 })

@@ -29,6 +29,24 @@ describe('DSL id uniqueness and naming', () => {
             "Unknown inputs source for themeAllocation: 'unknown'",
         )
     })
+    it('throws when source unknown for createEmbeddings', () => {
+        const wf = new Workflow()
+        expect(() => wf.createEmbeddings({ source: 'x' })).toThrowError(
+            "Unknown source for createEmbeddings: 'x'",
+        )
+    })
+    it('throws when source unknown for compareSimilarity', () => {
+        const wf = new Workflow()
+        expect(() => wf.compareSimilarity({ source: 'y' })).toThrowError(
+            "Unknown source for compareSimilarity: 'y'",
+        )
+    })
+    it('throws when source unknown for generateSummary', () => {
+        const wf = new Workflow()
+        expect(() => wf.generateSummary({ question: 'q', source: 'z' })).toThrowError(
+            "Unknown source for generateSummary: 'z'",
+        )
+    })
 })
 import { ClientCredentialsAuth } from '../src/auth/ClientCredentialsAuth'
 import { Job } from '../src/core/job'
