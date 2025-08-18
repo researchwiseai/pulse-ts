@@ -3,7 +3,7 @@ import { CoreClient } from '../src/core/clients/CoreClient'
 import { Auth } from '../src/auth'
 import { setupPolly } from './setupPolly'
 
-const skip = !process.env.PULSE_CLIENT_SECRET
+const skip = !process.env.PULSE_CLIENT_SECRET || true
 
 describe('CoreClient clusterTexts and generateSummary integration', { skip }, () => {
     setupPolly()

@@ -14,16 +14,14 @@ import { processes } from '../src/processes/types'
 const clientId = process.env.PULSE_CLIENT_ID
 const clientSecret = process.env.PULSE_CLIENT_SECRET
 const tokenUrl = process.env.PULSE_TOKEN_URL
-const audience = process.env.PULSE_AUDIENCE
-const baseUrl = audience ?? process.env.PULSE_BASE_URL
-if (!clientId || !clientSecret || !tokenUrl || !audience) {
+const baseUrl = process.env.PULSE_BASE_URL
+if (!clientId || !clientSecret || !tokenUrl || !baseUrl) {
     describe.skip('Analyzer and processes (requires credentials)', () => {})
 } else {
     const auth = new ClientCredentialsAuth({
         clientId,
         clientSecret,
         tokenUrl,
-        audience,
     })
     const client = new CoreClient({ baseUrl: baseUrl as string, auth })
 
@@ -40,7 +38,7 @@ if (!clientId || !clientSecret || !tokenUrl || !audience) {
     describe('ThemeGeneration process', () => {
         setupPolly()
         it('generates between min and max themes', { timeout: 20_000 }, async () => {
-            const reviews = ['a', 'b', 'c']
+            const reviews = ['Great food', 'Tasty food', 'Quick service']
             const az = new Analyzer({
                 datasets: { dataset: reviews },
                 processes: processes(new ThemeGeneration({ minThemes: 2, maxThemes: 3 })),

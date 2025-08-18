@@ -36,6 +36,9 @@ export interface ClientCredentialsOptions {
     tokenUrl: string
     clientId: string
     clientSecret: string
+    /**
+     * @deprecated This parameter is ignored and will be removed in a future version.
+     */
     audience?: string
 } /**
  * Authentication interface for obtaining and refreshing access tokens.
