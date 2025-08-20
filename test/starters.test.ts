@@ -51,7 +51,7 @@ describe('starters', { skip }, () => {
         })
     })
 
-    describe('clusterAnalysis starter', () => {
+    describe('clusterAnalysis starter', { timeout: 30_000 }, () => {
         setupPolly()
         it('returns ClusterResult instance', async () => {
             const reviews = ['x', 'y']
@@ -60,7 +60,7 @@ describe('starters', { skip }, () => {
         })
     })
 
-    describe('summarize starter', () => {
+    describe('summarize starter', { timeout: 30_000 }, () => {
         setupPolly()
         it('returns a summary', async () => {
             const reviews = ['this is great']
@@ -69,7 +69,7 @@ describe('starters', { skip }, () => {
         })
     })
 
-    describe('createEmbeddings starter', () => {
+    describe('createEmbeddings starter', { timeout: 30_000 }, () => {
         setupPolly()
         it('returns embeddings', async () => {
             const reviews = ['hello world']
@@ -78,7 +78,7 @@ describe('starters', { skip }, () => {
         })
     })
 
-    describe('compareSimilarity starter', () => {
+    describe('compareSimilarity starter', { timeout: 30_000 }, () => {
         setupPolly()
         it('returns flattened similarity matrix', async () => {
             const reviews = ['a', 'b']

@@ -13,20 +13,14 @@ export type ExtractionsResponse = components['schemas']['ExtractionsResponse']
 export interface ExtractElementsInputs {
     /** Array of text strings to extract elements from. */
     texts: string[]
-    /** Optional category labels to guide the extraction. */
-    categories?: string[]
-    /** Optional custom dictionary mapping categories to keywords. */
-    dictionary?: Record<string, string[]>
+    /** Optional type of extraction to perform defaults to 'named-entities'. */
+    type?: 'named-entities' | 'themes'
+    /** Array of items or themes to extract elements for. */
+    dictionary: string[]
     /** Expand the dictionary with related terms. */
     expand_dictionary?: boolean
-    /** Use named-entity recognition for extraction. */
-    use_ner?: boolean
-    /** Use a language model to assist extraction. */
-    use_llm?: boolean
-    /** Confidence threshold for matches. */
-    threshold?: number
     /** Optional model version to use for extraction. */
-    version?: string
+    version?: 'original'
 }
 
 /**
@@ -41,12 +35,12 @@ export type ExtractElementsOptions<
 > = UniversalFeatureOptions<Fast, AwaitJobResult>
 
 /**
- * Extract specified elements from texts based on given themes via the Pulse API.
+ * Extract specified elements from texts based on given named entities or themes via the Pulse API.
  *
  * @typeParam Fast - If true, request synchronous processing.
  * @typeParam AwaitJobResult - If false and fast=false, return a Job handle.
  * @param client - CoreClient instance for API calls.
- * @param inputs - Inputs including texts and theme labels.
+ * @param inputs - Text inputs
  * @param options - Extraction options (fast, awaitJobResult).
  * @returns ExtractionsResponse or Job handle based on options.
  */
@@ -62,13 +56,10 @@ export async function extractElements<
     { awaitJobResult, fast }: ExtractElementsOptions<Fast, AwaitJobResult> = {},
 ) {
     const body: Omit<ExtractionsRequest, 'fast'> = {
-        texts: inputs.texts,
-        categories: inputs.categories,
+        inputs: inputs.texts,
+        type: inputs.type,
         dictionary: inputs.dictionary,
         expand_dictionary: inputs.expand_dictionary ?? true,
-        use_ner: inputs.use_ner ?? true,
-        use_llm: inputs.use_llm ?? true,
-        threshold: inputs.threshold ?? 0.5,
         version: inputs.version,
     }
 

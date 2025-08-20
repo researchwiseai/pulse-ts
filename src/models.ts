@@ -124,7 +124,7 @@ export interface paths {
          *      - In synchronous mode, processes up to 200 input strings and returns results immediately (HTTP 200).
          *      - In asynchronous mode, accepts up to 10,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
-         *     Optionally supply `version` for reproducible outputs.
+         *     Optionally supply `version` for reproducible outputs. Supported values are "2025-08-17" (default, recommended) and "original".
          *
          */
         post: operations["analyzeSentiment"];
@@ -144,15 +144,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Extract elements matching themes from input strings.
-         * @description Extracts substrings from inputs that match the provided themes.
-         *     Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
-         *
-         *      - Both modes support up to 200 input strings and up to 50 themes.
-         *      - Synchronous mode returns extraction results immediately (HTTP 200).
-         *      - Asynchronous mode returns a job_id (HTTP 202) to poll via the /jobs endpoint.
-         *
-         *     Returns a matrix where `matrix[i][j]` indicates how strongly input `i` matches category `columns[j]`.
+         * Extract terms or theme mentions from input texts.
+         * @description Extracts mentions from each input based on a provided dictionary.
+         *     Optionally expands the dictionary before matching. The optional `type` parameter
+         *     selects prompt style: `named-entities` (default) or `themes`.
          *
          */
         post: operations["extractElements"];
@@ -234,14 +229,24 @@ export interface components {
             embeddings: components["schemas"]["EmbeddingDocument"][];
             requestId: string;
         };
-        UnitAgg: ("sentence" | "newline") | {
+        UnitAgg: ("sentence" | "newline" | "word") | {
             /** @enum {string} */
-            unit: "sentence" | "newline";
+            unit: "sentence" | "newline" | "word";
             /**
              * @default mean
              * @enum {string}
              */
-            agg: "mean" | "max";
+            agg: "mean" | "max" | "top2" | "top3";
+            /**
+             * @description Sliding window size applied to the base unit. Default 1.
+             * @default 1
+             */
+            window_size: number;
+            /**
+             * @description Step size between windows. Default 1.
+             * @default 1
+             */
+            stride_size: number;
         };
         Split: components["schemas"]["UnitAgg"] | {
             set_a?: components["schemas"]["UnitAgg"];
@@ -278,6 +283,7 @@ export interface components {
             maxThemes?: number;
             context?: string;
             version?: string;
+            /** @description Cutoff percentage threshold (0-25) below which themes are pruned; if 0, pruning is disabled. */
             prune?: number;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean;
@@ -315,6 +321,8 @@ export interface components {
         SentimentRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 10,000. */
             inputs: string[];
+            /** @description Optional model version. Supported values are "2025-08-17" (default, recommended) and "original".
+             *      */
             version?: string;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean;
@@ -329,22 +337,31 @@ export interface components {
             requestId: string;
         };
         ExtractionsRequest: {
-            texts: string[];
-            categories?: string[];
-            dictionary?: {
-                [key: string]: string[];
-            };
-            expand_dictionary?: boolean;
-            use_ner?: boolean;
-            use_llm?: boolean;
-            threshold?: number;
+            inputs: string[];
+            /** @description Deprecated; accepted for backwards compatibility and ignored. */
+            category?: string;
+            /**
+             * @description Optional extraction type. Defaults to `named-entities`. When `themes`, `expand_dictionary` must be false.
+             * @enum {string}
+             */
+            type?: "named-entities" | "themes";
+            /** @description Required list of canonical terms to match. */
+            dictionary: string[];
+            /**
+             * @description Must be false when `type` is `themes`.
+             * @default false
+             */
+            expand_dictionary: boolean;
+            /** @description Optional limit on number of additions when expanding. */
+            expand_dictionary_limit?: number;
+            /** @description Optional model version (e.g., "original"). */
             version?: string;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
             fast?: boolean;
         };
         ExtractionsResponse: {
-            columns: string[];
-            matrix: number[][];
+            dictionary: string[];
+            results: string[][][];
             requestId: string;
         };
         SummariesRequest: {
@@ -360,9 +377,6 @@ export interface components {
         SummariesResponse: {
             summary: string;
             requestId: string;
-        };
-        JobResponse: {
-            job_id: string;
         };
         JobStatusResponse: {
             job_id?: string;
@@ -566,13 +580,15 @@ export interface operations {
                     "application/json": components["schemas"]["ExtractionsResponse"];
                 };
             };
-            /** @description Extraction job accepted for asynchronous processing. */
+            /** @description Accepted for asynchronous processing (fast=false). Returns a job_id to poll via /jobs. */
             202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["JobResponse"];
+                    "application/json": {
+                        job_id: string;
+                    };
                 };
             };
             /** @description Bad request - validation error. */

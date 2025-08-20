@@ -52,6 +52,11 @@ info:
         locks behaviour to that specific model version, enabling reproducible results
         even after future upgrades.
 
+        For the sentiment endpoint, the supported versions are:
+
+          - "2025-08-17" — default and recommended.
+          - "original" — legacy behaviour.
+
 servers:
     - url: https://pulse.researchwiseai.com/v1
       description: Production API server
@@ -88,8 +93,8 @@ tags:
           - In asynchronous mode, accepts up to 10,000 input strings and returns a job_id (HTTP 202).
     - name: extractions
       description: |
-          Extractions endpoint. Extracts elements matching themes with sync (fast=true) and async (fast=false or omitted) modes.
-          - Both modes support up to 200 input strings and up to 50 themes.
+          Extractions endpoint. Extracts mentions using a provided dictionary, with prompt style controlled by `type` (`named-entities` default, or `themes`).
+          - Both modes support up to 200 input strings and a practical limit on dictionary size.
           - Synchronous returns immediate results (HTTP 200); asynchronous returns a job_id (HTTP 202).
     - name: jobs
       description: |
@@ -360,7 +365,7 @@ paths:
                  - In synchronous mode, processes up to 200 input strings and returns results immediately (HTTP 200).
                  - In asynchronous mode, accepts up to 10,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
 
-                Optionally supply `version` for reproducible outputs.
+                Optionally supply `version` for reproducible outputs. Supported values are "2025-08-17" (default, recommended) and "original".
             tags: [sentiment]
             requestBody:
                 required: true
@@ -377,7 +382,12 @@ paths:
                                 summary: Sentiment request with version
                                 value:
                                     inputs: ['It was okay']
-                                    version: 'v1'
+                                    version: '2025-08-17'
+                            OriginalVersion:
+                                summary: Sentiment request using legacy version
+                                value:
+                                    inputs: ['It was okay']
+                                    version: 'original'
             responses:
                 '200':
                     description: Sentiment analysis results.
@@ -412,16 +422,11 @@ paths:
     /extractions:
         post:
             operationId: extractElements
-            summary: Extract elements matching themes from input strings.
+            summary: Extract terms or theme mentions from input texts.
             description: |
-                Extracts substrings from inputs that match the provided themes.
-                Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
-
-                 - Both modes support up to 200 input strings and up to 50 themes.
-                 - Synchronous mode returns extraction results immediately (HTTP 200).
-                 - Asynchronous mode returns a job_id (HTTP 202) to poll via the /jobs endpoint.
-
-                Returns a matrix where `matrix[i][j]` indicates how strongly input `i` matches category `columns[j]`.
+                Extracts mentions from each input based on a provided dictionary.
+                Optionally expands the dictionary before matching. The optional `type` parameter
+                selects prompt style: `named-entities` (default) or `themes`.
             tags: [extractions]
             requestBody:
                 required: true
@@ -431,10 +436,17 @@ paths:
                             $ref: '#/components/schemas/ExtractionsRequest'
                         examples:
                             Default:
-                                summary: Basic extractions request
+                                summary: Basic extractions request (named entities)
                                 value:
-                                    texts: ['The food was great and the service was slow.']
-                                    categories: ['food', 'service']
+                                    inputs: ['The food was great and the service was slow.']
+                                    dictionary: ['service', 'wait time']
+                                    type: 'named-entities'
+                            Themes:
+                                summary: Extractions using theme labels
+                                value:
+                                    inputs: ['Checkout was confusing and payment failed twice']
+                                    dictionary: ['Checkout UX', 'Payments', 'Account setup']
+                                    type: 'themes'
             responses:
                 '200':
                     description: Extraction results returned successfully.
@@ -446,16 +458,23 @@ paths:
                                 ExtractionsResponseExample:
                                     summary: Sample extractions response
                                     value:
-                                        columns: ['food', 'service']
-                                        matrix:
-                                            - [1, 1]
+                                        dictionary: ['service', 'wait time']
+                                        results:
+                                            - [['service'], ['service was slow']]
                                         requestId: 'example-request-id'
                 '202':
-                    description: Extraction job accepted for asynchronous processing.
+                    description:
+                        Accepted for asynchronous processing (fast=false). Returns a job_id to poll
+                        via /jobs.
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/JobResponse'
+                                type: object
+                                properties:
+                                    job_id:
+                                        type: string
+                                required: [job_id]
+                                additionalProperties: false
                 '400':
                     description: Bad request - validation error.
                     content:
@@ -466,9 +485,7 @@ paths:
                                 InvalidExtractionsRequest:
                                     summary: Sample validation error response
                                     value:
-                                        message:
-                                            'Validation error: texts must be an array of 1 to 200
-                                            strings and categories must be an array of 1 to 50 strings.'
+                                        message: 'Validation error: invalid extraction request'
 
     /summaries:
         post:
@@ -586,7 +603,7 @@ components:
                        "grant_type": "client_credentials"
                      }
                   2. Extract the "access_token" field from the response.
-                  3. Use the token in the Authorization header for API requests: Bearer <access_token>
+                  3. Use the token in the Authorization header for API requests: Bearer &lt;access_token&gt;
 
     schemas:
         ErrorResponse:
@@ -654,16 +671,26 @@ components:
         UnitAgg:
             oneOf:
                 - type: string
-                  enum: [sentence, newline]
+                  enum: [sentence, newline, word]
                 - type: object
                   properties:
                       unit:
                           type: string
-                          enum: [sentence, newline]
+                          enum: [sentence, newline, word]
                       agg:
                           type: string
-                          enum: [mean, max]
+                          enum: [mean, max, top2, top3]
                           default: mean
+                      window_size:
+                          type: integer
+                          minimum: 1
+                          description: Sliding window size applied to the base unit. Default 1.
+                          default: 1
+                      stride_size:
+                          type: integer
+                          minimum: 1
+                          description: Step size between windows. Default 1.
+                          default: 1
                   required: [unit]
                   additionalProperties: false
 
@@ -784,8 +811,11 @@ components:
                     type: string
                 prune:
                     type: integer
+                    description: >-
+                        Cutoff percentage threshold (0-25) below which themes are pruned; if 0,
+                        pruning is disabled.
                     minimum: 0
-                    maximum: 50
+                    maximum: 25
                 fast:
                     type: boolean
                     description:
@@ -890,6 +920,8 @@ components:
                         type: string
                 version:
                     type: string
+                    description: |
+                        Optional model version. Supported values are "2025-08-17" (default, recommended) and "original".
                 fast:
                     type: boolean
                     description:
@@ -927,61 +959,62 @@ components:
         ExtractionsRequest:
             type: object
             properties:
-                texts:
+                inputs:
                     type: array
                     minItems: 1
                     maxItems: 200
                     items:
                         type: string
-                categories:
+                category:
+                    type: string
+                    description: Deprecated; accepted for backwards compatibility and ignored.
+                type:
+                    type: string
+                    enum: [named-entities, themes]
+                    description:
+                        Optional extraction type. Defaults to `named-entities`. When `themes`,
+                        `expand_dictionary` must be false.
+                dictionary:
                     type: array
-                    minItems: 1
-                    maxItems: 50
                     items:
                         type: string
-                dictionary:
-                    type: object
-                    additionalProperties:
-                        type: array
-                        items:
-                            type: string
+                    description: Required list of canonical terms to match.
                 expand_dictionary:
                     type: boolean
-                use_ner:
-                    type: boolean
-                use_llm:
-                    type: boolean
-                threshold:
+                    default: false
+                    description: Must be false when `type` is `themes`.
+                expand_dictionary_limit:
                     type: number
-                    minimum: 0
-                    maximum: 1
+                    description: Optional limit on number of additions when expanding.
                 version:
                     type: string
+                    description: Optional model version (e.g., "original").
                 fast:
                     type: boolean
                     description:
                         Flag indicating synchronous (true) or asynchronous (false) processing.
                         Default false.
-            required: [texts]
+            required: [inputs, dictionary]
             additionalProperties: false
 
         ExtractionsResponse:
             type: object
             properties:
-                columns:
+                dictionary:
                     type: array
                     items:
                         type: string
-                matrix:
+                results:
                     type: array
                     items:
                         type: array
                         items:
-                            type: number
-                            format: float
+                            type: array
+                            items:
+                                type: string
                 requestId:
                     type: string
-            required: [columns, matrix, requestId]
+            required: [dictionary, results, requestId]
             additionalProperties: false
 
         SummariesRequest:
@@ -1027,14 +1060,6 @@ components:
                 requestId:
                     type: string
             required: [summary, requestId]
-            additionalProperties: false
-
-        JobResponse:
-            type: object
-            properties:
-                job_id:
-                    type: string
-            required: [job_id]
             additionalProperties: false
 
         JobStatusResponse:

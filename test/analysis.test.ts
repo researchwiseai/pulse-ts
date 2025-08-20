@@ -55,7 +55,7 @@ if (!clientId || !clientSecret || !tokenUrl || !baseUrl) {
 
     describe('Sentiment', () => {
         setupPolly()
-        it('analyzes sentiment for each text', async () => {
+        it('analyzes sentiment for each text', { timeout: 25_000 }, async () => {
             const reviews = ['good', 'bad', 'meh']
             const az = new Analyzer({
                 datasets: { dataset: reviews },
@@ -72,7 +72,7 @@ if (!clientId || !clientSecret || !tokenUrl || !baseUrl) {
         })
     })
 
-    describe('ThemeAllocation with static themes', () => {
+    describe('ThemeAllocation with static themes', { timeout: 25_000 }, () => {
         setupPolly()
         it('assigns themes for each text', async () => {
             const reviews = ['x', 'y']
