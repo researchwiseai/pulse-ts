@@ -7,11 +7,7 @@ import {
 } from './compareSimilarity'
 import type { CoreClientOptions } from './CoreClientOptions'
 import { createEmbeddings, type CreateEmbeddingsOptions } from './createEmbeddings'
-import {
-    extractElements,
-    type ExtractElementsInputs,
-    type ExtractElementsOptions,
-} from './extractElements'
+import { extractElements, type ExtractElementsInputs } from './extractElements'
 import { generateThemes, type GenerateThemeOptions } from './generateThemes'
 import { clusterTexts, type ClusterTextsInputs, type ClusterTextsOptions } from './clusterTexts'
 import { generateSummary, type GenerateSummaryOptions } from './generateSummary'
@@ -123,17 +119,11 @@ export class CoreClient {
     /**
      * Extract specified elements from an array of input texts.
      *
-     * @typeParam Fast - Flag to enable synchronous processing.
-     * @typeParam AwaitJobResult - Flag to await background job result.
-     * @param inputs - Elements extraction inputs including texts and optional categories.
-     * @param opts - Extraction options (fast, awaitJobResult).
-     * @returns ExtractionsResponse or Job handle, based on options.
+     * @param inputs - Elements extraction inputs including texts and category.
+     * @returns ExtractionsResponse.
      */
-    async extractElements<
-        Fast extends boolean | undefined = undefined,
-        AwaitJobResult extends boolean | undefined = undefined,
-    >(inputs: ExtractElementsInputs, opts: ExtractElementsOptions<Fast, AwaitJobResult> = {}) {
-        return extractElements(this, inputs, opts)
+    async extractElements(inputs: ExtractElementsInputs) {
+        return extractElements(this, inputs)
     }
 
     /**

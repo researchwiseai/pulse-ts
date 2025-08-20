@@ -13,7 +13,7 @@ export type {
     CompareSimilarityCross,
 } from './compareSimilarity'
 export type { CreateEmbeddingsOptions } from './createEmbeddings'
-export type { ExtractElementsInputs, ExtractElementsOptions } from './extractElements'
+export type { ExtractElementsInputs } from './extractElements'
 export type { GenerateThemeOptions } from './generateThemes'
 export type { GenerateSummaryOptions } from './generateSummary'
 export type { UniversalFeatureOptions } from './types'
