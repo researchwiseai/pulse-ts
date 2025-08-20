@@ -412,16 +412,10 @@ paths:
     /extractions:
         post:
             operationId: extractElements
-            summary: Extract elements matching themes from input strings.
+            summary: Extract terms matching a category from input texts.
             description: |
-                Extracts substrings from inputs that match the provided themes.
-                Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
-
-                 - Both modes support up to 200 input strings and up to 50 themes.
-                 - Synchronous mode returns extraction results immediately (HTTP 200).
-                 - Asynchronous mode returns a job_id (HTTP 202) to poll via the /jobs endpoint.
-
-                Returns a matrix where `matrix[i][j]` indicates how strongly input `i` matches category `columns[j]`.
+                Extracts mentions from each input based on a required category and dictionary.
+                Optionally expands the dictionary before matching.
             tags: [extractions]
             requestBody:
                 required: true
@@ -433,8 +427,10 @@ paths:
                             Default:
                                 summary: Basic extractions request
                                 value:
-                                    texts: ['The food was great and the service was slow.']
-                                    categories: ['food', 'service']
+                                    inputs:
+                                        - 'The food was great and the service was slow.'
+                                    category: 'service'
+                                    dictionary: ['service', 'wait time']
             responses:
                 '200':
                     description: Extraction results returned successfully.
@@ -446,16 +442,9 @@ paths:
                                 ExtractionsResponseExample:
                                     summary: Sample extractions response
                                     value:
-                                        columns: ['food', 'service']
-                                        matrix:
-                                            - [1, 1]
-                                        requestId: 'example-request-id'
-                '202':
-                    description: Extraction job accepted for asynchronous processing.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/JobResponse'
+                                        dictionary: ['service', 'wait time']
+                                        results:
+                                            - [['service'], ['service was slow']]
                 '400':
                     description: Bad request - validation error.
                     content:
@@ -466,9 +455,7 @@ paths:
                                 InvalidExtractionsRequest:
                                     summary: Sample validation error response
                                     value:
-                                        message:
-                                            'Validation error: texts must be an array of 1 to 200
-                                            strings and categories must be an array of 1 to 50 strings.'
+                                        message: 'Validation error: invalid extraction request'
 
     /summaries:
         post:
@@ -927,61 +914,44 @@ components:
         ExtractionsRequest:
             type: object
             properties:
-                texts:
+                inputs:
                     type: array
                     minItems: 1
                     maxItems: 200
                     items:
                         type: string
-                categories:
+                category:
+                    type: string
+                dictionary:
                     type: array
-                    minItems: 1
-                    maxItems: 50
                     items:
                         type: string
-                dictionary:
-                    type: object
-                    additionalProperties:
-                        type: array
-                        items:
-                            type: string
+                    description: Required list of canonical terms to match.
                 expand_dictionary:
                     type: boolean
-                use_ner:
-                    type: boolean
-                use_llm:
-                    type: boolean
-                threshold:
+                    default: false
+                expand_dictionary_limit:
                     type: number
-                    minimum: 0
-                    maximum: 1
-                version:
-                    type: string
-                fast:
-                    type: boolean
-                    description:
-                        Flag indicating synchronous (true) or asynchronous (false) processing.
-                        Default false.
-            required: [texts]
+                    description: Optional limit on number of additions when expanding.
+            required: [inputs, category, dictionary]
             additionalProperties: false
 
         ExtractionsResponse:
             type: object
             properties:
-                columns:
+                dictionary:
                     type: array
                     items:
                         type: string
-                matrix:
+                results:
                     type: array
                     items:
                         type: array
                         items:
-                            type: number
-                            format: float
-                requestId:
-                    type: string
-            required: [columns, matrix, requestId]
+                            type: array
+                            items:
+                                type: string
+            required: [dictionary, results]
             additionalProperties: false
 
         SummariesRequest:

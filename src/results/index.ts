@@ -21,46 +21,40 @@ export class ClusterResult {
  * Results of theme extraction with helper methods.
  */
 export class ThemeExtractionResult {
-    private data: { columns: string[]; matrix: number[][]; requestId: string }
+    private data: { dictionary: string[]; results: string[][][] }
 
     /**
-     * @param data - Extraction results containing the category matrix.
+     * @param data - Extraction results containing dictionary and matches.
      * @param texts - Original array of texts processed.
      */
     constructor(
-        data: { columns: string[]; matrix: number[][]; requestId: string },
+        data: { dictionary: string[]; results: string[][][] },
         private texts: string[],
     ) {
         this.data = data
     }
 
-    /** Category columns returned by the API. */
-    get columns(): string[] {
-        return this.data.columns
+    /** Canonical dictionary returned by the API. */
+    get dictionary(): string[] {
+        return this.data.dictionary
     }
 
-    /** Matrix of category scores per input text. */
-    get matrix(): number[][] {
-        return this.data.matrix
-    }
-
-    /**
-     * Request identifier returned by the API.
-     */
-    get requestId(): string {
-        return this.data.requestId
+    /** Extraction results per input text. */
+    get results(): string[][][] {
+        return this.data.results
     }
 
     /**
      * Convert extraction results to a flat array of objects.
      *
-     * @returns Array of entries each containing text, category, and score.
+     * @returns Array of entries each containing text, canonical term, and extracted span.
      */
-    toArray(): Array<{ text: string; category: string; score: number }> {
-        const rows: Array<{ text: string; category: string; score: number }> = []
-        this.matrix.forEach((row, i) => {
-            row.forEach((score, j) => {
-                rows.push({ text: this.texts[i], category: this.columns[j], score })
+    toArray(): Array<{ text: string; canonical: string; span: string }> {
+        const rows: Array<{ text: string; canonical: string; span: string }> = []
+        this.results.forEach((res, i) => {
+            const [canonicals = [], spans = []] = res
+            canonicals.forEach((term, idx) => {
+                rows.push({ text: this.texts[i], canonical: term, span: spans[idx] ?? '' })
             })
         })
         return rows
