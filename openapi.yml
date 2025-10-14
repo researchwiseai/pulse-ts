@@ -2,9 +2,9 @@
 openapi: 3.1.0
 info:
     title: Pulse API
-    version: 0.6.0
+    version: 0.10.0
     description: |
-        A stateless RESTful service that provides **six** core capabilities:
+        A stateless RESTful service that provides **seven** core capabilities:
 
           - Batch generation of dense vector embeddings for up to 200 input strings.
           - Flexible cosine-similarity computations across strings.
@@ -12,6 +12,7 @@ info:
           - Sentiment classification of each input string.
           - Extraction of text elements matching specified themes from input strings.
           - Clustering of text into groups using vector embeddings.
+          - Data dictionary generation from 2D arrays with DDI Codebook output.
 
         ### Similarity
 
@@ -45,6 +46,14 @@ info:
         The sentiment endpoint classifies each input string as **positive**, **negative**,
         **neutral**, or **mixed** and returns a confidence value ∈ [0, 1].
 
+        ### Data Dictionary
+
+        The data dictionary endpoint analyzes 2D arrays of data cells and generates comprehensive
+        DDI (Data Documentation Initiative) Codebook documentation in JSON format. It uses AI
+        to intelligently analyze data patterns, infer variable types, detect value ranges, and
+        generate meaningful metadata descriptions that conform to DDI standards. Only supports
+        asynchronous processing due to the computational complexity of analyzing large datasets.
+
         ### Versioning
 
         The service maintains internally versioned models. When the optional `version`
@@ -56,6 +65,11 @@ info:
 
           - "2025-08-17" — default and recommended.
           - "original" — legacy behaviour.
+
+        For the themes endpoint, the supported versions are:
+
+          - "original" — default and legacy behaviour.
+          - "2025-09-01" — opt-in model with `themeSets` responses.
 
 servers:
     - url: https://pulse.researchwiseai.com/v1
@@ -70,7 +84,7 @@ tags:
       description: |
           Embeddings endpoint. Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
            - In synchronous mode, processes up to 200 input strings and returns embeddings immediately (HTTP 200).
-           - In asynchronous mode, accepts up to 2,000 input strings and returns a job_id (HTTP 202) to poll via /jobs.
+           - In asynchronous mode, accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via /jobs.
     - name: similarity
       description: |
           Similarity endpoint. Provides self- and cross-similarity computations with sync (fast=true) and async (fast=false or omitted) modes.
@@ -84,22 +98,33 @@ tags:
     - name: clustering
       description: |
           Clustering endpoint. Groups texts into clusters using kmeans, spherical k-means (skmeans), agglomerative, or HDBSCAN algorithms operating on full embeddings.
-          - In synchronous mode, processes up to 200 input strings and returns clusters immediately (HTTP 200).
-          - In asynchronous mode, accepts up to 500 input strings and returns a job_id (HTTP 202).
+          - In synchronous mode, processes up to 500 input strings and returns clusters immediately (HTTP 200).
+          - In asynchronous mode, accepts up to 44,721 input strings and returns a job_id (HTTP 202).
     - name: sentiment
       description: |
           Sentiment endpoint. Classifies sentiment with sync (fast=true) and async (fast=false or omitted) modes.
           - In synchronous mode, processes up to 200 input strings (HTTP 200).
-          - In asynchronous mode, accepts up to 10,000 input strings and returns a job_id (HTTP 202).
+          - In asynchronous mode, accepts up to 5,000 input strings and returns a job_id (HTTP 202).
     - name: extractions
       description: |
           Extractions endpoint. Extracts mentions using a provided dictionary, with prompt style controlled by `type` (`named-entities` default, or `themes`).
-          - Both modes support up to 200 input strings and a practical limit on dictionary size.
-          - Synchronous returns immediate results (HTTP 200); asynchronous returns a job_id (HTTP 202).
+          - In synchronous mode, processes up to 200 input strings and returns results immediately (HTTP 200).
+          - In asynchronous mode, accepts up to 5,000 input strings and returns a job_id (HTTP 202).
+    - name: data-dictionary
+      description: |
+          Data Dictionary endpoint. Analyzes 2D arrays of data cells and generates comprehensive DDI (Data Documentation Initiative) Codebook documentation in JSON format.
+          - Only supports asynchronous mode (fast=false) to handle potentially large datasets without timeout constraints.
+          - Accepts up to 50,000 rows × 1,000 columns (max 100,000 total cells) and returns a job_id (HTTP 202) to poll via /jobs.
     - name: jobs
       description: |
           Jobs endpoint. Poll job status for asynchronous requests generated by other endpoints.
           - Retrieve status and result URL for completed jobs.
+    - name: usage
+      description: |
+          Estimate credit usage for a task without authentication.
+    - name: system
+      description: |
+          System endpoints.
 
 paths:
     /embeddings:
@@ -112,7 +137,7 @@ paths:
                 Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
 
                 • Synchronous mode processes up to 200 input strings and returns embeddings immediately (HTTP 200).
-                • Asynchronous mode accepts up to 2,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
+                • Asynchronous mode accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
             tags: [embeddings]
             requestBody:
                 required: true
@@ -125,6 +150,15 @@ paths:
                                 summary: Sample embeddings request
                                 value:
                                     inputs: ['Hello world', 'Test input']
+                            WithProvider:
+                                summary: Embeddings request with provider override
+                                value:
+                                    inputs: ['Hello world']
+                                    provider:
+                                        type: openai
+                                        auth:
+                                            api_key: 'example-key'
+                                        endpoint: 'https://api.openai.com/v1'
             responses:
                 '200':
                     description: Embeddings successfully created.
@@ -143,7 +177,8 @@ paths:
                                               vector: [0.4, 0.5, 0.6]
                                         requestId: 'example-request-id'
                 '400':
-                    description: Bad request - validation error (e.g., >200 strings).
+                    description:
+                        Bad request - validation error (e.g., >200 strings, invalid provider spec).
                     content:
                         application/json:
                             schema:
@@ -152,9 +187,50 @@ paths:
                                 InvalidEmbeddingsRequest:
                                     summary: Sample validation error response
                                     value:
-                                        message:
-                                            'Validation error: inputs must be an array of up to 200
-                                            strings.'
+                                        code: validation_error
+                                        message: 'inputs must be an array of up to 200 strings'
+                                        errors:
+                                            - message: 'Too many items'
+                                              path: ['inputs']
+                                              field: inputs
+                                              location: body
+                                InvalidProviderSpec:
+                                    summary: Invalid provider specification
+                                    value:
+                                        code: validation_error
+                                        message: 'provider spec is invalid'
+                                        errors:
+                                            - message: 'Invalid provider'
+                                              path: ['provider']
+                                              field: provider
+                                              location: body
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
 
     /similarity:
         post:
@@ -183,7 +259,7 @@ paths:
                                 value:
                                     set_a: ['apple', 'banana']
                                     set_b: ['orange', 'pear']
-                                    version: 'v1'
+                                    version: 'original'
                             SplitExample:
                                 summary: Sentence and newline splitting
                                 value:
@@ -195,6 +271,14 @@ paths:
                                             unit: sentence
                                             agg: max
                                     flatten: true
+                            WithProvider:
+                                summary: Similarity request with provider override
+                                value:
+                                    set: ['a', 'b']
+                                    provider:
+                                        type: openai
+                                        auth:
+                                            api_key: 'example-key'
             responses:
                 '200':
                     description: Similarity values returned successfully.
@@ -220,7 +304,8 @@ paths:
                                         flattened: [0.9]
                                         requestId: 'example-request-id'
                 '400':
-                    description: Bad request - validation error (e.g., invalid input).
+                    description:
+                        Bad request - validation error (e.g., invalid input, unsupported provider).
                     content:
                         application/json:
                             schema:
@@ -229,9 +314,50 @@ paths:
                                 InvalidSimilarityRequest:
                                     summary: Sample validation error response
                                     value:
+                                        code: validation_error
                                         message:
-                                            "Invalid request: either 'set' or both 'set_a' and
-                                            'set_b' must be provided."
+                                            "either 'set' or both 'set_a' and 'set_b' must be
+                                            provided"
+                                        errors:
+                                            - message: 'Missing required fields'
+                                              location: body
+                                UnsupportedProvider:
+                                    summary: Unsupported provider
+                                    value:
+                                        code: validation_error
+                                        message: 'provider is unsupported'
+                                        errors:
+                                            - message: 'Unsupported provider'
+                                              path: ['provider']
+                                              field: provider
+                                              location: body
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
 
     /themes:
         post:
@@ -265,15 +391,27 @@ paths:
                                     minThemes: 2
                                     maxThemes: 5
                                     context: 'focus on reliability issues'
-                                    version: 'v1'
+                                    version: '2025-09-01'
                                     prune: 5
+                                    interactive: true
+                                    initialSets: 2
+                            WithProvider:
+                                summary: Themes request with provider override
+                                value:
+                                    inputs: ['service great', 'service slow']
+                                    provider:
+                                        type: openai
+                                        auth:
+                                            api_key: 'example-key'
             responses:
                 '200':
                     description: Thematic clustering completed successfully.
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ThemesResponse'
+                                oneOf:
+                                    - $ref: '#/components/schemas/ThemesResponse'
+                                    - $ref: '#/components/schemas/ThemeSetsResponse'
                             examples:
                                 ThemesResponseExample:
                                     summary: Sample themes response
@@ -296,9 +434,40 @@ paths:
                                 InvalidThemesRequest:
                                     summary: Sample validation error response
                                     value:
-                                        message:
-                                            'Validation error: inputs must be an array of 2 to 500
-                                            strings.'
+                                        code: validation_error
+                                        message: 'inputs must be an array of 2 to 500 strings'
+                                        errors:
+                                            - message: 'Too few items'
+                                              path: ['inputs']
+                                              field: inputs
+                                              location: body
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
 
     /clustering:
         post:
@@ -308,8 +477,8 @@ paths:
                 Performs server-side clustering of input strings using algorithms that operate on full embeddings.
                 Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
 
-                 - In synchronous mode, processes up to 200 input strings and returns clusters immediately (HTTP 200).
-                 - In asynchronous mode, accepts up to 500 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
+                 - In synchronous mode, processes up to 500 input strings and returns clusters immediately (HTTP 200).
+                 - In asynchronous mode, accepts up to 44,721 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
             tags: [clustering]
             requestBody:
                 required: true
@@ -354,6 +523,33 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
     /sentiment:
         post:
             operationId: analyzeSentiment
@@ -363,7 +559,7 @@ paths:
                 Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
 
                  - In synchronous mode, processes up to 200 input strings and returns results immediately (HTTP 200).
-                 - In asynchronous mode, accepts up to 10,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
+                 - In asynchronous mode, accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
 
                 Optionally supply `version` for reproducible outputs. Supported values are "2025-08-17" (default, recommended) and "original".
             tags: [sentiment]
@@ -388,6 +584,14 @@ paths:
                                 value:
                                     inputs: ['It was okay']
                                     version: 'original'
+                            WithProvider:
+                                summary: Sentiment request with provider override
+                                value:
+                                    inputs: ['Great service']
+                                    provider:
+                                        type: openai
+                                        auth:
+                                            api_key: 'example-key'
             responses:
                 '200':
                     description: Sentiment analysis results.
@@ -406,7 +610,7 @@ paths:
                                               confidence: 0.85
                                         requestId: 'example-request-id'
                 '400':
-                    description: Bad request - validation error.
+                    description: Bad request - validation error (e.g., invalid endpoint).
                     content:
                         application/json:
                             schema:
@@ -415,9 +619,45 @@ paths:
                                 InvalidSentimentRequest:
                                     summary: Sample validation error response
                                     value:
-                                        message:
-                                            'Validation error: inputs must be an array of 1 to 10000
-                                            strings.'
+                                        code: validation_error
+                                        message: 'inputs must be an array of 1 to 5000 strings'
+                                InvalidEndpoint:
+                                    summary: Invalid provider endpoint
+                                    value:
+                                        code: validation_error
+                                        message: 'provider endpoint is invalid'
+                                        errors:
+                                            - message: 'Invalid endpoint'
+                                              path: ['provider', 'endpoint']
+                                              field: provider.endpoint
+                                              location: body
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
 
     /extractions:
         post:
@@ -427,6 +667,11 @@ paths:
                 Extracts mentions from each input based on a provided dictionary.
                 Optionally expands the dictionary before matching. The optional `type` parameter
                 selects prompt style: `named-entities` (default) or `themes`.
+
+                Supports synchronous (fast=true) and asynchronous (fast=false or omitted) modes.
+
+                 - In synchronous mode, processes up to 200 input strings and returns results immediately (HTTP 200).
+                 - In asynchronous mode, accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
             tags: [extractions]
             requestBody:
                 required: true
@@ -447,6 +692,15 @@ paths:
                                     inputs: ['Checkout was confusing and payment failed twice']
                                     dictionary: ['Checkout UX', 'Payments', 'Account setup']
                                     type: 'themes'
+                            WithProvider:
+                                summary: Extractions request with provider override
+                                value:
+                                    inputs: ['Great food']
+                                    dictionary: ['food']
+                                    provider:
+                                        type: openai
+                                        auth:
+                                            api_key: 'example-key'
             responses:
                 '200':
                     description: Extraction results returned successfully.
@@ -485,7 +739,35 @@ paths:
                                 InvalidExtractionsRequest:
                                     summary: Sample validation error response
                                     value:
-                                        message: 'Validation error: invalid extraction request'
+                                        code: validation_error
+                                        message: 'invalid extraction request'
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
 
     /summaries:
         post:
@@ -523,6 +805,209 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 12
+
+    /data-dictionary:
+        post:
+            operationId: generateDataDictionary
+            summary: Generate DDI Codebook documentation from 2D data arrays.
+            description: |
+                Analyzes 2D arrays of data cells and generates comprehensive DDI (Data Documentation Initiative) Codebook documentation in JSON format.
+                Uses OpenAI's agent capabilities with structured output to intelligently analyze data patterns, infer variable types, detect value ranges, and generate meaningful metadata descriptions that conform to DDI standards.
+
+                **Asynchronous Processing Only**: This endpoint only supports asynchronous mode (fast=false or omitted) to handle potentially large datasets without timeout constraints.
+                Returns a job_id (HTTP 202) to poll via the /jobs endpoint.
+
+                **Data Limits**:
+                - Maximum 50,000 rows
+                - Maximum 1,000 columns  
+                - Maximum 100,000 total cells
+                - Each cell must be a string value
+
+                **Generated DDI Codebook includes**:
+                - Variable names, labels, and descriptions following DDI standards
+                - Data type inference and measurement level classification
+                - Value domains with categorical codes and labels
+                - Statistical summaries for numeric variables
+                - Missing value documentation and patterns
+                - Dataset-level metadata (title, description, creation date)
+            tags: [data-dictionary]
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DataDictionaryRequest'
+                        examples:
+                            BasicExample:
+                                summary: Basic data dictionary request
+                                value:
+                                    data:
+                                        [
+                                            ['Name', 'Age', 'City', 'Satisfaction'],
+                                            ['John Doe', '25', 'New York', 'Very Satisfied'],
+                                            ['Jane Smith', '30', 'Los Angeles', 'Satisfied'],
+                                            ['', '35', 'Chicago', 'Neutral'],
+                                            ['Bob Johnson', 'invalid', 'Houston', 'Dissatisfied'],
+                                        ]
+                            WithOptions:
+                                summary: Data dictionary request with metadata options
+                                value:
+                                    data:
+                                        [
+                                            ['Product', 'Rating', 'Recommend'],
+                                            ['Widget A', 'Excellent', 'Yes'],
+                                            ['Widget B', 'Good', 'Yes'],
+                                            ['Widget C', 'Poor', 'No'],
+                                        ]
+                                    options:
+                                        title: 'Product Feedback Survey'
+                                        description: 'Customer satisfaction survey responses'
+                                        context:
+                                            'Focus on product quality and recommendation patterns'
+                                        language: 'en'
+                            CategoricalData:
+                                summary: Categorical data with missing values
+                                value:
+                                    data:
+                                        [
+                                            ['Department', 'Satisfaction', 'Years'],
+                                            ['Engineering', 'Very Satisfied', '3'],
+                                            ['Marketing', 'Satisfied', '1'],
+                                            ['Sales', '', '5'],
+                                            ['', 'Dissatisfied', '2'],
+                                        ]
+                            NumericData:
+                                summary: Numeric data for statistical analysis
+                                value:
+                                    data:
+                                        [
+                                            ['Temperature', 'Humidity', 'Pressure'],
+                                            ['23.5', '65', '1013.25'],
+                                            ['24.1', '68', '1012.80'],
+                                            ['22.8', 'invalid', '1014.10'],
+                                            ['', '70', '1013.00'],
+                                        ]
+            responses:
+                '202':
+                    description:
+                        Accepted for asynchronous processing. Returns a job_id to poll via /jobs.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    job_id:
+                                        type: string
+                                        description: Unique identifier for the asynchronous job
+                                required: [job_id]
+                                additionalProperties: false
+                            examples:
+                                AcceptedResponse:
+                                    summary: Job accepted for processing
+                                    value:
+                                        job_id: 'dd_abc123def456'
+                '400':
+                    description: Bad request - validation error or fast mode attempted.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                FastModeError:
+                                    summary: Fast mode not supported
+                                    value:
+                                        code: invalid_request
+                                        message:
+                                            'Data dictionary generation only supports asynchronous
+                                            mode (fast=false)'
+                                        errors:
+                                            - message: 'Fast mode not supported'
+                                              location: body
+                                              field: fast
+                                EmptyDataError:
+                                    summary: Empty data array
+                                    value:
+                                        code: validation_error
+                                        message: 'Data array cannot be empty'
+                                        errors:
+                                            - message: 'Data array cannot be empty'
+                                              path: ['data']
+                                              field: data
+                                              location: body
+                                InvalidStructureError:
+                                    summary: Invalid 2D array structure
+                                    value:
+                                        code: validation_error
+                                        message: 'All rows must have the same number of columns'
+                                        errors:
+                                            - message: 'Inconsistent row lengths'
+                                              path: ['data']
+                                              field: data
+                                              location: body
+                                DataTooLargeError:
+                                    summary: Data exceeds size limits
+                                    value:
+                                        code: validation_error
+                                        message: 'Data cannot exceed 100,000 total cells'
+                                        errors:
+                                            - message: 'Too many cells'
+                                              path: ['data']
+                                              field: data
+                                              location: body
+                '401':
+                    description: Missing or invalid authorization (organization).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                MissingOrg:
+                                    summary: Missing organization
+                                    value:
+                                        code: auth_missing_organization
+                                        message: 'Missing organizationId'
+                '402':
+                    description: Insufficient credits to process the request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InsufficientCredits:
+                                    summary: Not enough credits
+                                    value:
+                                        code: insufficient_credits
+                                        message: 'Insufficient credits'
+                                        meta:
+                                            balance: 10
+                                            required: 25
 
     /jobs:
         get:
@@ -532,6 +1017,16 @@ paths:
                 Retrieves the status of a previously submitted long-running job.
                 Returns `pending`, `completed`, or `failed`. When `completed`, includes
                 a `result_url` to download results.
+
+                **Result URL Content by Feature**:
+                - **embeddings**: Returns `EmbeddingsResponse`
+                - **similarity**: Returns `SimilarityResponse`
+                - **sentiment**: Returns `SentimentResponse`
+                - **themes**: Returns `ThemesResponse`
+                - **extractions**: Returns `ExtractionsResponse`
+                - **clustering**: Returns `ClusteringResponse`
+                - **summaries**: Returns `SummariesResponse`
+                - **data-dictionary**: Returns `DataDictionaryResponse` (DDI Codebook in JSON format)
             tags: [jobs]
             parameters:
                 - in: query
@@ -547,6 +1042,23 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/JobStatusResponse'
+                            examples:
+                                PendingJob:
+                                    summary: Job still processing
+                                    value:
+                                        job_id: 'dd_abc123def456'
+                                        status: 'pending'
+                                CompletedJob:
+                                    summary: Job completed successfully
+                                    value:
+                                        job_id: 'dd_abc123def456'
+                                        status: 'completed'
+                                        result_url: 'https://s3.amazonaws.com/bucket/results/dd_abc123def456.json'
+                                FailedJob:
+                                    summary: Job failed
+                                    value:
+                                        job_id: 'dd_abc123def456'
+                                        status: 'failed'
                 '400':
                     description: Missing or invalid jobId query parameter.
                     content:
@@ -557,7 +1069,12 @@ paths:
                                 MissingJobId:
                                     summary: Missing jobId error response
                                     value:
+                                        code: missing_parameter
                                         message: 'Missing jobId query parameter'
+                                        errors:
+                                            - message: 'Provide ?jobId=...'
+                                              location: query
+                                              field: jobId
                 '404':
                     description: Job not found.
                     content:
@@ -568,6 +1085,7 @@ paths:
                                 JobNotFound:
                                     summary: Job not found error response
                                     value:
+                                        code: not_found
                                         message: 'Job not found'
                 '500':
                     description: Internal server error.
@@ -579,7 +1097,155 @@ paths:
                                 InternalError:
                                     summary: Internal server error response
                                     value:
+                                        code: internal_error
                                         message: 'Internal server error'
+
+    /credits/organizations/{orgId}:
+        get:
+            operationId: getOrganizationCredits
+            summary: Get credits snapshot for an organization.
+            description: |
+                Returns current credits balance for the specified Auth0 organization.
+                This endpoint is backed by the shared Core Credits Lambda and uses the
+                same authorization context as other Pulse endpoints.
+            tags: [credits]
+            parameters:
+                - in: path
+                  name: orgId
+                  required: true
+                  schema:
+                      type: string
+                  description: Auth0 Organization ID (e.g., org_abc123)
+            responses:
+                '200':
+                    description: Credits snapshot retrieved successfully.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                description: Organization credits snapshot
+                                additionalProperties: true
+                '400':
+                    description: Bad request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: Forbidden
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                Forbidden:
+                                    summary: Forbidden
+                                    value:
+                                        code: forbidden
+                                        message: 'Forbidden'
+                '404':
+                    description: Organization not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Internal server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+    /usage/estimate:
+        post:
+            operationId: estimateUsage
+            summary: Estimate usage for a task
+            description: |
+                Calculates estimated credit usage for a given feature and inputs.
+            tags: [usage]
+            security: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required: [feature, inputs]
+                            properties:
+                                feature:
+                                    type: string
+                                    enum:
+                                        - embeddings
+                                        - sentiment
+                                        - themes
+                                        - extractions
+                                        - summaries
+                                        - data-dictionary
+                                inputs:
+                                    type: array
+                                    items:
+                                        type: string
+            responses:
+                '200':
+                    description: Usage estimate
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    usage:
+                                        type: object
+                                        additionalProperties: true
+                '400':
+                    description: Bad request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InvalidUsageEstimate:
+                                    summary: Invalid request
+                                    value:
+                                        code: validation_error
+                                        message: 'feature is required'
+                                        errors:
+                                            - message: 'Required'
+                                              path: ['feature']
+                                              field: feature
+                                              location: body
+                '500':
+                    description: Internal server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                            examples:
+                                InternalError:
+                                    summary: Internal error
+                                    value:
+                                        code: internal_error
+                                        message: 'Internal server error'
+
+    /health:
+        get:
+            operationId: getHealth
+            tags: [system]
+            summary: Service health probe
+            description: Returns overall service health and dependency liveness for Pulse.
+            security: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HealthResponse'
+                '503':
+                    description: Degraded or down
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HealthResponse'
 
 components:
     securitySchemes:
@@ -608,26 +1274,67 @@ components:
     schemas:
         ErrorResponse:
             type: object
+            description: Standardized error payload for all endpoints.
             properties:
+                code:
+                    type: string
+                    description: Stable error code for programmatic handling (e.g., i18n lookups).
                 message:
                     type: string
-                details:
+                    description: Human-readable error message.
+                errors:
                     type: array
-                    description: Optional array of error detail messages
+                    description: Optional list of error details, typically for validation issues.
                     items:
-                        type: string
-                    maxItems: 10
-            required: [message]
+                        type: object
+                        properties:
+                            code:
+                                type: string
+                                description: Optional sub-code (e.g., from validation library).
+                            message:
+                                type: string
+                            path:
+                                type: array
+                                description: JSON path to the field when applicable.
+                                items:
+                                    oneOf:
+                                        - type: string
+                                        - type: integer
+                            field:
+                                type: string
+                                description: Dot/bracket path string derived from path.
+                            location:
+                                type: string
+                                enum: [body, query, header, path]
+                meta:
+                    type: object
+                    additionalProperties: true
+                    description: Optional additional metadata about the error.
+            required: [code, message]
+            additionalProperties: false
+        ProviderSpec:
+            type: object
+            properties:
+                type:
+                    type: string
+                    description: Provider identifier (e.g., "openai").
+                auth:
+                    type: object
+                    description: Provider-specific authentication settings.
+                endpoint:
+                    type: string
+                    description: Optional custom API endpoint.
+            required: [type, auth]
             additionalProperties: false
         EmbeddingsRequest:
             type: object
             properties:
                 inputs:
                     type: array
-                    maxItems: 2000
+                    maxItems: 5000
                     description:
                         List of input strings. For synchronous (fast=true) mode, max 200; for
-                        asynchronous (fast=false or omitted) mode, max 2000.
+                        asynchronous (fast=false or omitted) mode, max 5,000.
                     items:
                         type: string
                 fast:
@@ -635,6 +1342,8 @@ components:
                     description:
                         Flag indicating synchronous (true) or asynchronous (false) processing.
                         Default false.
+                provider:
+                    $ref: '#/components/schemas/ProviderSpec'
             required: [inputs]
             additionalProperties: false
 
@@ -665,6 +1374,8 @@ components:
                         $ref: '#/components/schemas/EmbeddingDocument'
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [embeddings, requestId]
             additionalProperties: false
 
@@ -744,6 +1455,8 @@ components:
                     description:
                         Flag indicating synchronous (true) or asynchronous (false) processing.
                         Default false.
+                provider:
+                    $ref: '#/components/schemas/ProviderSpec'
                 flatten:
                     type: boolean
                     description:
@@ -784,6 +1497,8 @@ components:
                             format: float
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [scenario, mode, n, flattened, requestId]
             additionalProperties: false
 
@@ -809,6 +1524,9 @@ components:
                     type: string
                 version:
                     type: string
+                    description: >-
+                        Optional model version. Supported values are "original" (default) and
+                        "2025-09-01".
                 prune:
                     type: integer
                     description: >-
@@ -821,6 +1539,19 @@ components:
                     description:
                         Flag indicating synchronous (true) or asynchronous (false) processing.
                         Default false.
+                interactive:
+                    type: boolean
+                    description: Enables interactive theme generation. Default false.
+                initialSets:
+                    type: integer
+                    minimum: 1
+                    maximum: 3
+                    description:
+                        Number of initial theme sets to generate (1-3). Values >1 require
+                        interactive=true.
+                    default: 1
+                provider:
+                    $ref: '#/components/schemas/ProviderSpec'
             required: [inputs]
             additionalProperties: false
 
@@ -853,7 +1584,27 @@ components:
                         $ref: '#/components/schemas/Theme'
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [themes, requestId]
+            additionalProperties: false
+
+        ThemeSetsResponse:
+            type: object
+            properties:
+                themeSets:
+                    type: array
+                    maxItems: 3
+                    items:
+                        type: array
+                        maxItems: 50
+                        items:
+                            $ref: '#/components/schemas/Theme'
+                requestId:
+                    type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
+            required: [themeSets, requestId]
             additionalProperties: false
 
         ClusteringRequest:
@@ -862,9 +1613,9 @@ components:
                 inputs:
                     type: array
                     minItems: 2
-                    maxItems: 500
+                    maxItems: 44721
                     description: |
-                        List of input strings to cluster. For synchronous (fast=true) mode, max 200; asynchronous max 500.
+                        List of input strings to cluster. For synchronous (fast=true) mode, max 500; asynchronous max 44,721.
                     items:
                         type: string
                 k:
@@ -904,6 +1655,8 @@ components:
                         $ref: '#/components/schemas/Cluster'
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [algorithm, clusters, requestId]
             additionalProperties: false
         SentimentRequest:
@@ -912,16 +1665,18 @@ components:
                 inputs:
                     type: array
                     minItems: 1
-                    maxItems: 10000
+                    maxItems: 5000
                     description:
                         List of input strings. For synchronous (fast=true) mode, max 200; for
-                        asynchronous (fast=false or omitted) mode, max 10,000.
+                        asynchronous (fast=false or omitted) mode, max 5,000.
                     items:
                         type: string
                 version:
                     type: string
                     description: |
                         Optional model version. Supported values are "2025-08-17" (default, recommended) and "original".
+                provider:
+                    $ref: '#/components/schemas/ProviderSpec'
                 fast:
                     type: boolean
                     description:
@@ -948,11 +1703,13 @@ components:
             properties:
                 results:
                     type: array
-                    maxItems: 10000
+                    maxItems: 5000
                     items:
                         $ref: '#/components/schemas/SentimentResult'
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [results, requestId]
             additionalProperties: false
 
@@ -962,7 +1719,10 @@ components:
                 inputs:
                     type: array
                     minItems: 1
-                    maxItems: 200
+                    maxItems: 5000
+                    description:
+                        List of input strings. For synchronous (fast=true) mode, max 200; for
+                        asynchronous (fast=false or omitted) mode, max 5,000.
                     items:
                         type: string
                 category:
@@ -979,6 +1739,8 @@ components:
                     items:
                         type: string
                     description: Required list of canonical terms to match.
+                    minItems: 3
+                    maxItems: 200
                 expand_dictionary:
                     type: boolean
                     default: false
@@ -989,6 +1751,8 @@ components:
                 version:
                     type: string
                     description: Optional model version (e.g., "original").
+                provider:
+                    $ref: '#/components/schemas/ProviderSpec'
                 fast:
                     type: boolean
                     description:
@@ -1014,6 +1778,8 @@ components:
                                 type: string
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [dictionary, results, requestId]
             additionalProperties: false
 
@@ -1059,6 +1825,8 @@ components:
                     type: string
                 requestId:
                     type: string
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
             required: [summary, requestId]
             additionalProperties: false
 
@@ -1073,4 +1841,555 @@ components:
                 result_url:
                     type: string
             required: [status]
+            additionalProperties: false
+
+        UsageRecord:
+            type: object
+            properties:
+                feature:
+                    type: string
+                    enum:
+                        [
+                            embeddings,
+                            similarity,
+                            sentiment,
+                            themes,
+                            extractions,
+                            clustering,
+                            summaries,
+                            data-dictionary,
+                        ]
+                quantity:
+                    type: integer
+                    minimum: 0
+            required: [feature, quantity]
+            additionalProperties: false
+
+        UsageReport:
+            type: object
+            properties:
+                records:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UsageRecord'
+                total:
+                    type: integer
+                    minimum: 0
+            required: [records, total]
+            additionalProperties: false
+
+        HealthCheckEntry:
+            type: object
+            required: [status, latency_ms]
+            additionalProperties: false
+            properties:
+                status:
+                    type: string
+                    enum: [ok, fail]
+                latency_ms:
+                    type: integer
+                    minimum: 0
+        HealthChecks:
+            type: object
+            additionalProperties: false
+            properties:
+                events: { $ref: '#/components/schemas/HealthCheckEntry' }
+                files: { $ref: '#/components/schemas/HealthCheckEntry' }
+                db: { $ref: '#/components/schemas/HealthCheckEntry' }
+                auth: { $ref: '#/components/schemas/HealthCheckEntry' }
+        HealthResponse:
+            type: object
+            required: [status, region, version, time, uptime_s, checks]
+            properties:
+                status:
+                    type: string
+                    enum: [ok, degraded, down]
+                region:
+                    type: string
+                version:
+                    type: string
+                time:
+                    type: string
+                    format: date-time
+                uptime_s:
+                    type: integer
+                    minimum: 0
+                checks:
+                    $ref: '#/components/schemas/HealthChecks'
+            additionalProperties: false
+
+        DataDictionaryRequest:
+            type: object
+            description: Request schema for data dictionary generation from 2D data arrays
+            properties:
+                data:
+                    type: array
+                    description: |
+                        2D array of string data cells representing tabular data.
+                        First row typically contains column headers.
+                        Maximum 50,000 rows × 1,000 columns (100,000 total cells).
+                    minItems: 1
+                    maxItems: 50000
+                    items:
+                        type: array
+                        description: Row of data cells
+                        minItems: 1
+                        maxItems: 1000
+                        items:
+                            type: string
+                            description: Individual data cell value
+                options:
+                    type: object
+                    description: Optional metadata and processing options
+                    properties:
+                        title:
+                            type: string
+                            description: Dataset title for the generated codebook
+                            minLength: 1
+                            maxLength: 200
+                        description:
+                            type: string
+                            description: Dataset description for the generated codebook
+                            minLength: 1
+                            maxLength: 1000
+                        context:
+                            type: string
+                            description:
+                                Additional context to guide analysis and variable interpretation
+                            minLength: 1
+                            maxLength: 2000
+                        language:
+                            type: string
+                            description:
+                                Language code for generated labels and descriptions (ISO 639-1
+                                format)
+                            pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+                            default: 'en'
+                    additionalProperties: false
+                fast:
+                    type: boolean
+                    description:
+                        Must be false or omitted - data dictionary only supports asynchronous
+                        processing
+                    enum: [false]
+            required: [data]
+            additionalProperties: false
+
+        DataDictionaryResponse:
+            type: object
+            description: |
+                DDI (Data Documentation Initiative) Codebook in JSON format following ResearchWiseAI DDI Profile v0.1.
+                Contains comprehensive metadata about variables, value domains, categories, and dataset-level information.
+            properties:
+                profileVersion:
+                    type: string
+                    description: DDI Profile version
+                    example: '0.1'
+                profileName:
+                    type: string
+                    description: DDI Profile name
+                    example: 'ResearchWiseAI DDI Profile'
+                codebook:
+                    type: object
+                    description: Core DDI codebook structure
+                    properties:
+                        title:
+                            type: string
+                            description: Dataset title
+                        description:
+                            type: string
+                            description: Dataset description
+                        creationDate:
+                            type: string
+                            format: date-time
+                            description: Codebook creation timestamp (ISO 8601)
+                        language:
+                            type: string
+                            description: Primary language of the dataset (ISO 639-1)
+                            pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+                        version:
+                            type: string
+                            description: Dataset version
+                        publisher:
+                            type: string
+                            description: Dataset publisher
+                        contact:
+                            type: string
+                            description: Contact information
+                        variables:
+                            type: array
+                            description: Variable definitions following DDI standards
+                            items:
+                                $ref: '#/components/schemas/DDIVariable'
+                        valueDomains:
+                            type: array
+                            description: Value domain definitions for categorical variables
+                            items:
+                                $ref: '#/components/schemas/DDIValueDomain'
+                        categories:
+                            type: array
+                            description: Category definitions for enumeration value domains
+                            items:
+                                $ref: '#/components/schemas/DDICategory'
+                        questionItems:
+                            type: array
+                            description: Question item definitions
+                            items:
+                                $ref: '#/components/schemas/DDIQuestionItem'
+                        universes:
+                            type: array
+                            description: Universe definitions (population subsets)
+                            items:
+                                $ref: '#/components/schemas/DDIUniverse'
+                        concepts:
+                            type: array
+                            description: Concept definitions
+                            items:
+                                $ref: '#/components/schemas/DDIConcept'
+                        missingValues:
+                            type: array
+                            description: Missing value definitions
+                            items:
+                                $ref: '#/components/schemas/DDIMissingValues'
+                        variableGroups:
+                            type: array
+                            description: Variable group definitions
+                            items:
+                                $ref: '#/components/schemas/DDIVariableGroup'
+                        qualityMetrics:
+                            type: object
+                            description: Data quality assessment metrics
+                            properties:
+                                completeness:
+                                    type: number
+                                    minimum: 0
+                                    maximum: 1
+                                    description: Proportion of non-missing values
+                                consistency:
+                                    type: number
+                                    minimum: 0
+                                    maximum: 1
+                                    description: Data consistency score
+                                duplicateRows:
+                                    type: integer
+                                    minimum: 0
+                                    description: Number of duplicate rows detected
+                                totalRows:
+                                    type: integer
+                                    minimum: 0
+                                    description: Total number of data rows
+                                totalColumns:
+                                    type: integer
+                                    minimum: 0
+                                    description: Total number of data columns
+                        processingNotes:
+                            type: string
+                            description: Notes about data processing and analysis
+                        generationMethod:
+                            type: string
+                            description: Method used to generate the codebook
+                            default: 'AI-assisted analysis'
+                        analysisDate:
+                            type: string
+                            format: date-time
+                            description: Date when analysis was performed
+                    required: [title, description, creationDate, language, variables]
+                    additionalProperties: false
+                extensions:
+                    type: object
+                    description: ResearchWiseAI-specific extensions
+                    properties:
+                        rwaVersion:
+                            type: string
+                            description: ResearchWiseAI system version
+                        processingOptions:
+                            type: object
+                            description: Processing options used
+                            additionalProperties: true
+                        analysisMetadata:
+                            type: object
+                            description: Additional analysis metadata
+                            additionalProperties: true
+                    additionalProperties: false
+                requestId:
+                    type: string
+                    description: Unique request identifier
+                usage:
+                    $ref: '#/components/schemas/UsageReport'
+            required: [profileVersion, profileName, codebook, requestId]
+            additionalProperties: false
+
+        DDIVariable:
+            type: object
+            description: DDI Variable definition following ResearchWiseAI DDI Profile
+            properties:
+                variableName:
+                    type: string
+                    description: Variable name in UPPER_SNAKE_CASE format
+                    pattern: '^[A-Z][A-Z0-9_]*$'
+                    maxLength: 40
+                variableLabel:
+                    type: string
+                    description: Human-readable variable label
+                questionRef:
+                    type: string
+                    description: Reference to associated question item
+                conceptRef:
+                    type: string
+                    description: Reference to associated concept
+                universeRef:
+                    type: string
+                    description: Reference to universe (population subset)
+                    default: 'u.AllRespondents'
+                type:
+                    type: string
+                    enum: [string, numeric, date, boolean, text]
+                    description: Data type of the variable
+                format:
+                    type: string
+                    description: Data format specification
+                scaleLevel:
+                    type: string
+                    enum: [nominal, ordinal, interval, ratio]
+                    description: Measurement scale level
+                valueDomainRef:
+                    type: string
+                    description: Reference to value domain
+                isDerived:
+                    type: boolean
+                    description: Whether variable is derived from other variables
+                    default: false
+                derivationRule:
+                    type: string
+                    description: Rule for deriving variable (if isDerived=true)
+                unit:
+                    type: string
+                    description: Unit of measurement
+                minValue:
+                    oneOf:
+                        - type: string
+                        - type: number
+                    description: Minimum valid value
+                maxValue:
+                    oneOf:
+                        - type: string
+                        - type: number
+                    description: Maximum valid value
+                missingValuesRef:
+                    type: string
+                    description: Reference to missing values definition
+                sourceColumns:
+                    type: string
+                    description: Source column(s) in original data
+                mappingRule:
+                    type: string
+                    description: Rule for mapping from source to variable
+                groupRef:
+                    type: string
+                    description: Reference to variable group
+                gridRef:
+                    type: string
+                    description: Reference to grid structure
+                multiSelectGroupRef:
+                    type: string
+                    description: Reference to multi-select group
+                position:
+                    type: integer
+                    minimum: 1
+                    description: Position within group or dataset
+                version:
+                    type: string
+                    description: Variable version
+                notes:
+                    type: string
+                    description: Additional notes about the variable
+            required: [variableName, variableLabel, type, scaleLevel, sourceColumns]
+            additionalProperties: false
+
+        DDIValueDomain:
+            type: object
+            description: DDI Value Domain definition
+            properties:
+                valueDomainId:
+                    type: string
+                    pattern: "^vd\\.[a-z_]+$"
+                    description: Value domain identifier (must start with 'vd.')
+                label:
+                    type: string
+                    description: Value domain label
+                domainType:
+                    type: string
+                    enum: [enumeration, range, free]
+                    description: Type of value domain
+                dataType:
+                    type: string
+                    enum: [string, numeric, date, boolean, text]
+                    description: Data type for values in this domain
+                minValue:
+                    oneOf:
+                        - type: string
+                        - type: number
+                    description: Minimum value for range domains
+                maxValue:
+                    oneOf:
+                        - type: string
+                        - type: number
+                    description: Maximum value for range domains
+                regex:
+                    type: string
+                    description: Regular expression pattern for validation
+                description:
+                    type: string
+                    description: Value domain description
+            required: [valueDomainId, label, domainType, dataType]
+            additionalProperties: false
+
+        DDICategory:
+            type: object
+            description: DDI Category definition for enumeration value domains
+            properties:
+                valueDomainId:
+                    type: string
+                    description: Reference to parent value domain
+                code:
+                    oneOf:
+                        - type: string
+                        - type: number
+                    description: Category code/value
+                label:
+                    type: string
+                    description: Category label
+                order:
+                    type: integer
+                    minimum: 1
+                    description: Display order within value domain
+                isMissing:
+                    type: boolean
+                    description: Whether this is a missing/utility category
+                    default: false
+                frequency:
+                    type: integer
+                    minimum: 0
+                    description: Frequency count in the data
+            required: [valueDomainId, code, label, order]
+            additionalProperties: false
+
+        DDIQuestionItem:
+            type: object
+            description: DDI Question Item definition
+            properties:
+                questionId:
+                    type: string
+                    pattern: "^qi\\.[a-z_]+$"
+                    description: Question identifier (must start with 'qi.')
+                questionText:
+                    type: string
+                    description: Question text
+                instructions:
+                    type: string
+                    description: Instructions for answering the question
+                responseType:
+                    type: string
+                    enum: [single, multiple, numeric, text, date, time]
+                    description: Type of response expected
+                responseDomainRef:
+                    type: string
+                    description: Reference to response value domain
+                maxSelections:
+                    type: integer
+                    minimum: 1
+                    description: Maximum selections for multiple response questions
+                otherSpecifyVar:
+                    type: string
+                    description: Variable name for "other specify" responses
+                notes:
+                    type: string
+                    description: Additional notes about the question
+            required: [questionId, questionText, responseType, responseDomainRef]
+            additionalProperties: false
+
+        DDIUniverse:
+            type: object
+            description: DDI Universe definition (population subset)
+            properties:
+                universeId:
+                    type: string
+                    pattern: "^u\\.[a-zA-Z][a-zA-Z0-9_]*$"
+                    description: Universe identifier (must start with 'u.')
+                label:
+                    type: string
+                    description: Universe label
+                statement:
+                    type: string
+                    description: Universe statement describing the population
+            required: [universeId, label, statement]
+            additionalProperties: false
+
+        DDIConcept:
+            type: object
+            description: DDI Concept definition
+            properties:
+                conceptId:
+                    type: string
+                    pattern: "^c\\.[a-z_]+$"
+                    description: Concept identifier (must start with 'c.')
+                label:
+                    type: string
+                    description: Concept label
+                description:
+                    type: string
+                    description: Concept description
+            required: [conceptId, label]
+            additionalProperties: false
+
+        DDIMissingValues:
+            type: object
+            description: DDI Missing Values definition
+            properties:
+                missingValuesId:
+                    type: string
+                    pattern: "^mv\\.[a-z_]+$"
+                    description: Missing values identifier (must start with 'mv.')
+                code:
+                    oneOf:
+                        - type: string
+                        - type: number
+                    description: Missing value code
+                label:
+                    type: string
+                    description: Missing value label
+                appliesToValueDomainId:
+                    type: string
+                    description: Value domain this missing value applies to
+            required: [missingValuesId, code, label]
+            additionalProperties: false
+
+        DDIVariableGroup:
+            type: object
+            description: DDI Variable Group definition
+            properties:
+                groupId:
+                    type: string
+                    pattern: "^g\\.[a-z_]+$"
+                    description: Group identifier (must start with 'g.')
+                label:
+                    type: string
+                    description: Group label
+                groupType:
+                    type: string
+                    enum: [module, loop, grid, multiSelectGroup]
+                    description: Type of variable group
+                parentGroupId:
+                    type: string
+                    description: Parent group identifier for nested groups
+                rosterSource:
+                    type: string
+                    description: Source for roster/loop groups
+                iterationPattern:
+                    type: string
+                    description: Pattern for iterations in loop groups
+                notes:
+                    type: string
+                    description: Additional notes about the group
+            required: [groupId, label, groupType]
             additionalProperties: false
