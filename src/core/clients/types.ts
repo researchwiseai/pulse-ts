@@ -1,3 +1,5 @@
+import type { components } from '../../models'
+
 /**
  * Options controlling synchronous vs asynchronous feature requests.
  *
@@ -12,4 +14,6 @@ export interface UniversalFeatureOptions<
     fast?: Fast
     /** When false and fast is false, return a Job handle instead of awaiting the result. */
     awaitJobResult?: AwaitJobResult
+    /** Optional provider override for custom OpenAI configuration. */
+    provider?: components['schemas']['ProviderSpec']
 }

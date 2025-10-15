@@ -139,7 +139,10 @@ describe('compareSimilarity', () => {
         const result = await compareSimilarity(client, inputs, {
             flatten: true,
             version: 'v3',
-            split: { set_a: 'newline', set_b: { unit: 'sentence', agg: 'max' } },
+            split: {
+                set_a: 'newline',
+                set_b: { unit: 'sentence', agg: 'max', window_size: 1, stride_size: 1 },
+            },
         })
 
         const opts = fetchWithRetryMock.mock.calls[0][1]

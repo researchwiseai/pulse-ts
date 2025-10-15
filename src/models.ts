@@ -4,15 +4,15 @@
  */
 
 export interface paths {
-    '/embeddings': {
+    "/embeddings": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Generate dense vector embeddings for input strings (synchronous or asynchronous).
          * @description Generates dense vector embeddings for input strings in a single batch.
@@ -22,22 +22,22 @@ export interface paths {
          *     • Asynchronous mode accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['createEmbeddings']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/similarity': {
+        post: operations["createEmbeddings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/similarity": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Compute cosine similarity between strings (self or cross).
          * @description Computes pairwise cosine similarity between input strings.
@@ -47,22 +47,22 @@ export interface paths {
          *     • In asynchronous mode, supports larger inputs (self up to 44,721 items; cross with |set_a|×|set_b| ≤ 2,000,000,000) and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['compareSimilarity']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/themes': {
+        post: operations["compareSimilarity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/themes": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Cluster open-ended text responses into thematic groups.
          * @description Groups input strings into latent themes using LLM-based clustering.
@@ -75,22 +75,22 @@ export interface paths {
          *     Optionally control theme count with `minThemes`, `maxThemes`, and steer focus via `context`.
          *
          */
-        post: operations['generateThemes']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/clustering': {
+        post: operations["generateThemes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clustering": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Cluster texts using vector embeddings.
          * @description Performs server-side clustering of input strings using algorithms that operate on full embeddings.
@@ -100,22 +100,22 @@ export interface paths {
          *      - In asynchronous mode, accepts up to 44,721 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['clusterTexts']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/sentiment': {
+        post: operations["clusterTexts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sentiment": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Classify sentiment of each input string.
          * @description Classifies the sentiment of each input string as positive, negative, neutral, or mixed, with confidence scores ∈ [0,1].
@@ -127,22 +127,22 @@ export interface paths {
          *     Optionally supply `version` for reproducible outputs. Supported values are "2025-08-17" (default, recommended) and "original".
          *
          */
-        post: operations['analyzeSentiment']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/extractions': {
+        post: operations["analyzeSentiment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/extractions": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Extract terms or theme mentions from input texts.
          * @description Extracts mentions from each input based on a provided dictionary.
@@ -155,22 +155,22 @@ export interface paths {
          *      - In asynchronous mode, accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['extractElements']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/summaries': {
+        post: operations["extractElements"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/summaries": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Summarize text according to a question.
          * @description Generates a short summary from the provided inputs.
@@ -180,22 +180,22 @@ export interface paths {
          *      - Asynchronous mode accepts up to 5,000 input strings and returns a job_id (HTTP 202) to poll via the /jobs endpoint.
          *
          */
-        post: operations['generateSummary']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/data-dictionary': {
+        post: operations["generateSummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/data-dictionary": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Generate DDI Codebook documentation from 2D data arrays.
          * @description Analyzes 2D arrays of data cells and generates comprehensive DDI (Data Documentation Initiative) Codebook documentation in JSON format.
@@ -219,20 +219,20 @@ export interface paths {
          *     - Dataset-level metadata (title, description, creation date)
          *
          */
-        post: operations['generateDataDictionary']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/jobs': {
+        post: operations["generateDataDictionary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/jobs": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Retrieve status of an asynchronous job.
          * @description Retrieves the status of a previously submitted long-running job.
@@ -250,22 +250,22 @@ export interface paths {
          *     - **data-dictionary**: Returns `DataDictionaryResponse` (DDI Codebook in JSON format)
          *
          */
-        get: operations['getJobStatus']
-        put?: never
-        post?: never
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/credits/organizations/{orgId}': {
+        get: operations["getJobStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/credits/organizations/{orgId}": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get credits snapshot for an organization.
          * @description Returns current credits balance for the specified Auth0 organization.
@@ -273,364 +273,344 @@ export interface paths {
          *     same authorization context as other Pulse endpoints.
          *
          */
-        get: operations['getOrganizationCredits']
-        put?: never
-        post?: never
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/usage/estimate': {
+        get: operations["getOrganizationCredits"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/usage/estimate": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        get?: never
-        put?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Estimate usage for a task
          * @description Calculates estimated credit usage for a given feature and inputs.
          *
          */
-        post: operations['estimateUsage']
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
-    '/health': {
+        post: operations["estimateUsage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health": {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Service health probe
          * @description Returns overall service health and dependency liveness for Pulse.
          */
-        get: operations['getHealth']
-        put?: never
-        post?: never
-        delete?: never
-        options?: never
-        head?: never
-        patch?: never
-        trace?: never
-    }
+        get: operations["getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @description Standardized error payload for all endpoints. */
         ErrorResponse: {
             /** @description Stable error code for programmatic handling (e.g., i18n lookups). */
-            code: string
+            code: string;
             /** @description Human-readable error message. */
-            message: string
+            message: string;
             /** @description Optional list of error details, typically for validation issues. */
             errors?: {
                 /** @description Optional sub-code (e.g., from validation library). */
-                code?: string
-                message?: string
+                code?: string;
+                message?: string;
                 /** @description JSON path to the field when applicable. */
-                path?: (string | number)[]
+                path?: (string | number)[];
                 /** @description Dot/bracket path string derived from path. */
-                field?: string
+                field?: string;
                 /** @enum {string} */
-                location?: 'body' | 'query' | 'header' | 'path'
-            }[]
+                location?: "body" | "query" | "header" | "path";
+            }[];
             /** @description Optional additional metadata about the error. */
             meta?: {
-                [key: string]: unknown
-            }
-        }
+                [key: string]: unknown;
+            };
+        };
         ProviderSpec: {
             /** @description Provider identifier (e.g., "openai"). */
-            type: string
+            type: string;
             /** @description Provider-specific authentication settings. */
-            auth: Record<string, never>
+            auth: Record<string, never>;
             /** @description Optional custom API endpoint. */
-            endpoint?: string
-        }
+            endpoint?: string;
+        };
         EmbeddingsRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 5,000. */
-            inputs: string[]
+            inputs: string[];
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-            provider?: components['schemas']['ProviderSpec']
-        }
+            fast?: boolean;
+            provider?: components["schemas"]["ProviderSpec"];
+        };
         EmbeddingDocument: {
-            id?: string
-            text: string
-            vector: number[]
-        }
+            id?: string;
+            text: string;
+            vector: number[];
+        };
         EmbeddingsResponse: {
-            embeddings: components['schemas']['EmbeddingDocument'][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
-        UnitAgg:
-            | ('sentence' | 'newline' | 'word')
-            | {
-                  /** @enum {string} */
-                  unit: 'sentence' | 'newline' | 'word'
-                  /**
-                   * @default mean
-                   * @enum {string}
-                   */
-                  agg: 'mean' | 'max' | 'top2' | 'top3'
-                  /**
-                   * @description Sliding window size applied to the base unit. Default 1.
-                   * @default 1
-                   */
-                  window_size: number
-                  /**
-                   * @description Step size between windows. Default 1.
-                   * @default 1
-                   */
-                  stride_size: number
-              }
-        Split:
-            | components['schemas']['UnitAgg']
-            | {
-                  set_a?: components['schemas']['UnitAgg']
-                  set_b?: components['schemas']['UnitAgg']
-              }
+            embeddings: components["schemas"]["EmbeddingDocument"][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
+        UnitAgg: ("sentence" | "newline" | "word") | {
+            /** @enum {string} */
+            unit: "sentence" | "newline" | "word";
+            /**
+             * @default mean
+             * @enum {string}
+             */
+            agg: "mean" | "max" | "top2" | "top3";
+            /**
+             * @description Sliding window size applied to the base unit. Default 1.
+             * @default 1
+             */
+            window_size: number;
+            /**
+             * @description Step size between windows. Default 1.
+             * @default 1
+             */
+            stride_size: number;
+        };
+        Split: components["schemas"]["UnitAgg"] | {
+            set_a?: components["schemas"]["UnitAgg"];
+            set_b?: components["schemas"]["UnitAgg"];
+        };
         SimilarityRequest: {
             /** @description Array of strings for self-similarity. For synchronous (fast=true), max 500; for asynchronous (fast=false or omitted), max 44,721. */
-            set?: string[]
+            set?: string[];
             /** @description Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 20,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
-            set_a?: string[]
+            set_a?: string[];
             /** @description Array of strings for cross-similarity. For synchronous (fast=true), ensure |set_a|×|set_b| ≤ 20,000; for asynchronous (fast=false or omitted), ensure |set_a|×|set_b| ≤ 2,000,000,000. */
-            set_b?: string[]
-            version?: string
+            set_b?: string[];
+            version?: string;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-            provider?: components['schemas']['ProviderSpec']
+            fast?: boolean;
+            provider?: components["schemas"]["ProviderSpec"];
             /** @description For cross-similarity, flatten the matrix into a 1-D array. Ignored for self-similarity. Default false. */
-            flatten?: boolean
-            split?: components['schemas']['Split']
-        } & (unknown | unknown)
+            flatten?: boolean;
+            split?: components["schemas"]["Split"];
+        } & (unknown | unknown);
         SimilarityResponse: {
             /** @enum {string} */
-            scenario: 'self' | 'cross'
+            scenario: "self" | "cross";
             /** @enum {string} */
-            mode: 'matrix' | 'flattened'
-            n: number
-            flattened: number[]
-            matrix?: number[][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            mode: "matrix" | "flattened";
+            n: number;
+            flattened: number[];
+            matrix?: number[][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         ThemesRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 500. */
-            inputs: string[]
-            minThemes?: number
-            maxThemes?: number
-            context?: string
+            inputs: string[];
+            minThemes?: number;
+            maxThemes?: number;
+            context?: string;
             /** @description Optional model version. Supported values are "original" (default) and "2025-09-01". */
-            version?: string
+            version?: string;
             /** @description Cutoff percentage threshold (0-25) below which themes are pruned; if 0, pruning is disabled. */
-            prune?: number
+            prune?: number;
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
+            fast?: boolean;
             /** @description Enables interactive theme generation. Default false. */
-            interactive?: boolean
+            interactive?: boolean;
             /**
              * @description Number of initial theme sets to generate (1-3). Values >1 require interactive=true.
              * @default 1
              */
-            initialSets: number
-            provider?: components['schemas']['ProviderSpec']
-        }
+            initialSets: number;
+            provider?: components["schemas"]["ProviderSpec"];
+        };
         Theme: {
-            shortLabel: string
-            label: string
-            description: string
+            shortLabel: string;
+            label: string;
+            description: string;
             /** @description Two representative input strings for the theme. */
-            representatives: string[]
-        }
+            representatives: string[];
+        };
         ThemesResponse: {
-            themes: components['schemas']['Theme'][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            themes: components["schemas"]["Theme"][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         ThemeSetsResponse: {
-            themeSets: components['schemas']['Theme'][][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            themeSets: components["schemas"]["Theme"][][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         ClusteringRequest: {
             /** @description List of input strings to cluster. For synchronous (fast=true) mode, max 500; asynchronous max 44,721.
              *      */
-            inputs: string[]
-            k: number
+            inputs: string[];
+            k: number;
             /** @enum {string} */
-            algorithm?: 'kmeans' | 'skmeans' | 'agglomerative' | 'hdbscan'
+            algorithm?: "kmeans" | "skmeans" | "agglomerative" | "hdbscan";
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         Cluster: {
-            clusterId: number
-            items: string[]
-        }
+            clusterId: number;
+            items: string[];
+        };
         ClusteringResponse: {
-            algorithm: string
-            clusters: components['schemas']['Cluster'][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            algorithm: string;
+            clusters: components["schemas"]["Cluster"][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         SentimentRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 5,000. */
-            inputs: string[]
+            inputs: string[];
             /** @description Optional model version. Supported values are "2025-08-17" (default, recommended) and "original".
              *      */
-            version?: string
-            provider?: components['schemas']['ProviderSpec']
+            version?: string;
+            provider?: components["schemas"]["ProviderSpec"];
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         SentimentResult: {
             /** @enum {string} */
-            sentiment: 'positive' | 'negative' | 'neutral' | 'mixed'
-            confidence: number
-        }
+            sentiment: "positive" | "negative" | "neutral" | "mixed";
+            confidence: number;
+        };
         SentimentResponse: {
-            results: components['schemas']['SentimentResult'][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            results: components["schemas"]["SentimentResult"][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         ExtractionsRequest: {
             /** @description List of input strings. For synchronous (fast=true) mode, max 200; for asynchronous (fast=false or omitted) mode, max 5,000. */
-            inputs: string[]
+            inputs: string[];
             /** @description Deprecated; accepted for backwards compatibility and ignored. */
-            category?: string
+            category?: string;
             /**
              * @description Optional extraction type. Defaults to `named-entities`. When `themes`, `expand_dictionary` must be false.
              * @enum {string}
              */
-            type?: 'named-entities' | 'themes'
+            type?: "named-entities" | "themes";
             /** @description Required list of canonical terms to match. */
-            dictionary: string[]
+            dictionary: string[];
             /**
              * @description Must be false when `type` is `themes`.
              * @default false
              */
-            expand_dictionary: boolean
+            expand_dictionary: boolean;
             /** @description Optional limit on number of additions when expanding. */
-            expand_dictionary_limit?: number
+            expand_dictionary_limit?: number;
             /** @description Optional model version (e.g., "original"). */
-            version?: string
-            provider?: components['schemas']['ProviderSpec']
+            version?: string;
+            provider?: components["schemas"]["ProviderSpec"];
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         ExtractionsResponse: {
-            dictionary: string[]
-            results: string[][][]
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            dictionary: string[];
+            results: string[][][];
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         SummariesRequest: {
-            inputs: string[]
-            question: string
+            inputs: string[];
+            question: string;
             /** @enum {string} */
-            length?: 'bullet-points' | 'short' | 'medium' | 'long'
+            length?: "bullet-points" | "short" | "medium" | "long";
             /** @enum {string} */
-            preset?:
-                | 'five-point'
-                | 'ten-point'
-                | 'one-tweet'
-                | 'three-tweets'
-                | 'one-para'
-                | 'exec'
-                | 'two-pager'
-                | 'one-pager'
+            preset?: "five-point" | "ten-point" | "one-tweet" | "three-tweets" | "one-para" | "exec" | "two-pager" | "one-pager";
             /** @description Flag indicating synchronous (true) or asynchronous (false) processing. Default false. */
-            fast?: boolean
-        }
+            fast?: boolean;
+        };
         SummariesResponse: {
-            summary: string
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            summary: string;
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         JobStatusResponse: {
-            job_id?: string
+            job_id?: string;
             /** @enum {string} */
-            status: 'pending' | 'completed' | 'failed'
-            result_url?: string
-        }
+            status: "pending" | "completed" | "failed";
+            result_url?: string;
+        };
         UsageRecord: {
             /** @enum {string} */
-            feature:
-                | 'embeddings'
-                | 'similarity'
-                | 'sentiment'
-                | 'themes'
-                | 'extractions'
-                | 'clustering'
-                | 'summaries'
-                | 'data-dictionary'
-            quantity: number
-        }
+            feature: "embeddings" | "similarity" | "sentiment" | "themes" | "extractions" | "clustering" | "summaries" | "data-dictionary";
+            quantity: number;
+        };
         UsageReport: {
-            records: components['schemas']['UsageRecord'][]
-            total: number
-        }
+            records: components["schemas"]["UsageRecord"][];
+            total: number;
+        };
         HealthCheckEntry: {
             /** @enum {string} */
-            status: 'ok' | 'fail'
-            latency_ms: number
-        }
+            status: "ok" | "fail";
+            latency_ms: number;
+        };
         HealthChecks: {
-            events?: components['schemas']['HealthCheckEntry']
-            files?: components['schemas']['HealthCheckEntry']
-            db?: components['schemas']['HealthCheckEntry']
-            auth?: components['schemas']['HealthCheckEntry']
-        }
+            events?: components["schemas"]["HealthCheckEntry"];
+            files?: components["schemas"]["HealthCheckEntry"];
+            db?: components["schemas"]["HealthCheckEntry"];
+            auth?: components["schemas"]["HealthCheckEntry"];
+        };
         HealthResponse: {
             /** @enum {string} */
-            status: 'ok' | 'degraded' | 'down'
-            region: string
-            version: string
+            status: "ok" | "degraded" | "down";
+            region: string;
+            version: string;
             /** Format: date-time */
-            time: string
-            uptime_s: number
-            checks: components['schemas']['HealthChecks']
-        }
+            time: string;
+            uptime_s: number;
+            checks: components["schemas"]["HealthChecks"];
+        };
         /** @description Request schema for data dictionary generation from 2D data arrays */
         DataDictionaryRequest: {
             /** @description 2D array of string data cells representing tabular data.
              *     First row typically contains column headers.
              *     Maximum 50,000 rows × 1,000 columns (100,000 total cells).
              *      */
-            data: string[][]
+            data: string[][];
             /** @description Optional metadata and processing options */
             options?: {
                 /** @description Dataset title for the generated codebook */
-                title?: string
+                title?: string;
                 /** @description Dataset description for the generated codebook */
-                description?: string
+                description?: string;
                 /** @description Additional context to guide analysis and variable interpretation */
-                context?: string
+                context?: string;
                 /**
                  * @description Language code for generated labels and descriptions (ISO 639-1 format)
                  * @default en
                  */
-                language: string
-            }
+                language: string;
+            };
             /**
              * @description Must be false or omitted - data dictionary only supports asynchronous processing
              * @enum {boolean}
              */
-            fast?: false
-        }
+            fast?: false;
+        };
         /** @description DDI (Data Documentation Initiative) Codebook in JSON format following ResearchWiseAI DDI Profile v0.1.
          *     Contains comprehensive metadata about variables, value domains, categories, and dataset-level information.
          *      */
@@ -639,892 +619,884 @@ export interface components {
              * @description DDI Profile version
              * @example 0.1
              */
-            profileVersion: string
+            profileVersion: string;
             /**
              * @description DDI Profile name
              * @example ResearchWiseAI DDI Profile
              */
-            profileName: string
+            profileName: string;
             /** @description Core DDI codebook structure */
             codebook: {
                 /** @description Dataset title */
-                title: string
+                title: string;
                 /** @description Dataset description */
-                description: string
+                description: string;
                 /**
                  * Format: date-time
                  * @description Codebook creation timestamp (ISO 8601)
                  */
-                creationDate: string
+                creationDate: string;
                 /** @description Primary language of the dataset (ISO 639-1) */
-                language: string
+                language: string;
                 /** @description Dataset version */
-                version?: string
+                version?: string;
                 /** @description Dataset publisher */
-                publisher?: string
+                publisher?: string;
                 /** @description Contact information */
-                contact?: string
+                contact?: string;
                 /** @description Variable definitions following DDI standards */
-                variables: components['schemas']['DDIVariable'][]
+                variables: components["schemas"]["DDIVariable"][];
                 /** @description Value domain definitions for categorical variables */
-                valueDomains?: components['schemas']['DDIValueDomain'][]
+                valueDomains?: components["schemas"]["DDIValueDomain"][];
                 /** @description Category definitions for enumeration value domains */
-                categories?: components['schemas']['DDICategory'][]
+                categories?: components["schemas"]["DDICategory"][];
                 /** @description Question item definitions */
-                questionItems?: components['schemas']['DDIQuestionItem'][]
+                questionItems?: components["schemas"]["DDIQuestionItem"][];
                 /** @description Universe definitions (population subsets) */
-                universes?: components['schemas']['DDIUniverse'][]
+                universes?: components["schemas"]["DDIUniverse"][];
                 /** @description Concept definitions */
-                concepts?: components['schemas']['DDIConcept'][]
+                concepts?: components["schemas"]["DDIConcept"][];
                 /** @description Missing value definitions */
-                missingValues?: components['schemas']['DDIMissingValues'][]
+                missingValues?: components["schemas"]["DDIMissingValues"][];
                 /** @description Variable group definitions */
-                variableGroups?: components['schemas']['DDIVariableGroup'][]
+                variableGroups?: components["schemas"]["DDIVariableGroup"][];
                 /** @description Data quality assessment metrics */
                 qualityMetrics?: {
                     /** @description Proportion of non-missing values */
-                    completeness?: number
+                    completeness?: number;
                     /** @description Data consistency score */
-                    consistency?: number
+                    consistency?: number;
                     /** @description Number of duplicate rows detected */
-                    duplicateRows?: number
+                    duplicateRows?: number;
                     /** @description Total number of data rows */
-                    totalRows?: number
+                    totalRows?: number;
                     /** @description Total number of data columns */
-                    totalColumns?: number
-                }
+                    totalColumns?: number;
+                };
                 /** @description Notes about data processing and analysis */
-                processingNotes?: string
+                processingNotes?: string;
                 /**
                  * @description Method used to generate the codebook
                  * @default AI-assisted analysis
                  */
-                generationMethod: string
+                generationMethod: string;
                 /**
                  * Format: date-time
                  * @description Date when analysis was performed
                  */
-                analysisDate?: string
-            }
+                analysisDate?: string;
+            };
             /** @description ResearchWiseAI-specific extensions */
             extensions?: {
                 /** @description ResearchWiseAI system version */
-                rwaVersion?: string
+                rwaVersion?: string;
                 /** @description Processing options used */
                 processingOptions?: {
-                    [key: string]: unknown
-                }
+                    [key: string]: unknown;
+                };
                 /** @description Additional analysis metadata */
                 analysisMetadata?: {
-                    [key: string]: unknown
-                }
-            }
+                    [key: string]: unknown;
+                };
+            };
             /** @description Unique request identifier */
-            requestId: string
-            usage?: components['schemas']['UsageReport']
-        }
+            requestId: string;
+            usage?: components["schemas"]["UsageReport"];
+        };
         /** @description DDI Variable definition following ResearchWiseAI DDI Profile */
         DDIVariable: {
             /** @description Variable name in UPPER_SNAKE_CASE format */
-            variableName: string
+            variableName: string;
             /** @description Human-readable variable label */
-            variableLabel: string
+            variableLabel: string;
             /** @description Reference to associated question item */
-            questionRef?: string
+            questionRef?: string;
             /** @description Reference to associated concept */
-            conceptRef?: string
+            conceptRef?: string;
             /**
              * @description Reference to universe (population subset)
              * @default u.AllRespondents
              */
-            universeRef: string
+            universeRef: string;
             /**
              * @description Data type of the variable
              * @enum {string}
              */
-            type: 'string' | 'numeric' | 'date' | 'boolean' | 'text'
+            type: "string" | "numeric" | "date" | "boolean" | "text";
             /** @description Data format specification */
-            format?: string
+            format?: string;
             /**
              * @description Measurement scale level
              * @enum {string}
              */
-            scaleLevel: 'nominal' | 'ordinal' | 'interval' | 'ratio'
+            scaleLevel: "nominal" | "ordinal" | "interval" | "ratio";
             /** @description Reference to value domain */
-            valueDomainRef?: string
+            valueDomainRef?: string;
             /**
              * @description Whether variable is derived from other variables
              * @default false
              */
-            isDerived: boolean
+            isDerived: boolean;
             /** @description Rule for deriving variable (if isDerived=true) */
-            derivationRule?: string
+            derivationRule?: string;
             /** @description Unit of measurement */
-            unit?: string
+            unit?: string;
             /** @description Minimum valid value */
-            minValue?: string | number
+            minValue?: string | number;
             /** @description Maximum valid value */
-            maxValue?: string | number
+            maxValue?: string | number;
             /** @description Reference to missing values definition */
-            missingValuesRef?: string
+            missingValuesRef?: string;
             /** @description Source column(s) in original data */
-            sourceColumns: string
+            sourceColumns: string;
             /** @description Rule for mapping from source to variable */
-            mappingRule?: string
+            mappingRule?: string;
             /** @description Reference to variable group */
-            groupRef?: string
+            groupRef?: string;
             /** @description Reference to grid structure */
-            gridRef?: string
+            gridRef?: string;
             /** @description Reference to multi-select group */
-            multiSelectGroupRef?: string
+            multiSelectGroupRef?: string;
             /** @description Position within group or dataset */
-            position?: number
+            position?: number;
             /** @description Variable version */
-            version?: string
+            version?: string;
             /** @description Additional notes about the variable */
-            notes?: string
-        }
+            notes?: string;
+        };
         /** @description DDI Value Domain definition */
         DDIValueDomain: {
             /** @description Value domain identifier (must start with 'vd.') */
-            valueDomainId: string
+            valueDomainId: string;
             /** @description Value domain label */
-            label: string
+            label: string;
             /**
              * @description Type of value domain
              * @enum {string}
              */
-            domainType: 'enumeration' | 'range' | 'free'
+            domainType: "enumeration" | "range" | "free";
             /**
              * @description Data type for values in this domain
              * @enum {string}
              */
-            dataType: 'string' | 'numeric' | 'date' | 'boolean' | 'text'
+            dataType: "string" | "numeric" | "date" | "boolean" | "text";
             /** @description Minimum value for range domains */
-            minValue?: string | number
+            minValue?: string | number;
             /** @description Maximum value for range domains */
-            maxValue?: string | number
+            maxValue?: string | number;
             /** @description Regular expression pattern for validation */
-            regex?: string
+            regex?: string;
             /** @description Value domain description */
-            description?: string
-        }
+            description?: string;
+        };
         /** @description DDI Category definition for enumeration value domains */
         DDICategory: {
             /** @description Reference to parent value domain */
-            valueDomainId: string
+            valueDomainId: string;
             /** @description Category code/value */
-            code: string | number
+            code: string | number;
             /** @description Category label */
-            label: string
+            label: string;
             /** @description Display order within value domain */
-            order: number
+            order: number;
             /**
              * @description Whether this is a missing/utility category
              * @default false
              */
-            isMissing: boolean
+            isMissing: boolean;
             /** @description Frequency count in the data */
-            frequency?: number
-        }
+            frequency?: number;
+        };
         /** @description DDI Question Item definition */
         DDIQuestionItem: {
             /** @description Question identifier (must start with 'qi.') */
-            questionId: string
+            questionId: string;
             /** @description Question text */
-            questionText: string
+            questionText: string;
             /** @description Instructions for answering the question */
-            instructions?: string
+            instructions?: string;
             /**
              * @description Type of response expected
              * @enum {string}
              */
-            responseType: 'single' | 'multiple' | 'numeric' | 'text' | 'date' | 'time'
+            responseType: "single" | "multiple" | "numeric" | "text" | "date" | "time";
             /** @description Reference to response value domain */
-            responseDomainRef: string
+            responseDomainRef: string;
             /** @description Maximum selections for multiple response questions */
-            maxSelections?: number
+            maxSelections?: number;
             /** @description Variable name for "other specify" responses */
-            otherSpecifyVar?: string
+            otherSpecifyVar?: string;
             /** @description Additional notes about the question */
-            notes?: string
-        }
+            notes?: string;
+        };
         /** @description DDI Universe definition (population subset) */
         DDIUniverse: {
             /** @description Universe identifier (must start with 'u.') */
-            universeId: string
+            universeId: string;
             /** @description Universe label */
-            label: string
+            label: string;
             /** @description Universe statement describing the population */
-            statement: string
-        }
+            statement: string;
+        };
         /** @description DDI Concept definition */
         DDIConcept: {
             /** @description Concept identifier (must start with 'c.') */
-            conceptId: string
+            conceptId: string;
             /** @description Concept label */
-            label: string
+            label: string;
             /** @description Concept description */
-            description?: string
-        }
+            description?: string;
+        };
         /** @description DDI Missing Values definition */
         DDIMissingValues: {
             /** @description Missing values identifier (must start with 'mv.') */
-            missingValuesId: string
+            missingValuesId: string;
             /** @description Missing value code */
-            code: string | number
+            code: string | number;
             /** @description Missing value label */
-            label: string
+            label: string;
             /** @description Value domain this missing value applies to */
-            appliesToValueDomainId?: string
-        }
+            appliesToValueDomainId?: string;
+        };
         /** @description DDI Variable Group definition */
         DDIVariableGroup: {
             /** @description Group identifier (must start with 'g.') */
-            groupId: string
+            groupId: string;
             /** @description Group label */
-            label: string
+            label: string;
             /**
              * @description Type of variable group
              * @enum {string}
              */
-            groupType: 'module' | 'loop' | 'grid' | 'multiSelectGroup'
+            groupType: "module" | "loop" | "grid" | "multiSelectGroup";
             /** @description Parent group identifier for nested groups */
-            parentGroupId?: string
+            parentGroupId?: string;
             /** @description Source for roster/loop groups */
-            rosterSource?: string
+            rosterSource?: string;
             /** @description Pattern for iterations in loop groups */
-            iterationPattern?: string
+            iterationPattern?: string;
             /** @description Additional notes about the group */
-            notes?: string
-        }
-    }
-    responses: never
-    parameters: never
-    requestBodies: never
-    headers: never
-    pathItems: never
+            notes?: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
+export type $defs = Record<string, never>;
 export interface operations {
     createEmbeddings: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['EmbeddingsRequest']
-            }
-        }
+                "application/json": components["schemas"]["EmbeddingsRequest"];
+            };
+        };
         responses: {
             /** @description Embeddings successfully created. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['EmbeddingsResponse']
-                }
-            }
+                    "application/json": components["schemas"]["EmbeddingsResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., >200 strings, invalid provider spec). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     compareSimilarity: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['SimilarityRequest']
-            }
-        }
+                "application/json": components["schemas"]["SimilarityRequest"];
+            };
+        };
         responses: {
             /** @description Similarity values returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SimilarityResponse']
-                }
-            }
+                    "application/json": components["schemas"]["SimilarityResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., invalid input, unsupported provider). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     generateThemes: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['ThemesRequest']
-            }
-        }
+                "application/json": components["schemas"]["ThemesRequest"];
+            };
+        };
         responses: {
             /** @description Thematic clustering completed successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json':
-                        | components['schemas']['ThemesResponse']
-                        | components['schemas']['ThemeSetsResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ThemesResponse"] | components["schemas"]["ThemeSetsResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., inputs >200 strings). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     clusterTexts: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['ClusteringRequest']
-            }
-        }
+                "application/json": components["schemas"]["ClusteringRequest"];
+            };
+        };
         responses: {
             /** @description Clustering completed successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ClusteringResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ClusteringResponse"];
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     analyzeSentiment: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['SentimentRequest']
-            }
-        }
+                "application/json": components["schemas"]["SentimentRequest"];
+            };
+        };
         responses: {
             /** @description Sentiment analysis results. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SentimentResponse']
-                }
-            }
+                    "application/json": components["schemas"]["SentimentResponse"];
+                };
+            };
             /** @description Bad request - validation error (e.g., invalid endpoint). */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     extractElements: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['ExtractionsRequest']
-            }
-        }
+                "application/json": components["schemas"]["ExtractionsRequest"];
+            };
+        };
         responses: {
             /** @description Extraction results returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ExtractionsResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ExtractionsResponse"];
+                };
+            };
             /** @description Accepted for asynchronous processing (fast=false). Returns a job_id to poll via /jobs. */
             202: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': {
-                        job_id: string
-                    }
-                }
-            }
+                    "application/json": {
+                        job_id: string;
+                    };
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     generateSummary: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['SummariesRequest']
-            }
-        }
+                "application/json": components["schemas"]["SummariesRequest"];
+            };
+        };
         responses: {
             /** @description Summary returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SummariesResponse']
-                }
-            }
+                    "application/json": components["schemas"]["SummariesResponse"];
+                };
+            };
             /** @description Bad request - validation error. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     generateDataDictionary: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': components['schemas']['DataDictionaryRequest']
-            }
-        }
+                "application/json": components["schemas"]["DataDictionaryRequest"];
+            };
+        };
         responses: {
             /** @description Accepted for asynchronous processing. Returns a job_id to poll via /jobs. */
             202: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': {
+                    "application/json": {
                         /** @description Unique identifier for the asynchronous job */
-                        job_id: string
-                    }
-                }
-            }
+                        job_id: string;
+                    };
+                };
+            };
             /** @description Bad request - validation error or fast mode attempted. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Missing or invalid authorization (organization). */
             401: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Insufficient credits to process the request. */
             402: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getJobStatus: {
         parameters: {
             query: {
                 /** @description Unique identifier for the job. */
-                jobId: string
-            }
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        requestBody?: never
+                jobId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Job status returned successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['JobStatusResponse']
-                }
-            }
+                    "application/json": components["schemas"]["JobStatusResponse"];
+                };
+            };
             /** @description Missing or invalid jobId query parameter. */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Job not found. */
             404: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Internal server error. */
             500: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getOrganizationCredits: {
         parameters: {
-            query?: never
-            header?: never
+            query?: never;
+            header?: never;
             path: {
                 /** @description Auth0 Organization ID (e.g., org_abc123) */
-                orgId: string
-            }
-            cookie?: never
-        }
-        requestBody?: never
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Credits snapshot retrieved successfully. */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': {
-                        [key: string]: unknown
-                    }
-                }
-            }
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
             /** @description Bad request */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Forbidden */
             403: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Organization not found */
             404: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Internal server error */
             500: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     estimateUsage: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                'application/json': {
+                "application/json": {
                     /** @enum {string} */
-                    feature:
-                        | 'embeddings'
-                        | 'sentiment'
-                        | 'themes'
-                        | 'extractions'
-                        | 'summaries'
-                        | 'data-dictionary'
-                    inputs: string[]
-                }
-            }
-        }
+                    feature: "embeddings" | "sentiment" | "themes" | "extractions" | "summaries" | "data-dictionary";
+                    inputs: string[];
+                };
+            };
+        };
         responses: {
             /** @description Usage estimate */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': {
+                    "application/json": {
                         usage?: {
-                            [key: string]: unknown
-                        }
-                    }
-                }
-            }
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
             /** @description Bad request */
             400: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Internal server error */
             500: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ErrorResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getHealth: {
         parameters: {
-            query?: never
-            header?: never
-            path?: never
-            cookie?: never
-        }
-        requestBody?: never
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['HealthResponse']
-                }
-            }
+                    "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
             /** @description Degraded or down */
             503: {
                 headers: {
-                    [name: string]: unknown
-                }
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['HealthResponse']
-                }
-            }
-        }
-    }
+                    "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
 }

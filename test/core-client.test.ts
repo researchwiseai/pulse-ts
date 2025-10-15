@@ -362,7 +362,13 @@ describe('integration tests', { skip: !process.env.PULSE_CLIENT_SECRET }, () => 
             },
         )
         expect(resp).toBeDefined()
-        expect(resp.themes.length).toBeGreaterThan(0)
+        // Handle both ThemesResponse and ThemeSetsResponse
+        if ('themes' in resp) {
+            expect(resp.themes.length).toBeGreaterThan(0)
+        } else if ('themeSets' in resp) {
+            expect(resp.themeSets.length).toBeGreaterThan(0)
+            expect(resp.themeSets[0]?.length).toBeGreaterThan(0)
+        }
     })
     it('analyzeSentiment returns data', { timeout: 20_000 }, async () => {
         const resp = await client.analyzeSentiment(['test'], { fast: true })

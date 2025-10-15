@@ -37,5 +37,13 @@ export async function createEmbeddings<
         ? Job<components['schemas']['EmbeddingsResponse']>
         : components['schemas']['EmbeddingsResponse']
 > {
-    return requestFeature(client, '/embeddings', { inputs }, options)
+    return requestFeature(
+        client,
+        '/embeddings',
+        {
+            inputs,
+            ...(options.provider !== undefined && { provider: options.provider }),
+        },
+        options,
+    )
 }

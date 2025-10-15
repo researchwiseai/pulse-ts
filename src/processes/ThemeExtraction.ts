@@ -20,7 +20,7 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
     static readonly id = 'themeExtraction'
     readonly name: Name
 
-    version?: string
+    version?: 'original'
     fast?: boolean
     threshold?: number
 
@@ -35,7 +35,7 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
     constructor(
         options: {
             themes?: string[]
-            version?: string
+            version?: 'original'
             fast?: boolean
             threshold?: number
             name?: Name
@@ -63,23 +63,15 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         const arr = ctx.datasets[inp]
         const texts: string[] = Array.isArray(arr) ? arr : [arr]
         const fastFlag = this.fast ?? ctx.fast
-        const categories = this.themeLabels(ctx)
-        const reps = this.themeRepresentatives(ctx)
-        const dictionary: Record<string, string[]> = {}
-        reps.forEach((rep, i) => {
-            const category = categories[i]
-            if (typeof category === 'string') {
-                dictionary[category] = rep.split('\n')
-            } else {
-                console.warn(`Invalid category at index ${i}:`, category)
-            }
-        })
+        const themeLabels = this.themeLabels(ctx)
+
+        // Use theme labels as the dictionary for extraction
         const response = await ctx.client.extractElements(
             {
                 texts,
-                categories,
-                dictionary,
-                threshold: this.threshold,
+                dictionary: themeLabels,
+                type: 'themes',
+                expand_dictionary: false,
                 version: this.version,
             },
             { fast: fastFlag },

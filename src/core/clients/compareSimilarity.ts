@@ -84,6 +84,7 @@ export async function compareSimilarity<
             version: options.version,
             split: options.split,
             flatten: options.flatten,
+            ...(options.provider !== undefined && { provider: options.provider }),
         }
     } else {
         body = {
@@ -92,6 +93,7 @@ export async function compareSimilarity<
             version: options.version,
             split: options.split,
             flatten: options.flatten,
+            ...(options.provider !== undefined && { provider: options.provider }),
         }
     }
     return requestFeature<

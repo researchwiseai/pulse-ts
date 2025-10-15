@@ -47,6 +47,7 @@ export async function analyzeSentiment<
         {
             inputs,
             ...(options.version !== undefined && { version: options.version }),
+            ...(options.provider !== undefined && { provider: options.provider }),
         },
         options,
     )

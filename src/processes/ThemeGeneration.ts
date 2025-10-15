@@ -175,6 +175,16 @@ export class ThemeGeneration<Name extends string = 'themeGeneration'>
             fast: fastFlag,
         })
 
+        // Handle both ThemesResponse and ThemeSetsResponse
+        // For ThemeSetsResponse, use the first theme set
+        if ('themeSets' in response) {
+            return new ThemeGenerationResult({
+                themes: response.themeSets[0] ?? [],
+                requestId: response.requestId,
+                usage: response.usage,
+            })
+        }
+
         return new ThemeGenerationResult(response)
     }
 }

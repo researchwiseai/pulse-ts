@@ -76,9 +76,15 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
             const id = proc.id
             const inputs: string[] = (proc as DSLProcess)._inputs ?? ['dataset']
             const alias = inputs[0]
-            if (!(alias in this.datasets)) {
+
+            // Some processes (like GenerateDataDictionary) don't use datasets from context
+            // Skip dataset validation for processes that have their data embedded
+            const needsDataset = id !== 'generateDataDictionary'
+
+            if (needsDataset && !(alias in this.datasets)) {
                 throw new Error(`Dataset '${alias}' not found for process '${id}'`)
             }
+
             const data = this.datasets[alias]
             const ctx: ContextBase = {
                 client: this.client,
@@ -86,7 +92,9 @@ export class Analyzer<ProcessCollection extends readonly Processes.Process<strin
                 datasets: this.datasets,
                 processes: this.processes,
             }
-            ctx.datasets[alias] = Array.isArray(data) ? data : [data]
+            if (needsDataset && data !== undefined) {
+                ctx.datasets[alias] = Array.isArray(data) ? data : [data]
+            }
             const result = await proc.run(ctx)
 
             this.datasets[id] = result

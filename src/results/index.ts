@@ -21,27 +21,27 @@ export class ClusterResult {
  * Results of theme extraction with helper methods.
  */
 export class ThemeExtractionResult {
-    private data: { columns: string[]; matrix: number[][]; requestId: string }
+    private data: { dictionary: string[]; results: string[][][]; requestId: string }
 
     /**
-     * @param data - Extraction results containing the category matrix.
+     * @param data - Extraction results containing the dictionary and extracted elements.
      * @param texts - Original array of texts processed.
      */
     constructor(
-        data: { columns: string[]; matrix: number[][]; requestId: string },
+        data: { dictionary: string[]; results: string[][][]; requestId: string },
         private texts: string[],
     ) {
         this.data = data
     }
 
-    /** Category columns returned by the API. */
-    get columns(): string[] {
-        return this.data.columns
+    /** Dictionary terms used for extraction. */
+    get dictionary(): string[] {
+        return this.data.dictionary
     }
 
-    /** Matrix of category scores per input text. */
-    get matrix(): number[][] {
-        return this.data.matrix
+    /** 3D array of extraction results: [text_index][dictionary_index][matches] */
+    get results(): string[][][] {
+        return this.data.results
     }
 
     /**
@@ -54,13 +54,19 @@ export class ThemeExtractionResult {
     /**
      * Convert extraction results to a flat array of objects.
      *
-     * @returns Array of entries each containing text, category, and score.
+     * @returns Array of entries each containing text, term, and matches.
      */
-    toArray(): Array<{ text: string; category: string; score: number }> {
-        const rows: Array<{ text: string; category: string; score: number }> = []
-        this.matrix.forEach((row, i) => {
-            row.forEach((score, j) => {
-                rows.push({ text: this.texts[i], category: this.columns[j], score })
+    toArray(): Array<{ text: string; term: string; matches: string[] }> {
+        const rows: Array<{ text: string; term: string; matches: string[] }> = []
+        this.results.forEach((textResults, textIndex) => {
+            textResults.forEach((matches, termIndex) => {
+                if (matches.length > 0) {
+                    rows.push({
+                        text: this.texts[textIndex] ?? '',
+                        term: this.dictionary[termIndex] ?? '',
+                        matches,
+                    })
+                }
             })
         })
         return rows

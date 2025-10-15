@@ -50,8 +50,8 @@ describe('extractElements', () => {
 
     it('returns ExtractionsResponse on 200', async () => {
         const resp: components['schemas']['ExtractionsResponse'] = {
-            columns: ['A'],
-            matrix: [[1]],
+            dictionary: ['term1'],
+            results: [[['match1']]],
             requestId: 'req',
         }
         fetchMock.mockResolvedValue({
@@ -60,7 +60,11 @@ describe('extractElements', () => {
             json: vi.fn().mockResolvedValue(resp),
         })
 
-        const result = await extractElements(client, { texts: ['t'] }, { fast: true })
+        const result = await extractElements(
+            client,
+            { texts: ['t'], dictionary: ['term1'] },
+            { fast: true },
+        )
 
         expect(result).toEqual(resp)
         const body = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)
@@ -83,7 +87,7 @@ describe('extractElements', () => {
 
         const result = await extractElements(
             client,
-            { texts: ['a'] },
+            { texts: ['a'], dictionary: ['term1'] },
             { fast: false, awaitJobResult: false },
         )
 

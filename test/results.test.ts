@@ -93,35 +93,33 @@ describe('ThemeExtractionResult', () => {
     it('toArray returns expected extraction rows', () => {
         const response: components['schemas']['ExtractionsResponse'] = {
             requestId: 'id',
-            columns: ['A', 'B'],
-            matrix: [
-                [1, 0],
-                [0, 1],
+            dictionary: ['termA', 'termB'],
+            results: [
+                [['matchA1', 'matchA2'], []],
+                [[], ['matchB1']],
             ],
         }
-        const texts = ['A1 A2', 'B1']
+        const texts = ['text1', 'text2']
         const r = new ThemeExtractionResult(response, texts)
         const arr = r.toArray()
         expect(arr).toEqual([
-            { text: 'A1 A2', category: 'A', score: 1 },
-            { text: 'A1 A2', category: 'B', score: 0 },
-            { text: 'B1', category: 'A', score: 0 },
-            { text: 'B1', category: 'B', score: 1 },
+            { text: 'text1', term: 'termA', matches: ['matchA1', 'matchA2'] },
+            { text: 'text2', term: 'termB', matches: ['matchB1'] },
         ])
     })
 
-    it('exposes columns and matrix from the response', () => {
+    it('exposes dictionary and results from the response', () => {
         const resp: components['schemas']['ExtractionsResponse'] = {
             requestId: 'r',
-            columns: ['X', 'Y'],
-            matrix: [
-                [0.1, 0.9],
-                [0.4, 0.6],
+            dictionary: ['X', 'Y'],
+            results: [
+                [['x1'], ['y1', 'y2']],
+                [[], ['y3']],
             ],
         }
-        const r = new ThemeExtractionResult(resp, ['x', 'y'])
-        expect(r.columns).toEqual(resp.columns)
-        expect(r.matrix).toEqual(resp.matrix)
+        const r = new ThemeExtractionResult(resp, ['text1', 'text2'])
+        expect(r.dictionary).toEqual(resp.dictionary)
+        expect(r.results).toEqual(resp.results)
         expect(r.requestId).toBe('r')
     })
 })

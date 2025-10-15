@@ -193,7 +193,7 @@ export class Workflow {
     themeExtraction(
         options: {
             themes?: string[]
-            version?: string
+            version?: 'original'
             fast?: boolean
             inputs?: string
             themesFrom?: string

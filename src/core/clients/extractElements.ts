@@ -53,7 +53,7 @@ export async function extractElements<
 >(
     client: CoreClient,
     inputs: ExtractElementsInputs,
-    { awaitJobResult, fast }: ExtractElementsOptions<Fast, AwaitJobResult> = {},
+    options: ExtractElementsOptions<Fast, AwaitJobResult> = {},
 ) {
     const body: Omit<ExtractionsRequest, 'fast'> = {
         inputs: inputs.texts,
@@ -61,6 +61,7 @@ export async function extractElements<
         dictionary: inputs.dictionary,
         expand_dictionary: inputs.expand_dictionary ?? true,
         version: inputs.version,
+        ...(options.provider !== undefined && { provider: options.provider }),
     }
 
     return requestFeature<
@@ -68,5 +69,5 @@ export async function extractElements<
         ExtractionsResponse,
         Fast,
         AwaitJobResult
-    >(client, '/extractions', body, { awaitJobResult, fast }) as Promise<Result>
+    >(client, '/extractions', body, options) as Promise<Result>
 }
