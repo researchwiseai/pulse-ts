@@ -13,6 +13,7 @@ import type { components } from './models'
 import { CreateEmbeddings } from './processes/CreateEmbeddings'
 import { CompareSimilarity } from './processes/CompareSimilarity'
 import { GenerateSummary } from './processes/GenerateSummary'
+import { GenerateDataDictionary } from './processes/GenerateDataDictionary'
 import { Analyzer } from './analyzer'
 import type { Processes } from '.'
 import type { ContextBase } from './processes'
@@ -325,6 +326,86 @@ export class Workflow {
             throw new Error(`Unknown source for generateSummary: '${alias}'`)
         }
         proc._inputs = [alias]
+        return this
+    }
+
+    /**
+     * Add a data dictionary generation step to the workflow.
+     *
+     * Generates a DDI Codebook from a 2D array dataset registered with the workflow.
+     * The dataset must be a 2D array of strings (typically with headers in the first row).
+     *
+     * @param inputAlias - The name of the dataset (2D array) to generate a data dictionary for.
+     *                     Must be a dataset previously registered with `source()`.
+     * @param options - Configuration for data dictionary generation.
+     * @param options.name - Optional custom name for this process instance in the workflow results.
+     * @param options.title - Optional title for the data dictionary.
+     * @param options.description - Optional description of the dataset.
+     * @param options.context - Optional contextual information to guide the AI analysis.
+     * @param options.language - Optional language code (e.g., 'en', 'es') for the documentation.
+     * @returns The Workflow instance for chaining.
+     * @throws {Error} If the dataset is not found or is not a 2D array.
+     *
+     * @example
+     * ```typescript
+     * const workflow = new Workflow()
+     *   .source('surveyData', [
+     *     ['Name', 'Age', 'City'],
+     *     ['John', '25', 'New York'],
+     *     ['Jane', '30', 'Los Angeles']
+     *   ])
+     *   .generateDataDictionary('surveyData', {
+     *     name: 'codebook',
+     *     title: 'Customer Survey',
+     *     description: 'Survey responses from Q1 2024'
+     *   });
+     *
+     * const results = await workflow.run({ client });
+     * const codebook = results.codebook; // DataDictionaryResult
+     * ```
+     */
+    generateDataDictionary(
+        inputAlias: string,
+        options: {
+            name?: string
+            title?: string
+            description?: string
+            context?: string
+            language?: string
+        } = {},
+    ): this {
+        const { context, description, language, name, title } = options
+
+        // Validate that input dataset exists
+        const data = this.datasets[inputAlias]
+        if (!data) {
+            throw new Error(`Dataset '${inputAlias}' not found`)
+        }
+
+        // Validate that dataset is a 2D array
+        if (!Array.isArray(data) || !Array.isArray(data[0])) {
+            throw new Error(
+                `Dataset '${inputAlias}' must be a 2D array for data dictionary generation`,
+            )
+        }
+
+        // Create GenerateDataDictionary process instance
+        const proc = new GenerateDataDictionary({
+            name,
+            data: data as string[][],
+            title,
+            description,
+            context,
+            language,
+        }) as DSLProcess
+
+        // Set _inputs metadata on process
+        proc._inputs = [inputAlias]
+
+        // Call addProcess() to register the process
+        this.addProcess(proc, name)
+
+        // Return this for method chaining
         return this
     }
 

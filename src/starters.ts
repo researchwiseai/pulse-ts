@@ -11,6 +11,7 @@ import { Sentiment } from './processes/Sentiment'
 import { ClusterResult } from './results'
 import { ThemeAllocationResult } from './results/ThemeAllocationResult'
 import { SentimentResult } from './results/SentimentResult'
+import { DataDictionaryResult } from './results/DataDictionaryResult'
 import { processes } from './processes/types'
 import type { components } from './models'
 
@@ -115,7 +116,7 @@ export async function sentimentAnalysis(
     return res.sentiment
 }
 
-interface ThemeAllocationOptions {
+export interface ThemeAllocationOptions {
     themes?: ThemesInput | undefined
     client?: CoreClient
 }
@@ -257,4 +258,81 @@ export async function compareSimilarity(
     const fast = texts.length <= 200
     const client = options.client ?? new CoreClient()
     return client.compareSimilarity({ set: texts }, { fast })
+}
+
+interface GenerateDataDictionaryOptions {
+    client?: CoreClient
+    title?: string
+    description?: string
+    context?: string
+    language?: string
+}
+
+/**
+ * Generate a data dictionary (DDI Codebook) for the provided 2D array of tabular data.
+ *
+ * This function analyzes tabular data and produces comprehensive DDI (Data Documentation Initiative)
+ * Codebook documentation in JSON format. The AI intelligently analyzes data patterns, infers variable
+ * types, detects value ranges, and generates meaningful metadata descriptions conforming to DDI standards.
+ *
+ * Note: Data dictionary generation only supports asynchronous mode due to the computational complexity
+ * of analyzing large datasets. The function will automatically poll for job completion.
+ *
+ * @param data - A 2D array of strings representing tabular data. The first row typically contains
+ *               column headers, and subsequent rows contain the data values.
+ *               Maximum limits: 50,000 rows, 1,000 columns, or 100,000 total cells.
+ * @param options - Optional configuration for the data dictionary generation.
+ * @param options.client - An optional `CoreClient` instance to use for the analysis.
+ *                         If not provided, a new `CoreClient` will be instantiated.
+ * @param options.title - Optional title for the data dictionary.
+ * @param options.description - Optional description of the dataset.
+ * @param options.context - Optional contextual information to help guide the AI analysis.
+ * @param options.language - Optional language code (e.g., 'en', 'es') for the documentation.
+ * @returns A promise that resolves to a `DataDictionaryResult` object containing the DDI Codebook
+ *          with variables, value domains, categories, and other metadata.
+ *
+ * @example Basic usage
+ * ```typescript
+ * const surveyData = [
+ *   ['Name', 'Age', 'City', 'Satisfaction'],
+ *   ['John Doe', '25', 'New York', 'Very Satisfied'],
+ *   ['Jane Smith', '30', 'Los Angeles', 'Satisfied']
+ * ];
+ * const result = await generateDataDictionary(surveyData);
+ * console.log(result.getVariables());
+ * ```
+ *
+ * @example With metadata
+ * ```typescript
+ * const result = await generateDataDictionary(surveyData, {
+ *   title: 'Customer Survey 2024',
+ *   description: 'Annual customer satisfaction survey responses',
+ *   context: 'Survey conducted among retail customers',
+ *   language: 'en'
+ * });
+ * console.log(result.getSummary());
+ * ```
+ *
+ * @example With custom client
+ * ```typescript
+ * import { CoreClient } from '@rwai/pulse';
+ * const myClient = new CoreClient();
+ * const result = await generateDataDictionary(surveyData, { client: myClient });
+ * ```
+ */
+export async function generateDataDictionary(
+    data: string[][],
+    options: GenerateDataDictionaryOptions = {},
+): Promise<DataDictionaryResult> {
+    const client = options.client ?? new CoreClient()
+
+    const response = await client.generateDataDictionary(data, {
+        title: options.title,
+        description: options.description,
+        context: options.context,
+        language: options.language,
+        fast: false, // Data dictionary always uses async mode
+    })
+
+    return new DataDictionaryResult(response)
 }

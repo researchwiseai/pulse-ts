@@ -1,0 +1,206 @@
+# Implementation Plan
+
+- [x]   1. Generate TypeScript types from updated OpenAPI specification
+    - Run the type generation script to create types for DataDictionaryRequest,
+      DataDictionaryResponse, and all DDI schema components
+    - Verify that all DDI types (DDIVariable, DDIValueDomain, DDICategory, etc.) are properly
+      generated
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+
+- [x]   2. Implement core API client method
+    - [x] 2.1 Create `src/core/clients/generateDataDictionary.ts` with the client method
+        - Implement `GenerateDataDictionaryOptions` interface extending `UniversalFeatureOptions`
+        - Implement `generateDataDictionary` function with proper type parameters
+        - Add validation to throw error if fast=true is specified
+        - Build request payload with data and optional metadata
+        - Use `requestFeature` helper to make API call
+        - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
+    - [x] 2.2 Integrate method into CoreClient class
+        - Add import for `generateDataDictionary` in `src/core/clients/CoreClient.ts`
+        - Bind method to CoreClient instance
+        - _Requirements: 1.1_
+    - [x] 2.3 Add exports to core clients index
+        - Export `generateDataDictionary` and `GenerateDataDictionaryOptions` from
+          `src/core/clients/index.ts`
+        - _Requirements: 1.1_
+
+- [x]   3. Create DataDictionaryResult wrapper class
+    - [x] 3.1 Implement `src/results/DataDictionaryResult.ts`
+        - Create class constructor accepting DataDictionaryResponse
+        - Implement core accessor properties (codebook, profileVersion, profileName, etc.)
+        - Implement metadata accessor properties (title, description, creationDate, etc.)
+        - _Requirements: 5.1, 5.5_
+    - [x] 3.2 Implement variable accessor methods
+        - Add `getVariables()` method
+        - Add `getVariableByName(name)` method
+        - Add `getVariablesByType(type)` method
+        - Add `getVariablesByScaleLevel(scaleLevel)` method
+        - Add `getVariablesByGroup(groupRef)` method
+        - _Requirements: 5.2_
+    - [x] 3.3 Implement value domain and category methods
+        - Add `getValueDomains()` method
+        - Add `getValueDomainById(id)` method
+        - Add `getValueDomainsByType(domainType)` method
+        - Add `getCategories()` method
+        - Add `getCategoriesForDomain(valueDomainId)` method with sorting
+        - Add `getCategoryByCode(valueDomainId, code)` method
+        - _Requirements: 5.3_
+    - [x] 3.4 Implement DDI component accessor methods
+        - Add question item methods (`getQuestionItems()`, `getQuestionById()`)
+        - Add universe methods (`getUniverses()`, `getUniverseById()`)
+        - Add concept methods (`getConcepts()`, `getConceptById()`)
+        - Add missing values methods (`getMissingValues()`, `getMissingValuesById()`)
+        - Add variable group methods (`getVariableGroups()`, `getVariableGroupById()`,
+          `getVariableGroupsByType()`)
+        - _Requirements: 5.6_
+    - [x] 3.5 Implement export and summary methods
+        - Add `toJSON()` method
+        - Add `getCodebook()` method
+        - Add `getMetadata()` method
+        - Add `getSummary()` method with aggregated statistics
+        - _Requirements: 5.5, 5.6_
+    - [x] 3.6 Add exports to results index
+        - Export `DataDictionaryResult` from `src/results/index.ts`
+        - _Requirements: 5.1_
+
+- [x]   4. Implement GenerateDataDictionary process class
+    - [x] 4.1 Create `src/processes/GenerateDataDictionary.ts`
+        - Implement class with `@staticImplements` decorator
+        - Add static `id` property
+        - Implement constructor accepting data and optional metadata
+        - Add instance properties for data, title, description, context, language
+        - _Requirements: 4.1, 4.2_
+    - [x] 4.2 Implement process run method
+        - Implement `run(ctx)` method
+        - Call `ctx.client.generateDataDictionary()` with process data and options
+        - Return `DataDictionaryResult` instance
+        - _Requirements: 4.3, 4.4_
+    - [x] 4.3 Add exports to processes index
+        - Export `GenerateDataDictionary` from `src/processes/index.ts`
+        - _Requirements: 4.1_
+
+- [x]   5. Implement DSL integration
+    - [x] 5.1 Add generateDataDictionary method to Workflow class
+        - Import `GenerateDataDictionary` in `src/dsl.ts`
+        - Implement `generateDataDictionary(inputAlias, options)` method
+        - Validate that input dataset exists and is a 2D array
+        - Create `GenerateDataDictionary` process instance
+        - Set `_inputs` metadata on process
+        - Call `addProcess()` to register the process
+        - Return `this` for method chaining
+        - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
+
+- [x]   6. Implement starter helper function
+    - [x] 6.1 Add generateDataDictionary helper to starters
+        - Import `DataDictionaryResult` and `GenerateDataDictionary` in `src/starters.ts`
+        - Define `GenerateDataDictionaryOptions` interface
+        - Implement `generateDataDictionary(data, options)` function
+        - Create CoreClient instance if not provided
+        - Call `client.generateDataDictionary()` with data and options
+        - Return `DataDictionaryResult` instance
+        - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
+
+- [x]   7. Add main exports
+    - Update `src/index.ts` to export `DataDictionaryResult` and `GenerateDataDictionary`
+    - _Requirements: 2.1, 4.1, 5.1_
+
+- [x]   8. Write unit tests for core client method
+    - [x] 8.1 Create `src/core/clients/__tests__/generateDataDictionary.test.ts`
+        - Write test for successful data dictionary generation with minimal data
+        - Write test for data dictionary generation with all optional metadata
+        - Write test for error when fast=true is specified
+        - Write test for proper payload construction
+        - Mock `requestFeature` to verify correct parameters
+        - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 8.1, 11.1_
+
+- [x]   9. Write unit tests for DataDictionaryResult class
+    - [x] 9.1 Create `test/results/dataDictionaryResult.test.ts`
+        - Create mock DataDictionaryResponse fixture
+        - Write tests for all core accessor properties
+        - Write tests for metadata accessor properties
+        - Write tests for variable accessor methods
+        - Write tests for value domain and category methods
+        - Write tests for DDI component accessor methods
+        - Write tests for export methods (toJSON, getCodebook, getMetadata)
+        - Write tests for getSummary method
+        - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 11.4_
+
+- [x]   10. Write unit tests for GenerateDataDictionary process
+    - [x] 10.1 Create `test/processes/generateDataDictionary.test.ts`
+        - Write test for process instantiation with required parameters
+        - Write test for process instantiation with all optional parameters
+        - Write test for process execution with mock context
+        - Verify that process calls client method with correct parameters
+        - Verify that process returns DataDictionaryResult instance
+        - _Requirements: 4.1, 4.2, 4.3, 4.4, 11.3_
+
+- [x]   11. Write integration tests
+    - [x] 11.1 Create test data fixtures
+        - Create small dataset fixture (5 rows × 4 columns)
+        - Create dataset with missing values
+        - Create dataset with numeric and categorical data
+        - Create dataset for error testing (exceeding limits)
+        - _Requirements: 11.8_
+    - [x] 11.2 Create `test/data-dictionary.integration.test.ts`
+        - Set up Polly.js for recording API interactions
+        - Write test for end-to-end data dictionary generation
+        - Write test for data dictionary with optional metadata
+        - Write test for job polling and result retrieval
+        - Write test for error scenarios (fast mode, data limits)
+        - Record API interactions with Polly.js
+        - _Requirements: 3.1, 3.2, 3.3, 3.4, 8.1, 8.2, 8.3, 8.4, 11.1, 11.8, 11.9_
+    - [x] 11.3 Write tests for starter helper function
+        - Write test for helper with minimal parameters
+        - Write test for helper with all optional metadata
+        - Write test for helper with custom client
+        - Verify that helper returns DataDictionaryResult
+        - _Requirements: 6.1, 6.2, 6.3, 6.5, 11.5_
+    - [x] 11.4 Write tests for DSL integration
+        - Write test for Workflow.generateDataDictionary() method
+        - Write test for data dictionary in workflow with multiple steps
+        - Write test for error when dataset not found
+        - Write test for error when dataset is not 2D array
+        - Verify result is accessible in workflow results
+        - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 11.6_
+    - [x] 11.5 Write tests for Analyzer integration
+        - Write test for Analyzer with GenerateDataDictionary process
+        - Write test for Analyzer with multiple processes including data dictionary
+        - Verify result is accessible via process name
+        - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 11.7_
+
+- [x]   12. Update documentation
+    - [x] 12.1 Add JSDoc comments to all public APIs
+        - Add comprehensive JSDoc to `generateDataDictionary` client method
+        - Add JSDoc to `GenerateDataDictionary` process class
+        - Add JSDoc to `DataDictionaryResult` class and all public methods
+        - Add JSDoc to starter helper function
+        - Add JSDoc to Workflow.generateDataDictionary() method
+        - _Requirements: 7.1, 7.2, 7.3, 7.4_
+    - [x] 12.2 Update README.md
+        - Add data dictionary generation to feature list
+        - Add basic usage example
+        - Add example with optional metadata
+        - Add example using starter helper
+        - Add example using DSL/Workflow
+        - Add example using Analyzer
+        - _Requirements: 7.1, 7.2, 7.3_
+    - [x] 12.3 Update docs/starters.md
+        - Add section for `generateDataDictionary` helper
+        - Include usage examples
+        - Document options and return type
+        - _Requirements: 7.2_
+
+- [x]   13. Verify test coverage
+    - Run test suite and verify all tests pass
+    - Check code coverage meets project standards
+    - Verify Polly.js recordings are created correctly
+    - _Requirements: 11.10_
+
+- [x]   14. Final validation
+    - Run type checking (`bun run typecheck`)
+    - Run linting (`bun run lint`)
+    - Run formatting (`bun run fmt`)
+    - Run full test suite (`bun run test`)
+    - Build the project (`bun run build`)
+    - Verify no breaking changes to existing functionality
+    - _Requirements: All_

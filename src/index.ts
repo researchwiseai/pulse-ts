@@ -10,7 +10,15 @@ export * from './analyzer'
 
 export * from './results'
 export * from './dsl'
-export * from './starters'
+export {
+    sentimentAnalysis,
+    themeAllocation,
+    clusterAnalysis,
+    getStrings,
+    summarize,
+    generateDataDictionary,
+} from './starters'
+export type { ThemeAllocationOptions } from './starters'
 
 export * as Auth from './auth/index'
 export * as Processes from './processes'

@@ -32,7 +32,13 @@ Pulse provides helpers and a workflow DSL to make analysis easy. For an overview
 functions see the [Starter Helpers guide](docs/starters.md).
 
 ```ts
-import { sentimentAnalysis, themeAllocation, clusterAnalysis, summarize } from '@rwai/pulse'
+import {
+    sentimentAnalysis,
+    themeAllocation,
+    clusterAnalysis,
+    summarize,
+    generateDataDictionary,
+} from '@rwai/pulse'
 
 const sentiments = await sentimentAnalysis(['text1', 'text2'])
 const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'])
@@ -41,6 +47,17 @@ const allocation = await themeAllocation(['text1', 'text2'], ['theme1', 'theme2'
 const allocationWithoutThemes = await themeAllocation(['text1', 'text2'])
 const clusters = await clusterAnalysis(['text1', 'text2'])
 const summary = await summarize(['text1', 'text2'], 'What is the gist?')
+
+// Generate a data dictionary from tabular data
+const surveyData = [
+    ['Name', 'Age', 'City', 'Satisfaction'],
+    ['John Doe', '25', 'New York', 'Very Satisfied'],
+    ['Jane Smith', '30', 'Los Angeles', 'Satisfied'],
+]
+const dataDictionary = await generateDataDictionary(surveyData, {
+    title: 'Customer Survey',
+    description: 'Survey responses from Q1 2024',
+})
 ```
 
 ### Authentication
@@ -63,6 +80,71 @@ const client = new CoreClient({
 })
 ```
 
+### Data Dictionary Generation
+
+Generate comprehensive DDI Codebook documentation from tabular data:
+
+#### Basic Usage
+
+```ts
+import { generateDataDictionary } from '@rwai/pulse'
+
+const data = [
+    ['Name', 'Age', 'City'],
+    ['John', '25', 'New York'],
+    ['Jane', '30', 'Los Angeles'],
+]
+
+const result = await generateDataDictionary(data)
+console.log(result.getVariables())
+console.log(result.getSummary())
+```
+
+#### With Optional Metadata
+
+```ts
+const result = await generateDataDictionary(data, {
+    title: 'Customer Survey 2024',
+    description: 'Annual customer satisfaction survey responses',
+    context: 'Survey conducted among retail customers',
+    language: 'en',
+})
+
+// Access variables
+const variables = result.getVariables()
+const ageVariable = result.getVariableByName('Age')
+
+// Access value domains and categories
+const valueDomains = result.getValueDomains()
+const categories = result.getCategoriesForDomain('satisfaction_domain')
+
+// Get metadata
+const metadata = result.getMetadata()
+console.log(metadata.title, metadata.description)
+```
+
+#### Using the Process Class
+
+```ts
+import { Analyzer, GenerateDataDictionary, CoreClient } from '@rwai/pulse'
+
+const analyzer = new Analyzer({
+    datasets: { surveyData: data },
+    processes: [
+        new GenerateDataDictionary({
+            data,
+            title: 'Customer Survey',
+            description: 'Survey responses',
+        }),
+    ],
+    client: new CoreClient(),
+    fast: false, // Data dictionary always uses async mode
+})
+
+const results = await analyzer.run()
+const codebook = results.generateDataDictionary
+```
+
 ### Workflow DSL
 
 Compose analysis steps using `Workflow`:
@@ -78,6 +160,27 @@ const wf = new Workflow()
 
 const results = await wf.run({ client })
 console.log(results.sentiment.summary())
+```
+
+#### Data Dictionary in Workflow
+
+```ts
+const workflow = new Workflow()
+    .source('surveyData', [
+        ['Name', 'Age', 'City', 'Satisfaction'],
+        ['John Doe', '25', 'New York', 'Very Satisfied'],
+        ['Jane Smith', '30', 'Los Angeles', 'Satisfied'],
+    ])
+    .source('comments', ['Great service!', 'Could be better'])
+    .generateDataDictionary('surveyData', {
+        name: 'codebook',
+        title: 'Customer Survey',
+    })
+    .sentiment({ source: 'comments', name: 'commentSentiment' })
+
+const results = await workflow.run({ client })
+const codebook = results.codebook // DataDictionaryResult
+const sentiment = results.commentSentiment // SentimentResult
 ```
 
 ### JSON field name compatibility

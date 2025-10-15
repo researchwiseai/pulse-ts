@@ -70,3 +70,4 @@ export class ThemeExtractionResult {
 export { SentimentResult } from './SentimentResult'
 export { ThemeGenerationResult } from './ThemeGenerationResult'
 export { ThemeAllocationResult } from './ThemeAllocationResult'
+export { DataDictionaryResult } from './DataDictionaryResult'

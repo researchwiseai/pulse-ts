@@ -53,8 +53,10 @@ interface CompareSimilarityBaseRequest {
     split?: components['schemas']['Split']
 }
 type CompareSimilarityRequestSelf = CompareSimilarityBaseRequest & { set: string[] }
-type CompareSimilarityRequestCross =
-    CompareSimilarityBaseRequest & { set_a: string[]; set_b: string[] }
+type CompareSimilarityRequestCross = CompareSimilarityBaseRequest & {
+    set_a: string[]
+    set_b: string[]
+}
 type CompareSimilarityRequest = CompareSimilarityRequestSelf | CompareSimilarityRequestCross
 
 /**

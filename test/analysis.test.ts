@@ -4,12 +4,15 @@ import { Analyzer } from '../src/analyzer'
 import { ThemeAllocationResult } from '../src/results/ThemeAllocationResult'
 import { SentimentResult } from '../src/results/SentimentResult'
 import { ThemeGenerationResult } from '../src/results/ThemeGenerationResult'
+import { DataDictionaryResult } from '../src/results/DataDictionaryResult'
 import { CoreClient } from '../src/core/clients/CoreClient'
 import { ClientCredentialsAuth } from '../src/auth/ClientCredentialsAuth'
 import { ThemeGeneration } from '../src/processes/ThemeGeneration'
 import { Sentiment } from '../src/processes/Sentiment'
 import { ThemeAllocation } from '../src/processes/ThemeAllocation'
+import { GenerateDataDictionary } from '../src/processes/GenerateDataDictionary'
 import { processes } from '../src/processes/types'
+import { smallDataset, mixedDataset } from './fixtures/dataDictionaryFixtures'
 
 const clientId = process.env.PULSE_CLIENT_ID
 const clientSecret = process.env.PULSE_CLIENT_SECRET
@@ -93,5 +96,130 @@ if (!clientId || !clientSecret || !tokenUrl || !baseUrl) {
             const multi = ta.assignMulti(2)
             expect(multi).toHaveLength(reviews.length)
         })
+    })
+
+    describe('GenerateDataDictionary process', () => {
+        setupPolly()
+
+        it('generates data dictionary via Analyzer', { timeout: 60_000 }, async () => {
+            const az = new Analyzer({
+                datasets: {},
+                processes: processes(
+                    new GenerateDataDictionary({
+                        data: smallDataset,
+                        title: 'Survey Data Dictionary',
+                        description: 'Customer survey codebook',
+                    }),
+                ),
+                client,
+                fast: false,
+            })
+
+            const res = await az.run()
+
+            expect(res.generateDataDictionary).toBeInstanceOf(DataDictionaryResult)
+            const result = res.generateDataDictionary as DataDictionaryResult
+            expect(result.title).toBe('Survey Data Dictionary')
+            expect(result.description).toBe('Customer survey codebook')
+            expect(result.getVariables().length).toBeGreaterThan(0)
+        })
+
+        it('generates data dictionary with multiple processes', { timeout: 60_000 }, async () => {
+            const comments = ['Great service!', 'Could be better', 'Very satisfied']
+
+            const az = new Analyzer({
+                datasets: {
+                    comments: comments,
+                },
+                processes: processes(
+                    new GenerateDataDictionary({
+                        name: 'codebook',
+                        data: mixedDataset,
+                        title: 'Product Survey',
+                    }),
+                    new Sentiment({ name: 'commentSentiment' }),
+                ),
+                client,
+                fast: false,
+            })
+
+            const res = await az.run()
+
+            // Verify data dictionary result
+            expect(res.codebook).toBeInstanceOf(DataDictionaryResult)
+            const codebook = res.codebook as DataDictionaryResult
+            expect(codebook.title).toBe('Product Survey')
+            expect(codebook.getVariables().length).toBeGreaterThan(0)
+
+            // Verify sentiment result
+            expect(res.commentSentiment).toBeInstanceOf(SentimentResult)
+            const sentiment = res.commentSentiment as SentimentResult
+            expect(sentiment.sentiments.length).toBe(comments.length)
+        })
+
+        it('makes result accessible via process name', { timeout: 60_000 }, async () => {
+            const az = new Analyzer({
+                datasets: {},
+                processes: processes(
+                    new GenerateDataDictionary({
+                        name: 'myCustomCodebook',
+                        data: smallDataset,
+                        title: 'Custom Named Codebook',
+                    }),
+                ),
+                client,
+                fast: false,
+            })
+
+            const res = await az.run()
+
+            // Verify result is accessible by custom name
+            expect(res.myCustomCodebook).toBeInstanceOf(DataDictionaryResult)
+            const result = res.myCustomCodebook as DataDictionaryResult
+            expect(result.title).toBe('Custom Named Codebook')
+
+            // Verify result methods work
+            const variables = result.getVariables()
+            expect(Array.isArray(variables)).toBe(true)
+            expect(variables.length).toBeGreaterThan(0)
+
+            const summary = result.getSummary()
+            expect(summary.title).toBe('Custom Named Codebook')
+            expect(summary.totalVariables).toBe(variables.length)
+        })
+
+        it(
+            'generates data dictionary with all optional parameters',
+            { timeout: 60_000 },
+            async () => {
+                const az = new Analyzer({
+                    datasets: {},
+                    processes: processes(
+                        new GenerateDataDictionary({
+                            data: mixedDataset,
+                            title: 'Complete Metadata Test',
+                            description: 'Testing all optional parameters',
+                            context: 'E-commerce product catalog',
+                            language: 'en',
+                        }),
+                    ),
+                    client,
+                    fast: false,
+                })
+
+                const res = await az.run()
+
+                expect(res.generateDataDictionary).toBeInstanceOf(DataDictionaryResult)
+                const result = res.generateDataDictionary as DataDictionaryResult
+
+                expect(result.title).toBe('Complete Metadata Test')
+                expect(result.description).toBe('Testing all optional parameters')
+                expect(result.language).toBe('en')
+
+                const metadata = result.getMetadata()
+                expect(metadata.title).toBe('Complete Metadata Test')
+                expect(metadata.description).toBe('Testing all optional parameters')
+            },
+        )
     })
 }

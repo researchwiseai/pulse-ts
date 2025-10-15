@@ -67,11 +67,11 @@ export class ThemeExtraction<Name extends string = 'themeExtraction'>
         const reps = this.themeRepresentatives(ctx)
         const dictionary: Record<string, string[]> = {}
         reps.forEach((rep, i) => {
-            const category = categories[i];
+            const category = categories[i]
             if (typeof category === 'string') {
-                dictionary[category] = rep.split('\n');
+                dictionary[category] = rep.split('\n')
             } else {
-                console.warn(`Invalid category at index ${i}:`, category);
+                console.warn(`Invalid category at index ${i}:`, category)
             }
         })
         const response = await ctx.client.extractElements(

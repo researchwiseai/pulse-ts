@@ -29,7 +29,9 @@ export class GenerateSummary<Name extends string = 'generateSummary'>
         } = {},
     ) {
         if (!options.question) {
-            throw new Error('GenerateSummary constructor: The "question" parameter is required in the options object. Please provide a valid "question" value.')
+            throw new Error(
+                'GenerateSummary constructor: The "question" parameter is required in the options object. Please provide a valid "question" value.',
+            )
         }
         this.question = options.question
         this.fast = options.fast

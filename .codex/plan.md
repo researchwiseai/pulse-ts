@@ -31,31 +31,26 @@ stable release.
 ## Plan
 
 1. **Project Setup**
-
     - Initialize bun project
     - Configure TypeScript (tsconfig.json)
     - Setup vitest for testing
     - Optional: ESLint/Prettier setup (TBD)
 
 2. **Core Client Modules**
-
     - Authentication (login/token management)
     - HTTP request layer (fetch wrapper, retries, timeouts)
     - Models & Types (interfaces or classes)
     - Error handling
 
 3. **API Endpoints Implementation**
-
     - Mirror each endpoint in the Python client
     - Map parameters, request/response shapes, pagination, etc.
 
 4. **Testing**
-
     - For each Python test in `python/tests`, write an equivalent vitest test
     - Validate edge cases, error handling, pagination, etc.
 
 5. **Documentation**
-
     - Update README.md with TypeScript usage examples
     - Generate API reference (e.g., Typedoc)
 
@@ -71,7 +66,6 @@ stable release.
 - Prepare package for npm publication
 
 8. **Refactor src/core/clients for production readiness**
-
     - Extract recurring request/job logic into a generic helper.
     - Standardize option destructuring (alphabetical order) and remove unnecessary `await`.
     - Fix missing `context` field in generateThemes payload.

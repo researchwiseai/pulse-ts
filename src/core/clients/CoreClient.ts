@@ -15,6 +15,10 @@ import {
 import { generateThemes, type GenerateThemeOptions } from './generateThemes'
 import { clusterTexts, type ClusterTextsInputs, type ClusterTextsOptions } from './clusterTexts'
 import { generateSummary, type GenerateSummaryOptions } from './generateSummary'
+import {
+    generateDataDictionary,
+    type GenerateDataDictionaryOptions,
+} from './generateDataDictionary'
 
 /**
  * Core client for interacting with the Pulse API operations.
@@ -167,5 +171,27 @@ export class CoreClient {
         AwaitJobResult extends boolean | undefined = undefined,
     >(inputs: ClusterTextsInputs, opts: ClusterTextsOptions<Fast, AwaitJobResult> = {}) {
         return clusterTexts(this, inputs, opts)
+    }
+
+    /**
+     * Generate a DDI Codebook data dictionary from a 2D array of tabular data.
+     *
+     * Analyzes the provided data to infer variable types, detect value ranges, and generate
+     * comprehensive DDI (Data Documentation Initiative) Codebook documentation in JSON format.
+     *
+     * **Note**: Data dictionary generation only supports asynchronous mode. The `fast` option
+     * must be `false` or omitted.
+     *
+     * @typeParam Fast - Must be false or undefined. Fast mode is not supported.
+     * @typeParam AwaitJobResult - Flag to await background job result.
+     * @param data - A 2D array of strings representing tabular data.
+     * @param opts - Options including optional metadata (title, description, context, language).
+     * @returns DataDictionaryResponse or Job handle, based on options.
+     */
+    async generateDataDictionary<
+        Fast extends boolean | undefined = undefined,
+        AwaitJobResult extends boolean | undefined = undefined,
+    >(data: string[][], opts: GenerateDataDictionaryOptions<Fast, AwaitJobResult> = {}) {
+        return generateDataDictionary(this, data, opts)
     }
 }
