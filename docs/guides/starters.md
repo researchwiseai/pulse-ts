@@ -1,3 +1,8 @@
+---
+title: Starter Helpers
+description: Fire-and-forget helpers for the most common Pulse analyses without authoring a workflow.
+---
+
 # Starter Helpers
 
 The starter helpers provide convenient wrappers around the common workflows offered by this package.

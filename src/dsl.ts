@@ -267,6 +267,10 @@ export class Workflow {
 
     /**
      * Add an embeddings creation step to the workflow.
+     *
+     * @param options.fast - Forces synchronous (fast) mode for small datasets.
+     * @param options.source - Dataset alias containing the texts to embed. Defaults to `dataset`.
+     * @param options.name - Optional custom identifier used in the result payload.
      */
     createEmbeddings(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, name, source } = options
@@ -286,6 +290,10 @@ export class Workflow {
 
     /**
      * Add a similarity comparison step to the workflow.
+     *
+     * @param options.fast - Toggles synchronous execution where supported.
+     * @param options.source - Dataset alias containing the corpus to compare.
+     * @param options.name - Optional custom identifier for the similarity result matrix.
      */
     compareSimilarity(options: { fast?: boolean; source?: string; name?: string } = {}): this {
         const { fast, name, source } = options
@@ -305,6 +313,13 @@ export class Workflow {
 
     /**
      * Add a summary generation step to the workflow.
+     *
+     * @param options.question - Prompt, instruction, or research question for the summary.
+     * @param options.length - Optional response length hint accepted by the API.
+     * @param options.preset - Formatting preset (e.g., `brief`, `one-pager`).
+     * @param options.source - Dataset alias to summarize (defaults to `dataset`).
+     * @param options.fast - Override for Analyzer fast mode.
+     * @param options.name - Custom identifier used in the workflow results map.
      */
     generateSummary(options: {
         question: string

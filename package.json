@@ -11,11 +11,15 @@
     "scripts": {
         "clean": "rimraf dist",
         "test": "vitest --run",
+        "test:unit": "vitest --run --exclude='**/*.integration.test.ts' --exclude='**/analysis.test.ts' --exclude='**/dsl.test.ts' --exclude='**/starters.test.ts'",
         "test:watch": "vitest --watch",
         "fmt": "prettier --config .qlty/configs/.prettierrc.json --write .",
         "qlty:check": "qlty check",
         "lint": "eslint --fix --config .qlty/configs/eslint.config.mjs .",
         "docs": "typedoc --options typedoc.json",
+        "docs:dev": "vitepress dev docs",
+        "docs:site": "vitepress build docs",
+        "docs:preview": "vitepress preview docs",
         "typecheck": "tsc --noEmit",
         "build": "bun run clean && tsup",
         "generate": "openapi-typescript openapi.yml -o src/models.ts"
@@ -41,6 +45,7 @@
         "typescript-eslint": "^8.37.0",
         "undici": "^7.10.0",
         "utility-types": "^3.11.0",
+        "vitepress": "^1.6.4",
         "vitest": "^3.2.4"
     },
     "peerDependencies": {

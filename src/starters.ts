@@ -15,6 +15,17 @@ import { DataDictionaryResult } from './results/DataDictionaryResult'
 import { processes } from './processes/types'
 import type { components } from './models'
 
+/**
+ * Normalize starter helper inputs into an array of strings.
+ *
+ * Accepts either a ready-made array of texts or a path pointing to `.txt`, `.csv`, or `.tsv`
+ * files. CSV/TSV inputs return the first column, which typically contains the free-form text
+ * body we want to analyze.
+ *
+ * @param source - Array of strings or file-system path.
+ * @returns Normalized array of strings suitable for Analyzer datasets.
+ * @throws Error when the provided path does not exist or has an unsupported extension.
+ */
 export function getStrings(source: string[] | string): string[] {
     if (Array.isArray(source)) {
         return source
@@ -49,6 +60,15 @@ function getThemes(themes: string): string[] | Theme[]
 function getThemes(themes: Theme[] | string): Theme[]
 function getThemes(themes: ThemeGenerationOptions | undefined): undefined
 function getThemes(themes: ThemesInput | undefined): Theme[] | string[] | undefined
+/**
+ * Normalize theme inputs for starter helpers.
+ *
+ * Supports:
+ * - Raw arrays of strings representing theme labels
+ * - Arrays of `Theme` definitions
+ * - File paths to `.txt`, `.csv`, or `.tsv` documents describing themes
+ * - Theme generation option objects (used when the helper should call the generator)
+ */
 function getThemes(themes: ThemesInput | undefined): Theme[] | string[] | undefined {
     // If Theme[] or string[], return as is
     if (Array.isArray(themes) && themes.every(t => typeof t === 'string')) {

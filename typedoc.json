@@ -9,8 +9,8 @@
     "includeVersion": true,
     "disableGit": true,
     "disableSources": true,
-    "projectDocuments": ["docs/starters.md"],
+    "projectDocuments": ["docs/guides/starters.md"],
     "sidebarLinks": {
-        "Starter Helpers": "starters.html"
+        "Starter Helpers": "guides/starters.html"
     }
 }

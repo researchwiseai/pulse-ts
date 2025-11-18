@@ -35,17 +35,22 @@ jobs:
             - name: Build library
               run: bun run build
 
-            - name: Generate coverage report
-              run: bun run test -- --coverage
-              env:
-                  PULSE_CLIENT_ID: aiIu81CUdkVTeD0aS4GPzTX8n2Q5EDHS
-                  PULSE_CLIENT_SECRET: ${{ secrets.PULSE_CLIENT_SECRET }}
-                  PULSE_TOKEN_URL: https://wise-dev.eu.auth0.com/oauth/token
-                  PULSE_AUDIENCE: https://dev.core.researchwiseai.com/pulse/v1
-                  PULSE_BASE_URL: https://staging.pulse.researchwiseai.com/v1
+            - name: Run unit tests with coverage
+              run: bun run test:unit -- --coverage
 
             - name: Upload coverage to Qlty.sh
               uses: qltysh/qlty-action/coverage@v1
               with:
                   token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
                   files: coverage/lcov.info
+
+            - name: Generate Typedoc reference
+              run: bun run docs
+
+            - name: Build documentation site
+              run: bun run docs:site
+
+            - name: Upload docs artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: docs/.vitepress/dist

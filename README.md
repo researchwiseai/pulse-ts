@@ -29,7 +29,7 @@ yarn add @rwai/pulse
 ## Quick Start
 
 Pulse provides helpers and a workflow DSL to make analysis easy. For an overview of the helper
-functions see the [Starter Helpers guide](docs/starters.md).
+functions see the [Starter Helpers guide](docs/guides/starters.md).
 
 ```ts
 import {
